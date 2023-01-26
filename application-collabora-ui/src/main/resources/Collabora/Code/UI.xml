@@ -1,0 +1,410 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.4" reference="Collabora.Code.UI" locale="">
+  <web>Collabora.Code</web>
+  <name>UI</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Collabora.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>UI</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{velocity}}
+{{html clean="false"}}
+#if ($request.elem == 'buttons')
+  #set ($mainDoc = $xwiki.getDocument('Collabora.Code.Main'))
+  ## TODO: Is the icon ok?
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora.ico'))
+  #set ($queryString = $escapetool.url({
+    'filename': $request.filename,
+    'document': $request.document,
+    'xpage': 'plain'
+  }))
+  #set ($actionURL = $mainDoc.getURL('view', $queryString))
+  ## TODO: Change title depending if the action is view or edit?
+  #set ($title = $escapetool.xml($services.localization.render("collabora.edit.button.title")))
+  #set ($label = $escapetool.xml($services.localization.render("collabora.edit.button")))
+  ## Starting with XWiki 14.6 the attachments actions are displayed in a livetable, and later, starting with 14.8,
+  ## in a livedata, so a different display is needed for different versions.
+  #if ($request.get('hasPagination') == 'true')
+    ## After the application starts depending on a version of XWiki &gt;= 14.6, this code should be move inside an
+    ## org.xwiki.platform.attachment.actions UIX.
+    &lt;a class="action collaboraEdit" title="$title" href="$actionURL"&gt;
+      &lt;span class="action-icon"&gt;&lt;img src="$logoURL" alt="$title"/&gt;&lt;/span&gt;
+      &lt;span class="action-label"&gt;$label&lt;/span&gt;
+    &lt;/a&gt;
+  #else
+    &lt;a class="collaboraEdit btn btn-xs btn-default" href="$actionURL" title="$title"&gt;
+      &lt;img src="$logoURL" alt="$title"/&gt;
+    &lt;/a&gt;
+  #end
+#end
+{{/html}}
+{{/velocity}}</content>
+  <attachment>
+    <filename>collabora.ico</filename>
+    <mimetype>image/vnd.microsoft.icon</mimetype>
+    <charset>UTF-8</charset>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content>AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFYpLQCYSE8AkkZMAI5EShmQRUtCViktAYZARgCGQEYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFsrLwCXSE8AkkZMAI1DSRSWR06lmEhP55NGTVnWZnAAh0BGAIdARgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACtdXoAoWNoAItBRxSWR06lmUlQ/5lJUP+YSE/rk0ZNWdZmcACHQEYAhkBGAAAAAAAAAAAAAAAAAAAAAAAAAAAApGhuAKh3exSWSVClmUlQ/5pKUP+ZSVD/mUlQ/5hIT+uTRk1Z1mZwAIZARgCGQEYAAAAAAAAAAAAAAAAAAAAAAMy8vgDGvb1erXyD/ow6Rv+PPUj/lENM/5hIT/+ZSVD/mEhP65NGTVnYZ3EAhkBGAIZARgAAAAAAAAAAAAAAAADLzMwAwsTDacrFxv+mdoH+fSk7/4EtPf+WRU3/mUlQ/5lJUP+YSE/rk0ZNWdZmcACHQEYAh0BGAAAAAAAAAAAAysrKAMLCwmnIyMj/y8jI/6t/iP6QQUz/mUlQ/5lJUP+ZSVD/mUlQ/5hIT+uTRk1Z/4iVAII+RABwNToAAAAAAMrKygDCwsJpyMjI/8jIyP/Mysr/u5SY/ptMU/+ZSVD/mUlQ/5lJUP+ZSVD/mEhP7JJGTFKmUFcAbzU6AAAAAADKysoAwsLCacjIyP/Iycn/zMnJ/7mOkv6aS1L/mUlQ/5lJUP+ZSVD/mUlQ/5hIT+iSRkxNpU9WAG81OgAAAAAAysrKAMHBwWrIyMj/zMjI/7aJjf6aS1L/mUlQ/5lJUP+ZSVD/mUlQ/5hIT+aTRk1Rt1hgAH48QgBwNToAAAAAAMzNzQDCxMRsy8bG/7SDiP6aSlH/mUhQ/5lJUP+ZSVD/mUlQ/5hIT+aTRk1RslVdAIQ/RQCFP0UAAAAAAAAAAADKtbcAxbi5YrF+gv6ZSVD/mUlQ/5lJUP+ZSVD/mUlQ/5hIT+eTRk1RslVdAIQ/RQCEP0UAAAAAAAAAAAAAAAAAnVthAKJqbxWWSE+nmUlQ/5lJUP+ZSVD/mUlQ/5hIT+eTRk1RslVdAIQ/RQCEP0UAAAAAAAAAAAAAAAAAAAAAAKVlawCeXGIAjEJIFZZHTqeZSVD/mUlQ/5hIT+eTRk1RslVdAIQ/RQCEP0UAAAAAAAAAAAAAAAAAAAAAAAAAAABaKy8AmUlQAJJGTACMQ0kVlkdOp5dIT+OTRk1Rs1VdAIQ/RQCFP0UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFgqLgCZSVAAkkZMAI1DShqQREs+////AIQ/RQCEP0UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwD8AAIAfAACADwAAgAcAAIADAACAAQAAgAAAAIAAAACAAAAAgAAAAIABAACAAwAAgAcAAIAPAACAHwAAwD8AAA==</content>
+    <filesize>1150</filesize>
+  </attachment>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>531dd884-8aaa-45b7-84f2-83e2a40fed7a</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>require(['jquery'],function($) {
+  //var collaboraConfig = JSON.parse($('#collaboraConfig').text());
+
+  var fullName = XWiki.Document.currentDocumentReference.toString();
+
+  var getExistingNames = function() {
+    return $('#_attachments span.name a').toArray().map(function(a) {
+      return a.innerText;
+    });
+  };
+
+  // Create untitled documents when no name is given
+  var getDefaultName = function(fileType) {
+    var untitledIndex = 1;
+    var list = getExistingNames();
+    var name = ({'.xlsx': 'Spreadsheet', '.docx': 'Document', '.pptx': 'Presentation' })[fileType] + ' ' + new Date().toString().split(' ').slice(0,4).join(' ');
+    if (list.indexOf(name + fileType) === -1) {
+      return name;
+    }
+    while (list.indexOf(name + ' - ' + untitledIndex + fileType) !== -1) {
+      untitledIndex++; 
+    }
+    return name + ' - ' + untitledIndex;
+  };
+
+  var decorateWithCollaboraButtons = function() {
+    var hasEditRights = XWiki.hasEdit;
+    var canDoByExt = { };
+    var editableFormats = ['docx', 'xlsx', 'pptx', 'xls', 'csv', 'doc', 'ppt', 'pps', 'ppsx', 'rtf', 'txt', 'mht', 'html', 'htm', 'odt', 'ods', 'odp'];
+    editableFormats.forEach(function(x) {
+      canDoByExt[x] = 'edit';
+    });
+    ['pdf', 'djvu', 'fb2', 'epub', 'xps'].forEach(function(x) {
+      canDoByExt[x] = 'view';
+    });
+
+    // Attachments are displayed using a live table since 14.6.
+    var hasPagination = $("#_attachments table").length &gt; 0;
+
+    $("#_attachments span.name").each(function(i, elem) {
+      var searchPoint = hasPagination ? $(elem).closest('tr').find('.attachmentActions') : $(elem).siblings('.xwikibuttonlinks');
+
+      if ($(searchPoint).find('a.collaboraEdit').length) {
+        return;
+      }
+      var fileName = $(elem).find('a').text().trim();
+      var fileType = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase();
+      var whatCanDo = canDoByExt[fileType];
+      if (!whatCanDo) {
+        return;
+      }
+      if (!hasEditRights) {
+        whatCanDo = 'view';
+      }
+
+      var queryString = $.param({
+        'elem': 'buttons',
+        'document': fullName,
+        'filename': fileName,
+        'whatCanDo': whatCanDo,
+        'asLink': hasPagination
+      });
+
+      $.post(
+      new XWiki.Document(XWiki.Model.resolve("Collabora.Code.UI", XWiki.EntityType.DOCUMENT)
+      ).getURL("get", queryString), function (data) {
+        $(searchPoint).append(data);
+      });
+
+      return;
+    });
+  };
+
+  $(decorateWithCollaboraButtons);
+  $(document).on('xwiki:livedata:afterEntryFetch', function (event) {
+    if ($(event.target).attr('id') === 'docAttachments') {
+      // We need to setTimeout(0) to allow the live data to display the entries before decorating them with the buttons.
+      setTimeout(decorateWithCollaboraButtons, 0);
+    }
+  });
+  $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
+  $(document).on('xwiki:html5upload:fileFinished', decorateWithCollaboraButtons);
+  $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
+});</code>
+    </property>
+    <property>
+      <name>Button</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>5f92c54a-09d2-4530-96c7-57166a83d2d9</guid>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>3</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>4</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>2</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>1</number>
+        <prettyName>Executed Content</prettyName>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>5</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>6</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>parameters</name>
+        <number>7</number>
+        <prettyName>Extension Parameters</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>8</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content>{{velocity}}
+  {{html clean="false"}}
+  #if ($xcontext.action == 'view')
+    ## TODO: Add a configuration for collabora and check if it is enabled.
+    #set ($discard = $xwiki.ssx.use('Collabora.Code.UI'))
+    #set ($discard = $xwiki.jsx.use('Collabora.Code.UI'))
+  #end
+  {{/html}}
+{{/velocity}}</content>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.platform.template.header.after</extensionPointId>
+    </property>
+    <property>
+      <name>com.xwiki.collabora.attachment</name>
+    </property>
+    <property>
+      <parameters/>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+</xwikidoc>
