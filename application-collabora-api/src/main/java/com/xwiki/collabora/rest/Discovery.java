@@ -20,36 +20,25 @@
 package com.xwiki.collabora.rest;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.xwiki.rest.XWikiRestComponent;
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.stability.Unstable;
 
 /**
- * Provides the functionality of saving the user's votes and determining the winning proposal in a desired page.
+ * To set up the iframe, the WOPI host (the application) needs to read a discovery XML from a defined location on the
+ * WOPI client (the Collabora Online server). The discovery is available at:
+ * https://<WOPIClientURL>:<port>/hosting/discovery The reply is discovery.xml that contains urlsrc for various file
+ * formats. The urlsrc needs to be used in the iframe for editing the document.
  *
- * @version $Id$
- * @since 2.1
+ * @since 1.0
  */
-@Path("/wopi/files/{id}")
+@Path("/discovery")
 @Unstable
-public interface Wopi extends XWikiRestComponent
+public interface Discovery
 {
     @GET
-    Response get(@PathParam("id") String fileId) throws XWikiRestException;
-
-    @GET
-    @Path("/contents")
-    Response getContents(@PathParam("id") String fileId) throws XWikiRestException;
-
-    @POST
-    @Path("/contents")
-    Response postContents(@PathParam("id") String fileId, byte[] body) throws XWikiRestException;
-
-    @POST
-    Response postRelativeContents(@PathParam("id") String fileId, byte[] body) throws XWikiRestException;
+    Response getDiscovery(@QueryParam("server") String server, @QueryParam("ext") String ext) throws XWikiRestException;
 }

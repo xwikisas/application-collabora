@@ -47,6 +47,12 @@ import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xwiki.collabora.rest.Wopi;
 
+/**
+ * Default implementation of {@link Wopi}.
+ *
+ * @version $Id:$
+ * @since 1.0
+ */
 @Component
 @Named("com.xwiki.collabora.internal.rest.DefaultWopi")
 @Singleton
@@ -118,8 +124,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         JSONObject response = new JSONObject();
         response.put("LastModifiedTime", df.format(attachment.getDate()));
 
-        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON)
-            .build();
+        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
     @Override
@@ -132,11 +137,11 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         JSONObject response = new JSONObject();
         response.put("LastModifiedTime", df.format(attachment.getDate()));
 
-        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON)
-            .build();
+        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
-    private XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content) throws XWikiRestException
+    private XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content)
+        throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         XWiki xwiki = xcontext.getWiki();
@@ -159,9 +164,4 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
                 String.format("Failed to create or update the attachment [%s].", attachmentReference), e);
         }
     }
-
-//    private String getISODate()
-//    {
-//        return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
-//    }
 }

@@ -225,19 +225,22 @@
     <property>
       <code>require(['jquery'], function($) {
   $(function() {
-    let wopiClientHost = $("#collaboraServer").data('collaboraServer');
-    let fileId = $("#collaboraServer").data('fileId');
-    let wopiSrc = window.location.origin + '/xwiki/rest/wopi/files/' + fileId;
-    let discoveryDoc = new XWiki.Document(XWiki.Model.resolve("Collabora.Code.Discovery", XWiki.EntityType.DOCUMENT));
-    let discoveryURL = discoveryDoc.getURL('view', $.param({
+    const wopiClientHost = $("#collaboraServer").data('collaboraServer');
+    const fileId = $("#collaboraServer").data('fileId');
+    const wopiSrc = window.location.origin + '/xwiki/rest/wopi/files/' + fileId;
+    // TODO: load xwiki.bundle script to be able to use XWiki.
+    // const discoveryURL = XWiki.contextPath + '/rest/discovery';
+    const discoveryURL = 'http://collabora:8080/xwiki/rest/discovery';
+    console.log(wopiClientHost);
+    $.getJSON(discoveryURL, $.param({
       xpage: 'plain',
       outputSyntax: 'plain',
-      server: wopiClientHost
-    }))
-    $.getJSON(discoveryURL).done(function(resp) {
-      let wopiClientUrl = resp['url'];
-      let accessToken =  resp['token'];
-      let wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
+      server: wopiClientHost,
+      ext: 'xlsx'
+    })).done(function(resp) {
+      const wopiClientUrl = resp['urlSrc'];
+      const accessToken =  resp['token'];
+      const wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', wopiUrl);
       $('#collaboraForm input[name=accessToken]').attr('value', accessToken);
       $('#collaboraForm').submit();
@@ -248,7 +251,7 @@
 });</code>
     </property>
     <property>
-      <name>Discovery</name>
+      <name>Start edit</name>
     </property>
     <property>
       <parse>0</parse>

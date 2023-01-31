@@ -168,31 +168,10 @@
       <code>require(['jquery'],function($) {
   //var collaboraConfig = JSON.parse($('#collaboraConfig').text());
 
-  var fullName = XWiki.Document.currentDocumentReference.toString();
-
-  var getExistingNames = function() {
-    return $('#_attachments span.name a').toArray().map(function(a) {
-      return a.innerText;
-    });
-  };
-
-  // Create untitled documents when no name is given
-  var getDefaultName = function(fileType) {
-    var untitledIndex = 1;
-    var list = getExistingNames();
-    var name = ({'.xlsx': 'Spreadsheet', '.docx': 'Document', '.pptx': 'Presentation' })[fileType] + ' ' + new Date().toString().split(' ').slice(0,4).join(' ');
-    if (list.indexOf(name + fileType) === -1) {
-      return name;
-    }
-    while (list.indexOf(name + ' - ' + untitledIndex + fileType) !== -1) {
-      untitledIndex++; 
-    }
-    return name + ' - ' + untitledIndex;
-  };
-
   var decorateWithCollaboraButtons = function() {
     var hasEditRights = XWiki.hasEdit;
-    var canDoByExt = { };
+    var canDoByExt = {};
+    // TODO: review extension, right now these are coppied from OO.
     var editableFormats = ['docx', 'xlsx', 'pptx', 'xls', 'csv', 'doc', 'ppt', 'pps', 'ppsx', 'rtf', 'txt', 'mht', 'html', 'htm', 'odt', 'ods', 'odp'];
     editableFormats.forEach(function(x) {
       canDoByExt[x] = 'edit';
@@ -201,7 +180,7 @@
       canDoByExt[x] = 'view';
     });
 
-    // Attachments are displayed using a live table since 14.6.
+    // Attachments are displayed using a live table since 14.6, and using a livedata from 14.8.
     var hasPagination = $("#_attachments table").length &gt; 0;
 
     $("#_attachments span.name").each(function(i, elem) {
@@ -222,10 +201,10 @@
 
       var queryString = $.param({
         'elem': 'buttons',
-        'document': fullName,
+        'document': XWiki.Document.currentDocumentReference.toString(),
         'filename': fileName,
         'whatCanDo': whatCanDo,
-        'asLink': hasPagination
+        'hasPagination': hasPagination
       });
 
       $.post(
@@ -385,13 +364,16 @@
     </property>
     <property>
       <content>{{velocity}}
-  {{html clean="false"}}
-  #if ($xcontext.action == 'view')
-    ## TODO: Add a configuration for collabora and check if it is enabled.
+{{html clean="false"}}
+#if ($xcontext.action == 'view')
+  #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
+  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
+  #if ($configObj.getValue('isEnabled').equals(1))
     #set ($discard = $xwiki.ssx.use('Collabora.Code.UI'))
     #set ($discard = $xwiki.jsx.use('Collabora.Code.UI'))
   #end
-  {{/html}}
+#end
+{{/html}}
 {{/velocity}}</content>
     </property>
     <property>

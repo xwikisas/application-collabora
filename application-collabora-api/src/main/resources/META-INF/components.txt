@@ -1,1 +1,2 @@
 com.xwiki.collabora.internal.rest.DefaultWopi
+com.xwiki.collabora.internal.rest.DefaultDiscovery
