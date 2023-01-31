@@ -117,8 +117,11 @@
     &lt;/table&gt;
   &lt;/div&gt;
   ## Informatin needed by collabora
-  ## TODO: Create a configuration page and get server from there.
-  &lt;span id="collaboraServer" data-collabora-server="http://collabora:9980" data-file-id="$services.model.serialize($attachment.getReference(), 'default')"&gt;&lt;/span&gt;
+  #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
+  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
+  #set ($server = $configObj.getValue('server'))
+  #set ($fileId = $services.model.serialize($attachment.getReference(), 'default'))
+  &lt;span id="collaboraServer" data-collabora-server="$server" data-file-id="$fileId"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
     &lt;input name="accessToken" value="" type="hidden" id="accessToken" /&gt;

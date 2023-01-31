@@ -36,7 +36,15 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>collabora.edit.button.title=Edit using Collabora
+  <content>##Admin section
+admin.collabora=Collabora
+admin.collabora.description=Configure the image lightbox gallery
+Collabora.Code.ConfigurationClass_isEnabled=Enable
+Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online.
+Collabora.Code.ConfigurationClass_server=Server
+Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address
+
+collabora.edit.button.title=Edit using Collabora
 collabora.edit.button=Collabora
 collabora.inFrameContent.onPage=on page
 collabora.save.comment=Edited file in collabora</content>
