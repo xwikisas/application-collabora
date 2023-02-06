@@ -44,10 +44,16 @@ Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit 
 Collabora.Code.ConfigurationClass_server=Server
 Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address
 
-collabora.edit.button.title=Edit using Collabora
-collabora.edit.button=Collabora
-collabora.inFrameContent.onPage=on page
-collabora.save.comment=Edited file in collabora</content>
+## Attachments tab
+collabora.attachment.edit.title=Edit using Collabora
+collabora.attachment.title=Collabora
+collabora.attachment.view.title=View using Collabora
+
+## Editor
+collabora.editor.onPage=on page
+collabora.validation.attachmentMissing=Document or attachment not found!
+collabora.validation.documentMissing=Document parameter required!
+collabora.validation.filenameMissing=Filename parameter required!</content>
   <object>
     <name>Collabora.Code.Translations</name>
     <number>0</number>

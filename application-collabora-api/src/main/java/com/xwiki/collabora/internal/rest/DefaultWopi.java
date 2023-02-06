@@ -59,7 +59,8 @@ import com.xwiki.collabora.rest.Wopi;
 @Singleton
 public class DefaultWopi extends ModifiablePageResource implements Wopi
 {
-    final private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+    // Collabora server needs time in ISO8601 round-trip time format, to include fractional seconds.
+    final private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     @Inject
     protected ContextualLocalizationManager contextualLocalizationManager;
@@ -78,7 +79,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
     @Override
-    public Response get(String fileId, String token) throws XWikiRestException
+    public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
     {
         if (fileTokenManager.isInvalid(token)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -91,11 +92,10 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
             XWikiAttachment attachment = doc.getAttachment(attachmentReference.getName());
 
-            // TODO: Add LastModifiedTime. Check edit rights for UserCanWrite.
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
-            message.put("UserCanWrite", "true");
+            message.put("UserCanWrite", userCanWrite);
             message.put("LastModifiedTime", df.format(attachment.getDate()));
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)

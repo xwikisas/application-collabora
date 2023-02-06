@@ -37,11 +37,11 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity output="false"}}
-#macro (renderCollaboraContent)
-  ## Display logo and some information about the currently edited file. Show Cancel actions on the right.
-  ## Save and Save as actions are included in the Collabora UI.
+#macro (renderCollaboraContent $mode)
+  ## Display logo and some information about the currently edited file. Show Cancel action on the right.
+  ## Save action is included in Collabora editor.
   &lt;div&gt;
-    &lt;table class="saveBarTable"&gt;
+    &lt;table class="actionMenu"&gt;
       &lt;tr&gt;
         &lt;td class="middle"&gt;
           &lt;a href="${xwiki.getURL('Main.WebHome')}"&gt;&lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;&lt;/a&gt;
@@ -49,7 +49,7 @@
         &lt;td class="middle"&gt;
           &lt;strong&gt;$currentAction&lt;/strong&gt;
           &lt;em&gt;$request.filename&lt;/em&gt;
-          $escapetool.xml($services.localization.render('collabora.inFrameContent.onPage'))
+          $escapetool.xml($services.localization.render('collabora.editor.onPage'))
           &lt;a href="${fileDoc.URL}#Attachments"
             title="$escapetool.xml($services.localization.render('cancel'))"&gt;$fileDoc.displayTitle&lt;/a&gt;
         &lt;/td&gt;
@@ -62,12 +62,12 @@
       &lt;/tr&gt;
     &lt;/table&gt;
   &lt;/div&gt;
-  ## Information needed by collabora.
+  ## Information needed by collabora to be able to edit the current file.
   #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
   #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
   #set ($server = $configObj.getValue('server'))
   #set ($fileId = $services.model.serialize($attachment.getReference(), 'default'))
-  &lt;span id="collaboraServer" data-collabora-server="$server" data-file-id="$fileId"&gt;&lt;/span&gt;
+  &lt;span id="collaboraServer" data-collabora-server="$server" data-file-id="$fileId" data-mode="$mode"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
     &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
@@ -94,7 +94,7 @@
 #if (!$attachment)
   $escapetool.xml($services.localization.render('collabora.validation.attachmentMissing'))
 #else
-  #if ($fileDoc.hasAccessLevel('edit'))
+  #if ($fileDoc.hasAccessLevel('edit') &amp;&amp; "$!request.action" == 'edit' )
     #set ($mode = 'edit')
     #set ($currentAction = "$escapetool.xml($services.localization.render('editing'))")
     #set ($canEdit = true)
@@ -104,11 +104,11 @@
     #set ($canEdit = false)
   #end
   {{html clean=false}}
-    #set ($discard = $xwiki.jsx.use("Collabora.Code.Main", {'minify': false}))
-    #set ($discard = $xwiki.ssx.use("Collabora.Code.Main", {'minify': false}))
+    #set ($discard = $xwiki.jsx.use("Collabora.Code.Main"))
+    #set ($discard = $xwiki.ssx.use("Collabora.Code.Main"))
     #template('htmlheader.vm')
     &lt;div id="xwikicontent"&gt;
-      #renderCollaboraContent()
+      #renderCollaboraContent($mode)
     &lt;/div&gt;
   &lt;/body&gt;
   &lt;/html&gt;
@@ -204,20 +204,22 @@
     <property>
       <code>require(['jquery'], function($) {
   $(function() {
-    const wopiClientHost = $("#collaboraServer").data('collaboraServer');
+    const server = $("#collaboraServer").data('collaboraServer');
     const fileId = $("#collaboraServer").data('fileId');
-    const wopiSrc = window.location.origin + '/xwiki/rest/wopi/files/' + fileId;
+    const userCanWrite = $("#collaboraServer").data('mode') == 'edit';
+    const wopiResourceURL = window.location.origin + '/xwiki/rest/wopi/files/' + fileId
+      + '?userCanWrite=' + userCanWrite;
     const discoveryURL = XWiki.contextPath + '/rest/discovery';
     $.getJSON(discoveryURL, $.param({
       xpage: 'plain',
       outputSyntax: 'plain',
-      server: wopiClientHost,
+      server: server,
       ext: fileId.split('.').pop(),
       fileId: fileId
     })).done(function(resp) {
       const wopiClientUrl = resp['urlSrc'];
       const accessToken =  resp['token'];
-      const wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
+      const wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiResourceURL;
       $('#collaboraForm').attr('action', wopiUrl);
       $('#collaboraForm input[name=access_token]').attr('value', accessToken);
       $('#collaboraForm').submit();
@@ -352,22 +354,25 @@
   min-height: 100vh;
   width: 100%;
 }
-.middle {
-  vertical-align: middle;
-}
-.right {
-  text-align: right;
-}
-.saveBarTable {
+.actionMenu {
   margin-bottom: 0;
-}
-.saveBarTable img {
-  max-width: 6em;
-  max-height: 3em;
+
+  .middle {
+  vertical-align: middle;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  img {
+    max-width: 6em;
+    max-height: 3em;
+  }
 }</code>
     </property>
     <property>
-      <contentType>CSS</contentType>
+      <contentType>LESS</contentType>
     </property>
     <property>
       <name>Collabora main display</name>

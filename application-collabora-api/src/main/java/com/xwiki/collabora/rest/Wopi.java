@@ -41,7 +41,8 @@ import org.xwiki.stability.Unstable;
 public interface Wopi extends XWikiRestComponent
 {
     @GET
-    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token,
+        @QueryParam("userCanWrite") String userCanWrite) throws XWikiRestException;
 
     @GET
     @Path("/contents")
