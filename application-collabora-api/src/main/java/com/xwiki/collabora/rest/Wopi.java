@@ -23,6 +23,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.xwiki.rest.XWikiRestComponent;
@@ -40,16 +41,19 @@ import org.xwiki.stability.Unstable;
 public interface Wopi extends XWikiRestComponent
 {
     @GET
-    Response get(@PathParam("id") String fileId) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
 
     @GET
     @Path("/contents")
-    Response getContents(@PathParam("id") String fileId) throws XWikiRestException;
+    Response getContents(@PathParam("id") String fileId, @QueryParam("access_token") String token)
+        throws XWikiRestException;
 
     @POST
     @Path("/contents")
-    Response postContents(@PathParam("id") String fileId, byte[] body) throws XWikiRestException;
+    Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
+        throws XWikiRestException;
 
     @POST
-    Response postRelativeContents(@PathParam("id") String fileId, byte[] body) throws XWikiRestException;
+    Response postRelativeContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
+        throws XWikiRestException;
 }

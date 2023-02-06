@@ -36,62 +36,8 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>{{velocity}}
-#if ("$!request.document" == '')
-  $escapetool.xml($services.localization.render('collabora.validation.documentMissing'))
-#else
-  #set ($fileDoc = $xwiki.getDocument($request.document))
-  #if ("$!request.filename" == '')
-    $escapetool.xml($services.localization.render('collabora.validation.filenameMissing'))
-  #else
-    #set ($filename = $request.filename)
-    #set ($fileType = $filename.substring($filename.lastIndexOf('.')))
-    #set ($attachment = $fileDoc.getAttachment($request.filename))
-  #end
-#end
-#if (!$attachment)
-  $escapetool.xml($services.localization.render('collabora.validation.attachmentMissing'))
-#else
-  #if ($fileDoc.hasAccessLevel('edit'))
-    #set ($mode = 'edit')
-    #set ($currentAction = "$escapetool.xml($services.localization.render('editing'))")
-    #set ($canEdit = true)
-  #else
-    #set ($mode = 'view')
-    #set ($currentAction = '')
-    #set ($canEdit = false)
-  #end
-
-{{html clean=false}}
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-
-&lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
-  &lt;title&gt;${currentAction}$escapetool.xml($request.filename)&lt;/title&gt;
-  #template('stylesheets.vm')
-  &lt;link rel="stylesheet" type="text/css" href="$doc.getURL('ssx')"&gt;
-  ## Old IE
-  &lt;link rel="shortcut icon" href="$xwiki.getSkinFile('icons/xwiki/favicon.ico')" /&gt;
-  ## Present, HTML5
-  &lt;link rel="icon" href="$xwiki.getSkinFile('icons/xwiki/favicon16.png')" type="image/png" /&gt;
-  ## The future, scalable icons
-  &lt;link rel="icon" href="$xwiki.getSkinFile('icons/xwiki/favicon.svg')" type="image/svg+xml" /&gt;
-  ## For smart phones and tablets
-  &lt;link rel="apple-touch-icon" href="$xwiki.getSkinFile('icons/xwiki/favicon144.png')" /&gt;
-
-  &lt;script type="text/javascript" src="$services.webjars.url('requirejs', 'require.min.js')"&gt;&lt;/script&gt;
-  &lt;script src="$doc.getURL('jsx')" defer="defer"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript" language="javascript"&gt;
-    require.config({
-      paths: {
-        'jquery': "$services.webjars.url('jquery', 'jquery.min.js')"
-      }
-    });
-  &lt;/script&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
+  <content>{{velocity output="false"}}
+#macro (renderCollaboraContent)
   ## Display logo and some information about the currently edited file. Show Cancel actions on the right.
   ## Save and Save as actions are included in the Collabora UI.
   &lt;div&gt;
@@ -116,7 +62,7 @@
       &lt;/tr&gt;
     &lt;/table&gt;
   &lt;/div&gt;
-  ## Informatin needed by collabora
+  ## Information needed by collabora.
   #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
   #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
   #set ($server = $configObj.getValue('server'))
@@ -124,18 +70,51 @@
   &lt;span id="collaboraServer" data-collabora-server="$server" data-file-id="$fileId"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
-    &lt;input name="accessToken" value="" type="hidden" id="accessToken" /&gt;
+    &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
     &lt;input type="submit" value="" /&gt;
   &lt;/form&gt;
   ## Where the document will be displayed.
   &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
-&lt;/body&gt;
-
-&lt;/html&gt;
-{{/html}}
 #end
 {{/velocity}}
-</content>
+
+{{velocity}}
+#if ("$!request.document" == '')
+  $escapetool.xml($services.localization.render('collabora.validation.documentMissing'))
+#else
+  #set ($fileDoc = $xwiki.getDocument($request.document))
+  #if ("$!request.filename" == '')
+    $escapetool.xml($services.localization.render('collabora.validation.filenameMissing'))
+  #else
+    #set ($filename = $request.filename)
+    #set ($fileType = $filename.substring($filename.lastIndexOf('.')))
+    #set ($attachment = $fileDoc.getAttachment($request.filename))
+  #end
+#end
+#if (!$attachment)
+  $escapetool.xml($services.localization.render('collabora.validation.attachmentMissing'))
+#else
+  #if ($fileDoc.hasAccessLevel('edit'))
+    #set ($mode = 'edit')
+    #set ($currentAction = "$escapetool.xml($services.localization.render('editing'))")
+    #set ($canEdit = true)
+  #else
+    #set ($mode = 'view')
+    #set ($currentAction = '')
+    #set ($canEdit = false)
+  #end
+  {{html clean=false}}
+    #set ($discard = $xwiki.jsx.use("Collabora.Code.Main", {'minify': false}))
+    #set ($discard = $xwiki.ssx.use("Collabora.Code.Main", {'minify': false}))
+    #template('htmlheader.vm')
+    &lt;div id="xwikicontent"&gt;
+      #renderCollaboraContent()
+    &lt;/div&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+  {{/html}}
+#end
+{{/velocity}}</content>
   <object>
     <name>Collabora.Code.Main</name>
     <number>0</number>
@@ -228,25 +207,29 @@
     const wopiClientHost = $("#collaboraServer").data('collaboraServer');
     const fileId = $("#collaboraServer").data('fileId');
     const wopiSrc = window.location.origin + '/xwiki/rest/wopi/files/' + fileId;
-    // TODO: load xwiki.bundle script to be able to use XWiki.
-    // const discoveryURL = XWiki.contextPath + '/rest/discovery';
-    const discoveryURL = 'http://collabora:8080/xwiki/rest/discovery';
-    console.log(wopiClientHost);
+    const discoveryURL = XWiki.contextPath + '/rest/discovery';
     $.getJSON(discoveryURL, $.param({
       xpage: 'plain',
       outputSyntax: 'plain',
       server: wopiClientHost,
-      ext: 'xlsx'
+      ext: fileId.split('.').pop(),
+      fileId: fileId
     })).done(function(resp) {
       const wopiClientUrl = resp['urlSrc'];
       const accessToken =  resp['token'];
       const wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', wopiUrl);
-      $('#collaboraForm input[name=accessToken]').attr('value', accessToken);
+      $('#collaboraForm input[name=access_token]').attr('value', accessToken);
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification("Error while loading this file. Cause: " + error);
     });
+  });
+
+  $(window).unload(function() {
+    const fileId = $("#collaboraServer").data('fileId');
+    const clearTokenURL = XWiki.contextPath + '/rest/discovery/clearToken?fileId=' + fileId;
+    navigator.sendBeacon(clearTokenURL);
   });
 });</code>
     </property>

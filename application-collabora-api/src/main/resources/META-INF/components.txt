@@ -1,2 +1,3 @@
 com.xwiki.collabora.internal.rest.DefaultWopi
 com.xwiki.collabora.internal.rest.DefaultDiscovery
+com.xwiki.collabora.internal.FileTokenManager

@@ -45,6 +45,7 @@ import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xpn.xwiki.doc.XWikiDocument;
+import com.xwiki.collabora.internal.FileTokenManager;
 import com.xwiki.collabora.rest.Wopi;
 
 /**
@@ -66,6 +67,9 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Inject
     private Provider<XWikiContext> contextProvider;
 
+    @Inject
+    private FileTokenManager fileTokenManager;
+
     /**
      * Create attachment name from a string reference.
      */
@@ -74,8 +78,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
     @Override
-    public Response get(String fileId) throws XWikiRestException
+    public Response get(String fileId, String token) throws XWikiRestException
     {
+        if (fileTokenManager.isInvalid(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         XWikiContext xcontext = this.contextProvider.get();
         AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
         try {
@@ -83,7 +91,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
             XWikiAttachment attachment = doc.getAttachment(attachmentReference.getName());
 
-            // Add LastModifiedTime. Check edit rights for UserCanWrite.
+            // TODO: Add LastModifiedTime. Check edit rights for UserCanWrite.
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
@@ -98,11 +106,14 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response getContents(String fileId) throws XWikiRestException
+    public Response getContents(String fileId, String token) throws XWikiRestException
     {
+        if (fileTokenManager.isInvalid(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
         XWikiContext xcontext = this.contextProvider.get();
         AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
-
         try {
             DocumentReference documentReference = attachmentReference.getDocumentReference();
             XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
@@ -115,10 +126,13 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response postContents(String fileId, byte[] body) throws XWikiRestException
+    public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        if (fileTokenManager.isInvalid(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
         XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
 
         JSONObject response = new JSONObject();
@@ -128,10 +142,13 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response postRelativeContents(String fileId, byte[] body) throws XWikiRestException
+    public Response postRelativeContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        if (fileTokenManager.isInvalid(token)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
         XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
 
         JSONObject response = new JSONObject();

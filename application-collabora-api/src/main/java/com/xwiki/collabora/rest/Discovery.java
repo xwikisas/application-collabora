@@ -20,6 +20,7 @@
 package com.xwiki.collabora.rest;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -40,5 +41,10 @@ import org.xwiki.stability.Unstable;
 public interface Discovery
 {
     @GET
-    Response getDiscovery(@QueryParam("server") String server, @QueryParam("ext") String ext) throws XWikiRestException;
+    Response getDiscovery(@QueryParam("server") String server, @QueryParam("ext") String ext,
+        @QueryParam("fileId") String fileId) throws XWikiRestException;
+
+    @POST
+    @Path("/clearToken")
+    Response clearToken(@QueryParam("fileId") String fileId) throws XWikiRestException;
 }

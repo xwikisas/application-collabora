@@ -26,7 +26,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,6 +44,9 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
+import com.xpn.xwiki.XWikiContext;
+import com.xwiki.collabora.internal.FileToken;
+import com.xwiki.collabora.internal.FileTokenManager;
 import com.xwiki.collabora.rest.Discovery;
 
 /**
@@ -55,9 +60,16 @@ import com.xwiki.collabora.rest.Discovery;
 @Singleton
 public class DefaultDiscovery extends ModifiablePageResource implements Discovery
 {
+    @Inject
+    Provider<XWikiContext> contextProvider;
+
+    @Inject
+    FileTokenManager fileTokenManager;
+
     @Override
-    public Response getDiscovery(String server, String ext) throws XWikiRestException
+    public Response getDiscovery(String server, String ext, String fileId) throws XWikiRestException
     {
+        XWikiContext xcontext = this.contextProvider.get();
         try {
             URL collaboraDiscovery = new URL(server + "/hosting/discovery");
             HttpURLConnection connection = (HttpURLConnection) collaboraDiscovery.openConnection();
@@ -67,14 +79,22 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
 
             JSONObject message = new JSONObject();
             message.put("urlSrc", urlSrc);
-            // TODO: create a valid token an verify it when accessing a file.
-            message.put("token", "todoToken");
+            FileToken token = fileTokenManager.getToken(xcontext.getUserReference().toString(), fileId);
+            message.put("token", token.toString());
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Response clearToken(String fileId) throws XWikiRestException
+    {
+        XWikiContext xcontext = this.contextProvider.get();
+        this.fileTokenManager.clearToken(xcontext.getUserReference().toString(), fileId);
+        return Response.ok().build();
     }
 
     private static String getConnectionResponse(HttpURLConnection connection) throws IOException
@@ -103,7 +123,7 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
                 }
             }
 
-            return "notFound";
+            return null;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
