@@ -31,10 +31,10 @@ import org.xwiki.rest.XWikiRestException;
 import org.xwiki.stability.Unstable;
 
 /**
- * Provides the functionality of saving the user's votes and determining the winning proposal in a desired page.
+ * Provides the APIs needed by the collabora server in order to access a file and it's content, but also to save it.
  *
  * @version $Id$
- * @since 2.1
+ * @since 1.0
  */
 @Path("/wopi/files/{id}")
 @Unstable

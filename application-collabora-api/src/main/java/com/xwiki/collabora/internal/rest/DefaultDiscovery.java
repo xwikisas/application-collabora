@@ -52,7 +52,7 @@ import com.xwiki.collabora.rest.Discovery;
 /**
  * Default implementation of {@link Discovery}.
  *
- * @version $Id:$
+ * @version $Id$
  * @since 1.0
  */
 @Component
@@ -61,10 +61,10 @@ import com.xwiki.collabora.rest.Discovery;
 public class DefaultDiscovery extends ModifiablePageResource implements Discovery
 {
     @Inject
-    Provider<XWikiContext> contextProvider;
+    private Provider<XWikiContext> contextProvider;
 
     @Inject
-    FileTokenManager fileTokenManager;
+    private FileTokenManager fileTokenManager;
 
     @Override
     public Response getDiscovery(String server, String ext, String fileId) throws XWikiRestException

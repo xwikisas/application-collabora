@@ -31,9 +31,11 @@ import org.xwiki.stability.Unstable;
 /**
  * To set up the iframe, the WOPI host (the application) needs to read a discovery XML from a defined location on the
  * WOPI client (the Collabora Online server). The discovery is available at:
- * https://<WOPIClientURL>:<port>/hosting/discovery The reply is discovery.xml that contains urlsrc for various file
- * formats. The urlsrc needs to be used in the iframe for editing the document.
+ * https://<WOPIClientURL>:<port>/hosting/discovery. The reply is discovery.xml that contains urlsrc for various file
+ * formats. The urlsrc needs to be used in the iframe for editing the document. Create also a token  which will be
+ * used to authenticate the following requests on this edited file.
  *
+ * @version $Id$
  * @since 1.0
  */
 @Path("/discovery")

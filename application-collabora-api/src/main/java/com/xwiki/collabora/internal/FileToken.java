@@ -26,9 +26,15 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+/**
+ * Token used in order to authenticate requests done using the WOPI protocol.
+ *
+ * @version $Id$
+ * @since 1.0
+ */
 public class FileToken
 {
-    private String userReference;
+    private String user;
 
     private String fileId;
 
@@ -38,9 +44,9 @@ public class FileToken
 
     private int usage;
 
-    FileToken(String userReference, String fileId)
+    FileToken(String user, String fileId)
     {
-        this.userReference = userReference;
+        this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(new SecureRandom().nextInt());
@@ -55,7 +61,7 @@ public class FileToken
         // Now create matcher object.
         Matcher m = r.matcher(token);
         if (m.find()) {
-            this.userReference = m.group(1);
+            this.user = m.group(1);
             this.fileId = m.group(2);
             this.timestamp = Long.parseLong(m.group(3));
             this.randomNumber = Integer.parseInt(m.group(4));
@@ -64,51 +70,64 @@ public class FileToken
     }
 
     /**
-     * Tokens have a valability of 30 minutes.
+     * Check if this token is expired. Tokens have a valability of 1 hour.
      *
-     * @return true if the token has expired, or false otherwise.
+     * @return {@code true} if the token has expired, {@code false} otherwise.
      */
     public boolean isExpired()
     {
         long currentTime = new Date().getTime();
         long differenceInSec = (currentTime - timestamp) / 1000;
-        return differenceInSec > 1800;
+        return differenceInSec > 3600;
     }
 
+    /**
+     * Get the number of places where this token is used (i.e. number of windows where the current file is edited by
+     * this user).
+     *
+     * @return the number of places where this token is used
+     */
     public int getUsage()
     {
         return this.usage;
     }
 
+    /**
+     * @param usage the number of places where this token is used
+     */
     public void setUsage(int usage)
     {
         this.usage = usage;
     }
 
-    public String getUserReference()
+    /**
+     * @return the user corresponding to this token
+     */
+    public String getUser()
     {
-        return this.userReference;
+        return this.user;
     }
 
+    /**
+     * @return the id of the file corresponding to this token
+     */
     public String getFileId()
     {
         return this.fileId;
     }
 
+    /**
+     * @return token creation time
+     */
     public Long getTimestamp()
     {
         return this.timestamp;
     }
 
-    private long getRandomNumber()
-    {
-        return this.randomNumber;
-    }
-
     @Override
     public String toString()
     {
-        return String.format("wopi_%s_%s_%s_%s", this.userReference, this.fileId, this.timestamp, this.randomNumber);
+        return String.format("wopi_%s_%s_%s_%s", this.user, this.fileId, this.timestamp, this.randomNumber);
     }
 
     @Override
@@ -120,11 +139,16 @@ public class FileToken
         FileToken other = (FileToken) obj;
         EqualsBuilder builder = new EqualsBuilder();
 
-        builder.append(this.getUserReference(), other.getUserReference());
+        builder.append(this.getUser(), other.getUser());
         builder.append(this.getFileId(), other.getFileId());
         builder.append(this.getTimestamp(), other.getTimestamp());
         builder.append(this.getRandomNumber(), other.getRandomNumber());
 
         return builder.build();
+    }
+
+    private long getRandomNumber()
+    {
+        return this.randomNumber;
     }
 }

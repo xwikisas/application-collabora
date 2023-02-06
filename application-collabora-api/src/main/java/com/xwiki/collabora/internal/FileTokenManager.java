@@ -26,12 +26,26 @@ import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
 
+/**
+ * Manage existing {@link FileToken} instances.
+ *
+ * @version $Id$
+ * @since 1.0
+ */
 @Component(roles = FileTokenManager.class)
 @Singleton
 public class FileTokenManager
 {
     private Map<String, FileToken> tokens = new HashMap<>();
 
+    /**
+     * Get {@link FileToken} corresponding to the given user and file, or create a new token in case it does not exist
+     * or is expired.
+     *
+     * @param user {@code String} representation for the current user reference
+     * @param fileId id of the edited file
+     * @return existing {@link FileToken}, or a new one
+     */
     public FileToken getToken(String user, String fileId)
     {
         String key = getKey(user, fileId);
@@ -48,13 +62,26 @@ public class FileTokenManager
         return createNewToken(user, fileId);
     }
 
+    /**
+     * Check if the given token has a valid form, exists, and it's not expired.
+     *
+     * @param token {@code String} representation of a token
+     * @return {@code true} if the token is valid, {@code false} otherwise
+     */
     public boolean isInvalid(String token)
     {
         FileToken givenToken = new FileToken(token);
-        FileToken foundToken = tokens.get(getKey(givenToken.getUserReference(), givenToken.getFileId()));
+        FileToken foundToken = tokens.get(getKey(givenToken.getUser(), givenToken.getFileId()));
         return foundToken == null || !foundToken.equals(givenToken) || foundToken.isExpired();
     }
 
+    /**
+     * Remove the usage of a token. This could mean to update the number of usages (i.e. number of windows where the
+     * current file is edited by this user), or to simply remove the token in case it is no longer used.
+     *
+     * @param user {@code String} representation for the current user
+     * @param fileId id of the edited file
+     */
     public void clearToken(String user, String fileId)
     {
         String key = getKey(user, fileId);

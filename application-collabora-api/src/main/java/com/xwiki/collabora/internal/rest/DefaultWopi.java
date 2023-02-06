@@ -51,7 +51,7 @@ import com.xwiki.collabora.rest.Wopi;
 /**
  * Default implementation of {@link Wopi}.
  *
- * @version $Id:$
+ * @version $Id$
  * @since 1.0
  */
 @Component
@@ -59,11 +59,13 @@ import com.xwiki.collabora.rest.Wopi;
 @Singleton
 public class DefaultWopi extends ModifiablePageResource implements Wopi
 {
+    private static final String LAST_MODIFIED_TIME = "LastModifiedTime";
+
     // Collabora server needs time in ISO8601 round-trip time format, to include fractional seconds.
-    final private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     @Inject
-    protected ContextualLocalizationManager contextualLocalizationManager;
+    private ContextualLocalizationManager contextualLocalizationManager;
 
     @Inject
     private Provider<XWikiContext> contextProvider;
@@ -71,9 +73,6 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Inject
     private FileTokenManager fileTokenManager;
 
-    /**
-     * Create attachment name from a string reference.
-     */
     @Inject
     @Named("current")
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
@@ -96,7 +95,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
             message.put("UserCanWrite", userCanWrite);
-            message.put("LastModifiedTime", df.format(attachment.getDate()));
+            message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
@@ -136,7 +135,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
 
         JSONObject response = new JSONObject();
-        response.put("LastModifiedTime", df.format(attachment.getDate()));
+        response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
 
         return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
@@ -152,7 +151,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
 
         JSONObject response = new JSONObject();
-        response.put("LastModifiedTime", df.format(attachment.getDate()));
+        response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
 
         return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
