@@ -81,21 +81,26 @@ public class FileTokenManager
      *
      * @param user {@code String} representation for the current user
      * @param fileId id of the edited file
+     * @return the number of token usages
      */
-    public void clearToken(String user, String fileId)
+    public int clearToken(String user, String fileId)
     {
         String key = getKey(user, fileId);
         FileToken foundToken = tokens.get(key);
         if (foundToken == null) {
-            return;
+            return 0;
         }
 
         int tokenUsage = foundToken.getUsage();
         if (tokenUsage > 1) {
-            foundToken.setUsage(tokenUsage - 1);
+            tokenUsage--;
+            foundToken.setUsage(tokenUsage);
         } else {
             tokens.remove(key);
+            tokenUsage = 0;
         }
+
+        return tokenUsage;
     }
 
     private FileToken createNewToken(String user, String fileId)

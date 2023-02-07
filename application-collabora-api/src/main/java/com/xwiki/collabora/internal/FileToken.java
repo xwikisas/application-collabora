@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Token used in order to authenticate requests done using the WOPI protocol.
@@ -128,6 +129,14 @@ public class FileToken
     public String toString()
     {
         return String.format("wopi_%s_%s_%s_%s", this.user, this.fileId, this.timestamp, this.randomNumber);
+    }
+
+    @Override
+    public int hashCode()
+    {
+
+        return new HashCodeBuilder().append(this.getUser()).append(this.getFileId()).append(this.getTimestamp())
+            .append(this.getRandomNumber()).toHashCode();
     }
 
     @Override

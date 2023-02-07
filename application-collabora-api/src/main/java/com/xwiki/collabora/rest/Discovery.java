@@ -32,8 +32,8 @@ import org.xwiki.stability.Unstable;
  * To set up the iframe, the WOPI host (the application) needs to read a discovery XML from a defined location on the
  * WOPI client (the Collabora Online server). The discovery is available at:
  * https://<WOPIClientURL>:<port>/hosting/discovery. The reply is discovery.xml that contains urlsrc for various file
- * formats. The urlsrc needs to be used in the iframe for editing the document. Create also a token  which will be
- * used to authenticate the following requests on this edited file.
+ * formats. The urlsrc needs to be used in the iframe for editing the document. Create also a token  which will be used
+ * to authenticate the following requests on this edited file.
  *
  * @version $Id$
  * @since 1.0
@@ -42,10 +42,28 @@ import org.xwiki.stability.Unstable;
 @Unstable
 public interface Discovery
 {
+    /**
+     * Get information specific to this type of file, to know which part of Collabora online to load. Get information
+     * specific to this file, to be able to load it (e.g. token needed for authenticating requests, file type Collabora
+     * particularities).
+     *
+     * @param server Collabora server
+     * @param fileId id of the file
+     * @return information needed by Collabora to load
+     * @throws XWikiRestException if an error occurred while getting information
+     */
     @GET
-    Response getDiscovery(@QueryParam("server") String server, @QueryParam("ext") String ext,
-        @QueryParam("fileId") String fileId) throws XWikiRestException;
+    Response getDiscovery(@QueryParam("server") String server, @QueryParam("fileId") String fileId)
+        throws XWikiRestException;
 
+    /**
+     * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
+     * remove the token entirely in this case.
+     *
+     * @param fileId id of the file
+     * @return information about the usage of this file token
+     * @throws XWikiRestException if an error occurred while removing the token
+     */
     @POST
     @Path("/clearToken")
     Response clearToken(@QueryParam("fileId") String fileId) throws XWikiRestException;

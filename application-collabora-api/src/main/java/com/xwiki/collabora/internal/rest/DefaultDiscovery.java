@@ -67,7 +67,7 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
     private FileTokenManager fileTokenManager;
 
     @Override
-    public Response getDiscovery(String server, String ext, String fileId) throws XWikiRestException
+    public Response getDiscovery(String server, String fileId) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         try {
@@ -75,7 +75,7 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
             HttpURLConnection connection = (HttpURLConnection) collaboraDiscovery.openConnection();
             connection.setRequestMethod("GET");
 
-            String urlSrc = getURLSrc(getConnectionResponse(connection), ext);
+            String urlSrc = getURLSrc(getConnectionResponse(connection), fileId);
 
             JSONObject message = new JSONObject();
             message.put("urlSrc", urlSrc);
@@ -93,8 +93,11 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
     public Response clearToken(String fileId) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
-        this.fileTokenManager.clearToken(xcontext.getUserReference().toString(), fileId);
-        return Response.ok().build();
+        int tokenUsage = this.fileTokenManager.clearToken(xcontext.getUserReference().toString(), fileId);
+
+        JSONObject message = new JSONObject();
+        message.put("tokenUsage", tokenUsage);
+        return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
     private static String getConnectionResponse(HttpURLConnection connection) throws IOException
@@ -109,8 +112,9 @@ public class DefaultDiscovery extends ModifiablePageResource implements Discover
         return content.toString();
     }
 
-    private String getURLSrc(String response, String ext)
+    private String getURLSrc(String response, String fileId)
     {
+        String ext = fileId.substring(fileId.lastIndexOf(".") + 1);
         try {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new ByteArrayInputStream(response.getBytes()));

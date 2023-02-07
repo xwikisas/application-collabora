@@ -40,20 +40,55 @@ import org.xwiki.stability.Unstable;
 @Unstable
 public interface Wopi extends XWikiRestComponent
 {
+    /**
+     * Get file info.
+     *
+     * @param fileId id of the file
+     * @param token {@code String} representation of the authentication token
+     * @param userCanWrite {@code true} if the user has write access, {@code false} otherwise
+     * @return information about the requested file
+     * @throws XWikiRestException if an error occurred while accessing the file
+     */
     @GET
     Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token,
         @QueryParam("userCanWrite") String userCanWrite) throws XWikiRestException;
 
+    /**
+     * Get file content.
+     *
+     * @param fileId id of the file
+     * @param token {@code String} representation of the authentication token
+     * @return the content of this file
+     * @throws XWikiRestException if an error occurred while accessing the file
+     */
     @GET
     @Path("/contents")
     Response getContents(@PathParam("id") String fileId, @QueryParam("access_token") String token)
         throws XWikiRestException;
 
+    /**
+     * Update content of a file. This is used by the Collabora Save action.
+     *
+     * @param fileId id of the file
+     * @param token {@code String} representation of the authentication token
+     * @param body file content
+     * @return information about the updated file
+     * @throws XWikiRestException if an error occurred while updating the file
+     */
     @POST
     @Path("/contents")
     Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
 
+    /**
+     * Create a new file.
+     *
+     * @param fileId id of the file
+     * @param token {@code String} representation of the authentication token
+     * @param body file content
+     * @return information about the created file
+     * @throws XWikiRestException if an error occurred while creating the file
+     */
     @POST
     Response postRelativeContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
