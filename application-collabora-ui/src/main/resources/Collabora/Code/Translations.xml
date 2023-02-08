@@ -46,6 +46,15 @@ Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address
 
 ## Attachments tab
 collabora.attachment.edit.title=Edit using Collabora
+collabora.attachment.modal.title=Create new file using Collabora
+collabora.attachment.modal.fileType=File type
+collabora.attachment.modal.fileType.text=Document
+collabora.attachment.modal.fileType.presentation=Presentation
+collabora.attachment.modal.fileType.spreadsheet=Spreadsheet
+collabora.attachment.modal.fileName=File name
+collabora.attachment.modal.submit=Create and edit file
+collabora.attachment.modal.new.title=Create new file in Collabora
+collabora.attachment.modal.new=New file
 collabora.attachment.title=Collabora
 collabora.attachment.view.title=View using Collabora
 

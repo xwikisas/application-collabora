@@ -79,17 +79,4 @@ public interface Wopi extends XWikiRestComponent
     @Path("/contents")
     Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
-
-    /**
-     * Create a new file.
-     *
-     * @param fileId id of the file
-     * @param token {@code String} representation of the authentication token
-     * @param body file content
-     * @return information about the created file
-     * @throws XWikiRestException if an error occurred while creating the file
-     */
-    @POST
-    Response postRelativeContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
-        throws XWikiRestException;
 }

@@ -135,14 +135,6 @@
     </property>
     <property>
       <code>require(['jquery'],function($) {
-  const hasEditRights = XWiki.hasEdit;
-  const actionDoc = new XWiki.Document(XWiki.Model.resolve('Collabora.Code.Main', XWiki.EntityType.DOCUMENT));
-
-  var getButtonTemplate = function(hasPagination) {
-    const config = JSON.parse($('#collabora-config').text());
-    return hasPagination ? $(config.tableButtonTemplate) : $(config.listButtonTemplate);
-  };
-
   var getExtAcceptedAction = function() {
     const canDoByExt = {};
     ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg'].forEach(function(x) {
@@ -153,8 +145,18 @@
     });
     return canDoByExt;
   };
+  const canDoByExt = getExtAcceptedAction();
 
-  var getAccessRights = function(fileName, canDoByExt) {
+  var getTemplates = function(hasPagination) {
+    const config = JSON.parse($('#collabora-config').text());
+    const template = {};
+    template.attachButton = hasPagination ? $(config.tableButtonTemplate) : $(config.listButtonTemplate);
+    template.createButton = $(config.createButtonTemplate);
+    template.newFileModal = $(config.newFileModal);
+    return template;
+  };
+
+  var getAccessRights = function(fileName) {
     const fileType = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase();
     let accessRights = canDoByExt[fileType];
     if (!accessRights) {
@@ -167,6 +169,18 @@
     return accessRights;
   };
 
+  var getActionURL = function(fileName, accessRights) {
+    const actionDoc = new XWiki.Document(XWiki.Model.resolve('Collabora.Code.Main', XWiki.EntityType.DOCUMENT));
+    const queryString = $.param({
+      'document': XWiki.Document.currentDocumentReference.toString(),
+      'filename': fileName,
+      'action': accessRights,
+      'xpage': 'plain'
+    });
+
+    return actionDoc.getURL('get', queryString);
+  };
+
   var getCollaboraButton = function(thisButton, fileName, accessRights) {
     // The data translations attributes are used for updating the title from js, since it depends on the access rights.
     // This can be changed once licensing starts depending on a XWiki version &gt;= 13.8 to include
@@ -177,22 +191,14 @@
     thisButton.removeAttr('data-edit-title');
     thisButton.removeAttr('data-view-title');
 
-    // Set action URL.
-    const queryString = $.param({
-      'document': XWiki.Document.currentDocumentReference.toString(),
-      'filename': fileName,
-      'action': accessRights,
-      'xpage': 'plain'
-    });
-    thisButton.attr('href', actionDoc.getURL('get', queryString));
+    thisButton.attr('href', getActionURL(fileName, accessRights));
     return thisButton;
   };
 
   var decorateWithCollaboraButtons = function() {
     // Attachments are displayed using a livetable since 14.6, and using a livedata from 14.8.
     const hasPagination = $("#_attachments table").length &gt; 0;
-    const buttonTemplate = getButtonTemplate(hasPagination);
-    const canDoByExt = getExtAcceptedAction();
+    const templates = getTemplates(hasPagination);
 
     $("#_attachments span.name").each(function(i, attach) {
       const attachActions = hasPagination ? $(attach).closest('tr').find('.attachmentActions') : $(attach).siblings('.xwikibuttonlinks');
@@ -201,13 +207,16 @@
       }
 
       const fileName = $(attach).find('a').text().trim();
-      const accessRights = getAccessRights(fileName, canDoByExt);
+      const accessRights = getAccessRights(fileName);
       if (!accessRights) {
         return;
       }
 
-      $(attachActions).append(getCollaboraButton(buttonTemplate.clone(), fileName, accessRights));
+      $(attachActions).append(getCollaboraButton(templates.attachButton.clone(), fileName, accessRights));
     });
+
+    $('#attachmentscontent').append(templates.createButton);
+    $('body').append(templates.newFileModal);
   };
 
   $(decorateWithCollaboraButtons);
@@ -220,10 +229,173 @@
   $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
   $(document).on('xwiki:html5upload:fileFinished', decorateWithCollaboraButtons);
   $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
+
+  $(document).on('click', '#newCollaboraFileModal input[type=submit]', function(e) {
+    e.preventDefault();
+    const form = $(this).parents('.modal-content').find('form');
+    const formData = new FormData(form[0]);
+    const fileName = formData.get('fileName') + formData.get('fileType');
+
+    // If the file exists, display an eror message, otherwise create it and redirect to Collabora edit.
+    const attachURL =
+      new XWiki.Document(XWiki.Model.resolve(
+        XWiki.Document.currentDocumentReference.toString(), XWiki.EntityType.DOCUMENT
+      )).getRestURL() + "/attachments/" + fileName;
+    $.get(attachURL)
+      .done(function () {
+        new XWiki.widgets.Notification("Attachment already exists", "error");
+      })
+      .fail(function () {
+        $.ajax({
+          url: attachURL,
+          type: "PUT",
+        }).done(function () {
+          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt));
+        });
+      });
+  });
+
+  // Prefill the file extension depending on the file type selection.
+  $(document).on('change', '#newCollaboraFileModal select[name=fileType]', function() {
+    $('#newCollaboraFileModal input[name=fileExt]').val($(this).val());
+  });
+
+  // Disable the create button if no file name is given.
+  $(document).on('keyup change', '#newCollaboraFileModal input[name=fileName]', function() {
+    $("#newCollaboraFileModal input[type=submit]").prop('disabled', $(this).val() === '');
+  });
 });</code>
     </property>
     <property>
       <name>Collabora buttons</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>ce9ea379-82d0-4c6e-ac6e-123000bff247</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#newCollaboraFileModal {
+  input[name=fileName] {
+    width: 78%;
+  }
+
+  input[name=fileExt] {
+    width: 20%;
+  }
+}</code>
+    </property>
+    <property>
+      <contentType>LESS</contentType>
+    </property>
+    <property>
+      <name>Collabora buttons display</name>
     </property>
     <property>
       <parse>0</parse>
@@ -377,6 +549,68 @@
   &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-edit-title="$editTitle"
     data-view-title="$viewTitle"&gt;&lt;img src="$logoURL" /&gt;&lt;/a&gt;
 #end
+#macro (createButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  &lt;button class="btn btn-default" data-toggle="modal" data-target="#newCollaboraFileModal"
+    title="$escapetool.xml($services.localization.render("collabora.attachment.modal.new.title"))"&gt;
+    &lt;span class="action-icon"&gt;&lt;img src="$logoURL" /&gt;&lt;/span&gt;
+    &lt;span class="action-label"&gt;
+      $escapetool.xml($services.localization.render("collabora.attachment.modal.new"))
+    &lt;/span&gt;
+  &lt;/button&gt;
+#end
+#macro (newFileForm)
+  &lt;form class="xform" method="post"&gt;
+    &lt;dl&gt;
+      &lt;input type="hidden" name="form_token" value="$services.csrf.getToken()" /&gt;
+      &lt;dt&gt;
+        &lt;label for="fileType"&gt;
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType'))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;
+        &lt;select name="fileType"&gt;
+          &lt;option value=".odt"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.text'))
+          &lt;/option&gt;
+          &lt;option value=".odp"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.presentation'))
+          &lt;/option&gt;
+          &lt;option value=".ods"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.spreadsheet'))
+          &lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/dd&gt;
+      &lt;dt&gt;
+        &lt;label for="fileName"&gt;
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileName'))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;
+        &lt;input type="text" name="fileName" value="" /&gt;
+        &lt;input type="text" name="fileExt" value=".odt" readonly /&gt;
+      &lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/form&gt;
+#end
+#macro (newFileModal)
+  &lt;div class="modal fade" id="newCollaboraFileModal" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="$escapetool.xml($services.localization.render('collabora.attachment.modal.title'))"&gt;
+    &lt;div class="modal-dialog modal-sm"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-body"&gt;
+          #newFileForm()
+        &lt;/div&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;input type="submit" class="btn btn-primary" disabled
+            value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"&gt;
+          &lt;input type="button" class="btn btn-default" data-dismiss="modal"
+            value="$escapetool.xml($services.localization.render('cancel'))"&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+#end
 {{/velocity}}
 
 {{velocity}}
@@ -391,6 +625,8 @@
     #set ($config = {})
     #set ($discard = $config.put('listButtonTemplate', "#listButtonTemplate"))
     #set ($discard = $config.put('tableButtonTemplate', "#tableButtonTemplate"))
+    #set ($discard = $config.put('createButtonTemplate', "#createButtonTemplate"))
+    #set ($discard = $config.put('newFileModal', "#newFileModal"))
     {{html clean="false"}}
     &lt;script id="collabora-config" type="application/json"&gt;$jsontool.serialize($config).replace('&amp;lt;', '\u003C')
     &lt;/script&gt;

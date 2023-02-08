@@ -140,22 +140,6 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
-    @Override
-    public Response postRelativeContents(String fileId, String token, byte[] body) throws XWikiRestException
-    {
-        if (fileTokenManager.isInvalid(token)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
-        XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
-
-        JSONObject response = new JSONObject();
-        response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
-
-        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
-    }
-
     private XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content)
         throws XWikiRestException
     {
