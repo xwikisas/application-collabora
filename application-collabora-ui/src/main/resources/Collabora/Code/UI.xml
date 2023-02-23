@@ -215,7 +215,9 @@
       $(attachActions).append(getCollaboraButton(templates.attachButton.clone(), fileName, accessRights));
     });
 
-    $('#attachmentscontent').append(templates.createButton);
+    if ($("button[data-target='#newCollaboraFileModal']").length == 0) {
+      $('#attachmentscontent').append(templates.createButton);
+    }
     $('body').append(templates.newFileModal);
   };
 
@@ -235,6 +237,9 @@
     const form = $(this).parents('.modal-content').find('form');
     const formData = new FormData(form[0]);
     const fileName = formData.get('fileName') + formData.get('fileType');
+    // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
+    // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
+    // translation messages.
     const errorMessage = $(this).data('error');
 
     // If the file exists, display an eror message, otherwise create it and redirect to Collabora edit.
