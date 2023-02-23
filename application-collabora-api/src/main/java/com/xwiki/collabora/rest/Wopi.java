@@ -43,7 +43,9 @@ import com.xwiki.collabora.rest.model.jaxb.Token;
 public interface Wopi extends XWikiRestComponent
 {
     /**
-     * Get file info.
+     * Get file info. A specific REST model should be used as response, but this results in some problems. The request
+     * to this resource is done by the Collabora server, and it expects a JSON response with Pascal Case fields names,
+     * which cannot be achieved when using a jaxb model to generate the POJO.
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token
@@ -69,7 +71,8 @@ public interface Wopi extends XWikiRestComponent
         throws XWikiRestException;
 
     /**
-     * Update content of a file. This is used by the Collabora Save action.
+     * Update content of a file. This is used by the Collabora Save action. A specific REST model should be used as
+     * response, see {@link #get(String, String, String)}.
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token
