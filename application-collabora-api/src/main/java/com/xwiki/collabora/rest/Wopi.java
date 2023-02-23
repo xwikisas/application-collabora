@@ -72,7 +72,8 @@ public interface Wopi extends XWikiRestComponent
 
     /**
      * Update content of a file. This is used by the Collabora Save action. A specific REST model should be used as
-     * response, see {@link #get(String, String, String)}.
+     * response, see {@link #get(String, String, String)}. This should be a PUT method, but the Collabora online server
+     * uses a POST verb on the save action.
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token
