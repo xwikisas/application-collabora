@@ -47,8 +47,8 @@
     <tag>HEAD</tag>
   </scm>
   <modules>
-    <module>application-collabora-ui</module>
     <module>application-collabora-api</module>
     <module>application-collabora-default</module>
+    <module>application-collabora-ui</module>
   </modules>
 </project>

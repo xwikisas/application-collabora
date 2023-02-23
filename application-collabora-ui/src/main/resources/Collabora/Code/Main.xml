@@ -200,18 +200,19 @@
   $(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
+    // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
+    // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
+    // translation messages. The error cause should also be included in the translation.
     const errorMessage = $("#collaboraServer").data('error');
     const wopiResourceURL = window.location.origin + '/xwiki' + collaboraPath + encodeURIComponent(fileId);
     const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
-    $.getJSON(tokenURL, $.param({
-      fileId: fileId
-    })).done(function(resp) {
+    $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
       const accessToken =  resp.value;
       const params = $.param({
         userCanWrite: userCanWrite
       });
-      const actionURL = fileUrlSrc + 'WOPISrc=' + encodeURIComponent(wopiResourceURL) + '?' + params;
+      const actionURL = fileUrlSrc + 'WOPISrc=' + encodeURIComponent(wopiResourceURL + '?' + params);
       $('#collaboraForm').attr('action', actionURL);
       $('#collaboraForm input[name=access_token]').attr('value', accessToken);
       $('#collaboraForm').submit();

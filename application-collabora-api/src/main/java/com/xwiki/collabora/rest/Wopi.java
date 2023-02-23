@@ -100,7 +100,8 @@ public interface Wopi extends XWikiRestComponent
 
     /**
      * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
-     * remove the token entirely in this case.
+     * remove the token entirely in this case. This should be a PUT method, but it is used inside a sendBeacon call, and
+     * right now it only supports POST, see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
      *
      * @param fileId id of the file
      * @return information about the usage of this file token

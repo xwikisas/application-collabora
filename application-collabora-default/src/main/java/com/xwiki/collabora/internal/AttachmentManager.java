@@ -59,11 +59,12 @@ public class AttachmentManager
      *
      * @param attachmentReference reference of the attachment
      * @param content the new attachment content
+     * @param userReference the current user reference
      * @return a modified {@link XWikiAttachment}
      * @throws XWikiRestException If an exception occurs while the Attachment is created or updated.
      */
-    public XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content)
-        throws XWikiRestException
+    public XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content,
+        DocumentReference userReference) throws XWikiException
     {
         XWikiContext xcontext = this.contextProvider.get();
         XWiki xwiki = xcontext.getWiki();
@@ -74,7 +75,7 @@ public class AttachmentManager
             XWikiDocument document = xwiki.getDocument(documentReference, xcontext).clone();
             XWikiAttachment attachment =
                 document.setAttachment(attachmentReference.getName(), new ByteArrayInputStream(content), xcontext);
-            attachment.setAuthorReference(xcontext.getUserReference());
+            attachment.setAuthorReference(userReference);
 
             document.setAuthorReference(xcontext.getUserReference());
             xwiki.saveDocument(document,
@@ -82,7 +83,7 @@ public class AttachmentManager
 
             return attachment;
         } catch (XWikiException | IOException e) {
-            throw new XWikiRestException(
+            throw new XWikiException(
                 String.format("Failed to create or update the attachment [%s].", attachmentReference), e);
         }
     }
@@ -95,7 +96,6 @@ public class AttachmentManager
     public XWikiAttachment getAttachment(AttachmentReference attachmentReference) throws XWikiException
     {
         XWikiContext xcontext = this.contextProvider.get();
-        // (DocumentReference) attachmentReference.getParent().
         DocumentReference documentReference = attachmentReference.getDocumentReference();
         XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
 

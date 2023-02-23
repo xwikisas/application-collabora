@@ -22,9 +22,14 @@ package com.xwiki.collabora.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
+import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.model.reference.EntityReferenceSerializer;
 
 /**
  * Manage existing {@link FileToken} instances.
@@ -36,18 +41,26 @@ import org.xwiki.component.annotation.Component;
 @Singleton
 public class FileTokenManager
 {
+    @Inject
+    private EntityReferenceSerializer<String> referenceSerializer;
+
+    @Inject
+    @Named("current")
+    private DocumentReferenceResolver<String> documentReferenceResolver;
+
     private Map<String, FileToken> tokens = new HashMap<>();
 
     /**
      * Get {@link FileToken} corresponding to the given user and file, or create a new token in case it does not exist
      * or is expired.
      *
-     * @param user {@code String} representation for the current user reference
+     * @param userReference current user reference
      * @param fileId id of the edited file
      * @return existing {@link FileToken}, or a new one
      */
-    public FileToken getToken(String user, String fileId)
+    public FileToken getToken(DocumentReference userReference, String fileId)
     {
+        String user = this.referenceSerializer.serialize(userReference);
         String key = getKey(user, fileId);
         FileToken token = tokens.get(key);
         if (token != null) {
@@ -79,13 +92,13 @@ public class FileTokenManager
      * Remove the usage of a token. This could mean to update the number of usages (i.e. number of windows where the
      * current file is edited by this user), or to simply remove the token in case it is no longer used.
      *
-     * @param user {@code String} representation for the current user
+     * @param userReference current user reference
      * @param fileId id of the edited file
      * @return the number of token usages
      */
-    public int clearToken(String user, String fileId)
+    public int clearToken(DocumentReference userReference, String fileId)
     {
-        String key = getKey(user, fileId);
+        String key = getKey(this.referenceSerializer.serialize(userReference), fileId);
         FileToken foundToken = tokens.get(key);
         if (foundToken == null) {
             return 0;
@@ -101,6 +114,21 @@ public class FileTokenManager
         }
 
         return tokenUsage;
+    }
+
+    /**
+     * Extract the user reference from a token.
+     *
+     * @param token the token
+     * @return the user reference, or null in case this token is invalid
+     */
+    public DocumentReference getTokenUserReference(String token)
+    {
+        FileToken fileToken = new FileToken(token);
+        if (fileToken.getUser() == null) {
+            return null;
+        }
+        return this.documentReferenceResolver.resolve(fileToken.getUser());
     }
 
     private FileToken createNewToken(String user, String fileId)

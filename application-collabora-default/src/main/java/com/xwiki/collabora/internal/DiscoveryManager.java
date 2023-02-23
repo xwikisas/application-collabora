@@ -27,8 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,7 +36,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.configuration.ConfigurationSource;
+
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
  * To set up the iframe, the WOPI host (the application) needs to read a discovery XML from a defined location on the
@@ -54,8 +53,7 @@ import org.xwiki.configuration.ConfigurationSource;
 public class DiscoveryManager
 {
     @Inject
-    @Named("collabora")
-    private Provider<ConfigurationSource> configuration;
+    private CollaboraConfiguration configuration;
 
     /**
      * Get the urlSrc specific to this type of file. This is needed in order to know which part of Collabora online to
@@ -67,8 +65,8 @@ public class DiscoveryManager
      */
     public String getURLSrc(String fileId) throws IOException
     {
-        URL collaboraDiscovery = new URL(this.configuration.get().getProperty("server") + "/hosting/discovery");
-        HttpURLConnection connection = (HttpURLConnection) collaboraDiscovery.openConnection();
+        URL discoveryURL = this.configuration.getDiscoveryURL();
+        HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
         connection.setRequestMethod("GET");
 
         return getURLSrc(getConnectionResponse(connection), fileId);

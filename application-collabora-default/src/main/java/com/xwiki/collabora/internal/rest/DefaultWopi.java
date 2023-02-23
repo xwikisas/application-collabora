@@ -39,6 +39,7 @@ import org.xwiki.rest.XWikiRestException;
 import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
 import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xwiki.collabora.internal.AttachmentManager;
 import com.xwiki.collabora.internal.DiscoveryManager;
@@ -128,13 +129,19 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
-        XWikiAttachment attachment =
-            attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(fileId), body);
+        try {
+            XWikiAttachment attachment =
+                attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(fileId), body,
+                    fileTokenManager.getTokenUserReference(token));
 
-        JSONObject response = new JSONObject();
-        response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
+            JSONObject response = new JSONObject();
+            response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
 
-        return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
+            return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON)
+                .build();
+        } catch (XWikiException e) {
+            throw new XWikiRestException(e);
+        }
     }
 
     @Override
@@ -146,7 +153,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
-            token.setValue(fileTokenManager.getToken(xcontext.getUserReference().toString(), fileId).toString());
+            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString());
 
             return token;
         } catch (IOException e) {
@@ -157,8 +164,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Token clearToken(String fileId) throws XWikiRestException
     {
-        int tokenUsage =
-            this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference().toString(), fileId);
+        int tokenUsage = this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference(), fileId);
 
         Token token = (new ObjectFactory()).createToken();
         token.setUsage(tokenUsage);
