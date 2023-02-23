@@ -45,7 +45,7 @@
   <dependencies>
     <dependency>
       <groupId>com.xwiki.collabora</groupId>
-      <artifactId>application-collabora-api</artifactId>
+      <artifactId>application-collabora-default</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

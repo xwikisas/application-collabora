@@ -49,5 +49,6 @@
   <modules>
     <module>application-collabora-ui</module>
     <module>application-collabora-api</module>
+    <module>application-collabora-default</module>
   </modules>
 </project>
