@@ -38,7 +38,7 @@
   <hidden>true</hidden>
   <content>##Admin section
 admin.collabora=Collabora
-admin.collabora.description=Configure the image lightbox gallery
+admin.collabora.description=Configure Collabora Connector Application
 Collabora.Code.ConfigurationClass_isEnabled=Enable
 Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online.
 Collabora.Code.ConfigurationClass_server=Server
@@ -53,6 +53,7 @@ collabora.attachment.modal.fileType.presentation=Presentation
 collabora.attachment.modal.fileType.spreadsheet=Spreadsheet
 collabora.attachment.modal.fileName=File name
 collabora.attachment.modal.submit=Create and edit file
+collabora.attachment.modal.submit.error=Attachment already exists
 collabora.attachment.modal.new.title=Create new file in Collabora
 collabora.attachment.modal.new=New file
 collabora.attachment.title=Collabora
@@ -60,6 +61,7 @@ collabora.attachment.view.title=View using Collabora
 
 ## Editor
 collabora.editor.onPage=on page
+collabora.editor.error=Error while loading this file. Cause: 
 collabora.validation.attachmentMissing=Document or attachment not found!
 collabora.validation.documentMissing=Document parameter required!
 collabora.validation.filenameMissing=Filename parameter required!</content>

@@ -31,7 +31,7 @@
   <artifactId>application-collabora</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Collabora Application (Pro) Parent POM</name>
+  <name>Collabora Connector Application (Pro) Parent POM</name>
   <description>Collabora Integration using WOPI</description>
   <properties>
     <licensing.version>1.22</licensing.version>

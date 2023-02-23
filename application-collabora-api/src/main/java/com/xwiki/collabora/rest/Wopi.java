@@ -30,13 +30,15 @@ import org.xwiki.rest.XWikiRestComponent;
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.stability.Unstable;
 
+import com.xwiki.collabora.rest.model.jaxb.Token;
+
 /**
  * Provides the APIs needed by the collabora server in order to access a file and it's content, but also to save it.
  *
  * @version $Id$
  * @since 1.0
  */
-@Path("/wopi/files/{id}")
+@Path("/collabora/files/{id}")
 @Unstable
 public interface Wopi extends XWikiRestComponent
 {
@@ -79,4 +81,29 @@ public interface Wopi extends XWikiRestComponent
     @Path("/contents")
     Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
+
+    /**
+     * Get information specific to this type of file, to know which part of Collabora online to load. Get information
+     * specific to this file, to be able to load it (e.g. token needed for authenticating requests, file type Collabora
+     * particularities).
+     *
+     * @param fileId id of the file
+     * @return information needed by Collabora to load
+     * @throws XWikiRestException if an error occurred while getting information
+     */
+    @GET
+    @Path("/token")
+    Token getToken(@PathParam("id") String fileId) throws XWikiRestException;
+
+    /**
+     * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
+     * remove the token entirely in this case.
+     *
+     * @param fileId id of the file
+     * @return information about the usage of this file token
+     * @throws XWikiRestException if an error occurred while removing the token
+     */
+    @POST
+    @Path("/token")
+    Token clearToken(@PathParam("id") String fileId) throws XWikiRestException;
 }

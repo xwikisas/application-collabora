@@ -40,34 +40,29 @@
 #macro (renderCollaboraContent $mode)
   ## Display logo and some information about the currently edited file. Show Cancel action on the right.
   ## Save action is included in Collabora editor.
-  &lt;div&gt;
-    &lt;table class="actionMenu"&gt;
-      &lt;tr&gt;
-        &lt;td class="middle"&gt;
+    &lt;div class="actionMenu"&gt;
+        &lt;div&gt;
           &lt;a href="${xwiki.getURL('Main.WebHome')}"&gt;&lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;&lt;/a&gt;
-        &lt;/td&gt;
-        &lt;td class="middle"&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
           &lt;strong&gt;$currentAction&lt;/strong&gt;
-          &lt;em&gt;$request.filename&lt;/em&gt;
+          &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
           $escapetool.xml($services.localization.render('collabora.editor.onPage'))
-          &lt;a href="${fileDoc.URL}#Attachments"
-            title="$escapetool.xml($services.localization.render('cancel'))"&gt;$fileDoc.displayTitle&lt;/a&gt;
-        &lt;/td&gt;
-        &lt;td class="middle right"&gt;
+          &lt;a href="${fileDoc.URL}#Attachments" title="$escapetool.xml($services.localization.render('cancel'))"&gt;
+            $escapetool.xml($fileDoc.displayTitle)
+          &lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
           &lt;a href="${fileDoc.URL}#Attachments" class="btn btn-default"
             title="$escapetool.xml($services.localization.render('cancel'))"&gt;
             $escapetool.xml($services.localization.render('cancel'))
           &lt;/a&gt;
-        &lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;/table&gt;
-  &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
   ## Information needed by collabora to be able to edit the current file.
-  #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
-  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
-  #set ($server = $configObj.getValue('server'))
-  #set ($fileId = $services.model.serialize($attachment.getReference(), 'default'))
-  &lt;span id="collaboraServer" data-collabora-server="$server" data-file-id="$fileId" data-mode="$mode"&gt;&lt;/span&gt;
+  #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
+  #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
+  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode" data-error="$errorMessage"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
     &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
@@ -80,11 +75,11 @@
 
 {{velocity}}
 #if ("$!request.document" == '')
-  $escapetool.xml($services.localization.render('collabora.validation.documentMissing'))
+  {{translation key="collabora.validation.documentMissing" /}}
 #else
   #set ($fileDoc = $xwiki.getDocument($request.document))
   #if ("$!request.filename" == '')
-    $escapetool.xml($services.localization.render('collabora.validation.filenameMissing'))
+    {{translation key="collabora.validation.filenameMissing" /}}
   #else
     #set ($filename = $request.filename)
     #set ($fileType = $filename.substring($filename.lastIndexOf('.')))
@@ -92,26 +87,24 @@
   #end
 #end
 #if (!$attachment)
-  $escapetool.xml($services.localization.render('collabora.validation.attachmentMissing'))
+  {{translation key="collabora.validation.attachmentMissing" /}}
 #else
-  #if ($fileDoc.hasAccessLevel('edit') &amp;&amp; "$!request.action" == 'edit' )
-    #set ($mode = 'edit')
-    #set ($currentAction = "$escapetool.xml($services.localization.render('editing'))")
-    #set ($canEdit = true)
-  #else
-    #set ($mode = 'view')
-    #set ($currentAction = '')
-    #set ($canEdit = false)
-  #end
   {{html clean=false}}
+    #if ($fileDoc.hasAccessLevel('edit') &amp;&amp; "$!request.action" == 'edit' )
+      #set ($mode = 'edit')
+      #set ($currentAction = $escapetool.xml($services.localization.render('editing')))
+      #set ($canEdit = true)
+    #else
+      #set ($mode = 'view')
+      #set ($currentAction = '')
+      #set ($canEdit = false)
+    #end
     #set ($discard = $xwiki.jsx.use("Collabora.Code.Main"))
     #set ($discard = $xwiki.ssx.use("Collabora.Code.Main"))
     #template('htmlheader.vm')
     &lt;div id="xwikicontent"&gt;
       #renderCollaboraContent($mode)
     &lt;/div&gt;
-  &lt;/body&gt;
-  &lt;/html&gt;
   {{/html}}
 #end
 {{/velocity}}</content>
@@ -203,35 +196,34 @@
     </property>
     <property>
       <code>require(['jquery'], function($) {
+  const collaboraPath ='/rest/collabora/files/';
   $(function() {
-    const server = $("#collaboraServer").data('collaboraServer');
     const fileId = $("#collaboraServer").data('fileId');
-    const userCanWrite = $("#collaboraServer").data('mode') == 'edit';
-    const wopiResourceURL = window.location.origin + '/xwiki/rest/wopi/files/' + fileId
-      + '?userCanWrite=' + userCanWrite;
-    const discoveryURL = XWiki.contextPath + '/rest/discovery';
-    $.getJSON(discoveryURL, $.param({
-      xpage: 'plain',
-      outputSyntax: 'plain',
-      server: server,
-      ext: fileId.split('.').pop(),
+    const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
+    const errorMessage = $("#collaboraServer").data('error');
+    const wopiResourceURL = window.location.origin + '/xwiki' + collaboraPath + encodeURIComponent(fileId);
+    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
+    $.getJSON(tokenURL, $.param({
       fileId: fileId
     })).done(function(resp) {
-      const wopiClientUrl = resp['urlSrc'];
-      const accessToken =  resp['token'];
-      const wopiUrl = wopiClientUrl + 'WOPISrc=' + wopiResourceURL;
-      $('#collaboraForm').attr('action', wopiUrl);
+      const fileUrlSrc = resp.urlSrc;
+      const accessToken =  resp.value;
+      const params = $.param({
+        userCanWrite: userCanWrite
+      });
+      const actionURL = fileUrlSrc + 'WOPISrc=' + encodeURIComponent(wopiResourceURL) + '?' + params;
+      $('#collaboraForm').attr('action', actionURL);
       $('#collaboraForm input[name=access_token]').attr('value', accessToken);
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
-      new XWiki.widgets.Notification("Error while loading this file. Cause: " + error);
+      new XWiki.widgets.Notification(errorMessage + error, 'error');
     });
   });
 
   $(window).unload(function() {
     const fileId = $("#collaboraServer").data('fileId');
-    const clearTokenURL = XWiki.contextPath + '/rest/discovery/clearToken?fileId=' + fileId;
-    navigator.sendBeacon(clearTokenURL);
+    const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
+    navigator.sendBeacon(wopiResourceURL + '/token');
   });
 });</code>
     </property>
@@ -356,14 +348,9 @@
 }
 .actionMenu {
   margin-bottom: 0;
-
-  .middle {
-  vertical-align: middle;
-  }
-
-  .right {
-    text-align: right;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 
   img {
     max-width: 6em;

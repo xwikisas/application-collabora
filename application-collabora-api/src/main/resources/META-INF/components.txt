@@ -1,3 +1,5 @@
 com.xwiki.collabora.internal.rest.DefaultWopi
-com.xwiki.collabora.internal.rest.DefaultDiscovery
 com.xwiki.collabora.internal.FileTokenManager
+com.xwiki.collabora.internal.AttachmentManager
+com.xwiki.collabora.internal.DiscoveryManager
+com.xwiki.collabora.internal.CollaboraConfigurationSource

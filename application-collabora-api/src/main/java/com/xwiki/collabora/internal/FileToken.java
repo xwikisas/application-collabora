@@ -35,13 +35,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class FileToken
 {
-    private String user;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
-    private String fileId;
+    private final String user;
 
-    private Long timestamp;
+    private final String fileId;
 
-    private int randomNumber;
+    private final Long timestamp;
+
+    private final int randomNumber;
 
     private int usage;
 
@@ -50,7 +52,7 @@ public class FileToken
         this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
-        this.randomNumber = Math.abs(new SecureRandom().nextInt());
+        this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
     }
 
@@ -59,15 +61,13 @@ public class FileToken
         String pattern = "wopi_(.+)_(.+)_(\\d+)_(\\d+)";
         Pattern r = Pattern.compile(pattern);
 
-        // Now create matcher object.
         Matcher m = r.matcher(token);
-        if (m.find()) {
-            this.user = m.group(1);
-            this.fileId = m.group(2);
-            this.timestamp = Long.parseLong(m.group(3));
-            this.randomNumber = Integer.parseInt(m.group(4));
-            this.usage = 1;
-        }
+        boolean isCorrectToken = m.find();
+        this.user = isCorrectToken ? m.group(1) : null;
+        this.fileId = isCorrectToken ? m.group(2) : null;
+        this.timestamp = isCorrectToken ? Long.parseLong(m.group(3)) : null;
+        this.randomNumber = isCorrectToken ? Integer.parseInt(m.group(4)) : 0;
+        this.usage = isCorrectToken ? 1 : 0;
     }
 
     /**

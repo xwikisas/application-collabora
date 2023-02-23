@@ -19,7 +19,6 @@
  */
 package com.xwiki.collabora.internal.rest;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,25 +27,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.localization.ContextualLocalizationManager;
 import org.xwiki.model.reference.AttachmentReference;
 import org.xwiki.model.reference.AttachmentReferenceResolver;
-import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
-import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiAttachment;
-import com.xpn.xwiki.doc.XWikiDocument;
+import com.xwiki.collabora.internal.AttachmentManager;
+import com.xwiki.collabora.internal.DiscoveryManager;
 import com.xwiki.collabora.internal.FileTokenManager;
 import com.xwiki.collabora.rest.Wopi;
+import com.xwiki.collabora.rest.model.jaxb.ObjectFactory;
+import com.xwiki.collabora.rest.model.jaxb.Token;
 
 /**
  * Default implementation of {@link Wopi}.
@@ -65,13 +64,16 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     @Inject
-    private ContextualLocalizationManager contextualLocalizationManager;
-
-    @Inject
     private Provider<XWikiContext> contextProvider;
 
     @Inject
     private FileTokenManager fileTokenManager;
+
+    @Inject
+    private DiscoveryManager discoveryManager;
+
+    @Inject
+    private AttachmentManager attachmentManager;
 
     @Inject
     @Named("current")
@@ -80,17 +82,13 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+        if (token == null || fileTokenManager.isInvalid(token)) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
-        XWikiContext xcontext = this.contextProvider.get();
         AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
         try {
-            DocumentReference documentReference = (DocumentReference) attachmentReference.getParent();
-            XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
-            XWikiAttachment attachment = doc.getAttachment(attachmentReference.getName());
-
+            XWikiAttachment attachment = attachmentManager.getAttachment(attachmentReference);
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
@@ -100,7 +98,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
     }
 
@@ -114,9 +112,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         XWikiContext xcontext = this.contextProvider.get();
         AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
         try {
-            DocumentReference documentReference = attachmentReference.getDocumentReference();
-            XWikiDocument doc = xcontext.getWiki().getDocument(documentReference, xcontext);
-            XWikiAttachment attachment = doc.getAttachment(attachmentReference.getName());
+            XWikiAttachment attachment = attachmentManager.getAttachment(attachmentReference);
+
             return Response.ok().entity(attachment.getContentInputStream(xcontext)).type(attachment.getMimeType())
                 .build();
         } catch (Exception e) {
@@ -128,11 +125,11 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
         if (fileTokenManager.isInvalid(token)) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
-        XWikiAttachment attachment = createOrUpdateAttachment(attachmentReference, body);
+        XWikiAttachment attachment =
+            attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(fileId), body);
 
         JSONObject response = new JSONObject();
         response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
@@ -140,28 +137,32 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
-    private XWikiAttachment createOrUpdateAttachment(AttachmentReference attachmentReference, byte[] content)
-        throws XWikiRestException
+    @Override
+    public Token getToken(String fileId) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
-        XWiki xwiki = xcontext.getWiki();
-        DocumentReference documentReference = attachmentReference.getDocumentReference();
-
         try {
-            // We clone the document because we're going to modify it and we shouldn't modify the cached instance.
-            XWikiDocument document = xwiki.getDocument(documentReference, xcontext).clone();
-            XWikiAttachment attachment =
-                document.setAttachment(attachmentReference.getName(), new ByteArrayInputStream(content), xcontext);
-            attachment.setAuthorReference(xcontext.getUserReference());
+            String urlSrc = discoveryManager.getURLSrc(fileId);
 
-            document.setAuthorReference(xcontext.getUserReference());
-            xwiki.saveDocument(document,
-                this.contextualLocalizationManager.getTranslationPlain("collabora.save.comment"), xcontext);
+            Token token = (new ObjectFactory()).createToken();
+            token.setUrlSrc(urlSrc);
+            token.setValue(fileTokenManager.getToken(xcontext.getUserReference().toString(), fileId).toString());
 
-            return attachment;
-        } catch (XWikiException | IOException e) {
-            throw new XWikiRestException(
-                String.format("Failed to create or update the attachment [%s].", attachmentReference), e);
+            return token;
+        } catch (IOException e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
+    }
+
+    @Override
+    public Token clearToken(String fileId) throws XWikiRestException
+    {
+        int tokenUsage =
+            this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference().toString(), fileId);
+
+        Token token = (new ObjectFactory()).createToken();
+        token.setUsage(tokenUsage);
+
+        return token;
     }
 }

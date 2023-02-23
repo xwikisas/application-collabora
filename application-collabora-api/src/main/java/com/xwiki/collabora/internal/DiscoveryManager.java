@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.xwiki.collabora.internal.rest;
+package com.xwiki.collabora.internal;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -30,74 +30,48 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.rest.XWikiRestException;
-import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
-
-import com.xpn.xwiki.XWikiContext;
-import com.xwiki.collabora.internal.FileToken;
-import com.xwiki.collabora.internal.FileTokenManager;
-import com.xwiki.collabora.rest.Discovery;
+import org.xwiki.configuration.ConfigurationSource;
 
 /**
- * Default implementation of {@link Discovery}.
+ * To set up the iframe, the WOPI host (the application) needs to read a discovery XML from a defined location on the
+ * WOPI client (the Collabora Online server). The discovery is available at:
+ * https://<WOPIClientURL>:<port>/hosting/discovery. The reply is discovery.xml that contains urlsrc for various file
+ * formats. The urlsrc needs to be used in the iframe for editing the document.
  *
  * @version $Id$
  * @since 1.0
  */
-@Component
-@Named("com.xwiki.collabora.internal.rest.DefaultDiscovery")
+@Component(roles = DiscoveryManager.class)
 @Singleton
-public class DefaultDiscovery extends ModifiablePageResource implements Discovery
+public class DiscoveryManager
 {
     @Inject
-    private Provider<XWikiContext> contextProvider;
+    @Named("collabora")
+    private Provider<ConfigurationSource> configuration;
 
-    @Inject
-    private FileTokenManager fileTokenManager;
-
-    @Override
-    public Response getDiscovery(String server, String fileId) throws XWikiRestException
+    /**
+     * Get the urlSrc specific to this type of file. This is needed in order to know which part of Collabora online to
+     * load.
+     *
+     * @param fileId id of the file
+     * @return the urlSrc specific to this file format
+     * @throws IOException If an error occurred while getting the information from the Collabora server
+     */
+    public String getURLSrc(String fileId) throws IOException
     {
-        XWikiContext xcontext = this.contextProvider.get();
-        try {
-            URL collaboraDiscovery = new URL(server + "/hosting/discovery");
-            HttpURLConnection connection = (HttpURLConnection) collaboraDiscovery.openConnection();
-            connection.setRequestMethod("GET");
+        URL collaboraDiscovery = new URL(this.configuration.get().getProperty("server") + "/hosting/discovery");
+        HttpURLConnection connection = (HttpURLConnection) collaboraDiscovery.openConnection();
+        connection.setRequestMethod("GET");
 
-            String urlSrc = getURLSrc(getConnectionResponse(connection), fileId);
-
-            JSONObject message = new JSONObject();
-            message.put("urlSrc", urlSrc);
-            FileToken token = fileTokenManager.getToken(xcontext.getUserReference().toString(), fileId);
-            message.put("token", token.toString());
-
-            return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
-                .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Response clearToken(String fileId) throws XWikiRestException
-    {
-        XWikiContext xcontext = this.contextProvider.get();
-        int tokenUsage = this.fileTokenManager.clearToken(xcontext.getUserReference().toString(), fileId);
-
-        JSONObject message = new JSONObject();
-        message.put("tokenUsage", tokenUsage);
-        return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON).build();
+        return getURLSrc(getConnectionResponse(connection), fileId);
     }
 
     private static String getConnectionResponse(HttpURLConnection connection) throws IOException

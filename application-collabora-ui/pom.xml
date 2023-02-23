@@ -29,8 +29,8 @@
   </parent>
   <artifactId>application-collabora-ui</artifactId>
   <packaging>xar</packaging>
-  <name>Collabora Application (Pro) UI</name>
-  <description>Use Collabora Online with XWiki attachments. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
+  <name>Collabora Connector Application (Pro)</name>
+  <description>View, edit and collaborate real-time on office attachments, via WOPI protocol. The app can be purchased individually or part of the XWiki Pro package. Try it free.</description>
   <properties>
     <!-- Name to display by the Extension Manager -->
     <xwiki.extension.name>Application Collabora (Pro)</xwiki.extension.name>

@@ -235,15 +235,16 @@
     const form = $(this).parents('.modal-content').find('form');
     const formData = new FormData(form[0]);
     const fileName = formData.get('fileName') + formData.get('fileType');
+    const errorMessage = $(this).data('error');
 
     // If the file exists, display an eror message, otherwise create it and redirect to Collabora edit.
     const attachURL =
       new XWiki.Document(XWiki.Model.resolve(
         XWiki.Document.currentDocumentReference.toString(), XWiki.EntityType.DOCUMENT
-      )).getRestURL() + "/attachments/" + fileName;
+      )).getRestURL() + "/attachments/" + encodeURIComponent(fileName);
     $.get(attachURL)
       .done(function () {
-        new XWiki.widgets.Notification("Attachment already exists", "error");
+        new XWiki.widgets.Notification(errorMessage, "error");
       })
       .fail(function () {
         $.ajax({
@@ -603,7 +604,8 @@
         &lt;/div&gt;
         &lt;div class="modal-footer"&gt;
           &lt;input type="submit" class="btn btn-primary" disabled
-            value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"&gt;
+            value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
+            data-error="$escapetool.xml($services.localization.render("collabora.attachment.modal.submit.error"))"&gt;
           &lt;input type="button" class="btn btn-default" data-dismiss="modal"
             value="$escapetool.xml($services.localization.render('cancel'))"&gt;
         &lt;/div&gt;
