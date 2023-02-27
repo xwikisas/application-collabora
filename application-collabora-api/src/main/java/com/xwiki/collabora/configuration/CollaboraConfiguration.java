@@ -31,6 +31,7 @@ import org.xwiki.component.annotation.Role;
  * @since 1.0
  */
 @Role
+@Unstable
 public interface CollaboraConfiguration
 {
     /**
