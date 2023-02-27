@@ -1,0 +1,105 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.4" reference="Collabora.Code.Translations" locale="">
+  <web>Collabora.Code</web>
+  <name>Translations</name>
+  <language/>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Collabora.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>##Admin section
+admin.collabora=Collabora
+admin.collabora.description=Configure Collabora Connector Application
+Collabora.Code.ConfigurationClass_isEnabled=Enable
+Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online.
+Collabora.Code.ConfigurationClass_server=Server
+Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address
+
+## Attachments tab
+collabora.attachment.edit.title=Edit using Collabora
+collabora.attachment.modal.title=Create new file using Collabora
+collabora.attachment.modal.fileType=File type
+collabora.attachment.modal.fileType.text=Document
+collabora.attachment.modal.fileType.presentation=Presentation
+collabora.attachment.modal.fileType.spreadsheet=Spreadsheet
+collabora.attachment.modal.fileName=File name
+collabora.attachment.modal.submit=Create and edit file
+collabora.attachment.modal.submit.error=Attachment already exists
+collabora.attachment.modal.new.title=Create new file in Collabora
+collabora.attachment.modal.new=New file
+collabora.attachment.title=Collabora
+collabora.attachment.view.title=View using Collabora
+
+## Editor
+collabora.editor.onPage=on page
+collabora.editor.error=Error while loading this file. Cause: 
+collabora.validation.attachmentMissing=Document or attachment not found!
+collabora.validation.documentMissing=Document parameter required!
+collabora.validation.filenameMissing=Filename parameter required!</content>
+  <object>
+    <name>Collabora.Code.Translations</name>
+    <number>0</number>
+    <className>XWiki.TranslationDocumentClass</className>
+    <guid>6bf2ebd8-c1ce-48ca-8692-541f36f58c9a</guid>
+    <class>
+      <name>XWiki.TranslationDocumentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>1</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <scope>WIKI</scope>
+    </property>
+  </object>
+</xwikidoc>

@@ -1,0 +1,658 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.4" reference="Collabora.Code.UI" locale="">
+  <web>Collabora.Code</web>
+  <name>UI</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Collabora.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>UI</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content/>
+  <attachment>
+    <filename>collabora-symbol.svg</filename>
+    <mimetype>image/svg+xml</mimetype>
+    <charset>UTF-8</charset>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTJweCIgaGVpZ2h0PSIxMnB4IiB2aWV3Qm94PSIwIDAgMTIgMTIiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMTAwJSwxMDAlLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAwIDAgTCAxMS45ODQzNzUgMCBMIDExLjk4NDM3NSAxMS45ODQzNzUgTCAwIDExLjk4NDM3NSBaIE0gMCAwICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDEwMCUsMTAwJSwxMDAlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMy40NDUzMTIgMy43MzQzNzUgTCAzLjU4OTg0NCAzLjU4OTg0NCBMIDUuOTkyMTg4IDUuOTkyMTg4IEwgMy41ODk4NDQgOC4zOTQ1MzEgTCAzLjQ0NTMxMiA4LjI1IEwgNS43MDMxMjUgNS45OTIxODggWiBNIDMuNDQ1MzEyIDMuNzM0Mzc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDc4LjQzMTM3MyUsNzguNDMxMzczJSw3OC40MzEzNzMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMy40NDUzMTIgMy43MzQzNzUgTCAzLjQ0NTMxMiA4LjI1IEwgNS43MDMxMjUgNS45OTIxODggWiBNIDMuNDQ1MzEyIDMuNzM0Mzc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDMxLjM3MjU0OSUsMjguNjI3NDUxJSw2MCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA1LjQ5MjE4OCAxLjY4NzUgTCAzLjU4OTg0NCAzLjU4OTg0NCBMIDUuOTkyMTg4IDUuOTkyMTg4IEwgMy41ODk4NDQgOC4zOTQ1MzEgTCA1LjQ5MjE4OCAxMC4yOTY4NzUgTCA5Ljc5Njg3NSA1Ljk5MjE4OCBaIE0gNS40OTIxODggMS42ODc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDIxLjk2MDc4NCUsMTQuNTA5ODA0JSw0Ny44NDMxMzclKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNS40MDIzNDQgNi41ODIwMzEgTCAzLjgxMjUgOC4xNjc5NjkgTCA2LjE2MDE1NiA3LjY1MjM0NCBaIE0gNS40MDIzNDQgNi41ODIwMzEgIi8+CjwvZz4KPC9zdmc+Cg==</content>
+    <filesize>1225</filesize>
+  </attachment>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>531dd884-8aaa-45b7-84f2-83e2a40fed7a</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>require(['jquery'],function($) {
+  var getExtAcceptedAction = function() {
+    const canDoByExt = {};
+    ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg'].forEach(function(x) {
+      canDoByExt[x] = 'edit';
+    });
+    ['pdf', 'fb2'].forEach(function(x) {
+      canDoByExt[x] = 'view';
+    });
+    return canDoByExt;
+  };
+  const canDoByExt = getExtAcceptedAction();
+
+  var getTemplates = function(hasPagination) {
+    const config = JSON.parse($('#collabora-config').text());
+    const template = {};
+    template.attachButton = hasPagination ? $(config.tableButtonTemplate) : $(config.listButtonTemplate);
+    template.createButton = $(config.createButtonTemplate);
+    template.newFileModal = $(config.newFileModal);
+    return template;
+  };
+
+  var getAccessRights = function(fileName) {
+    const fileType = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase();
+    let accessRights = canDoByExt[fileType];
+    if (!accessRights) {
+      return false;
+    }
+    if (!XWiki.hasEdit) {
+      accessRights = 'view';
+    }
+
+    return accessRights;
+  };
+
+  var getActionURL = function(fileName, accessRights) {
+    const actionDoc = new XWiki.Document(XWiki.Model.resolve('Collabora.Code.Main', XWiki.EntityType.DOCUMENT));
+    const queryString = $.param({
+      'document': XWiki.Document.currentDocumentReference.toString(),
+      'filename': fileName,
+      'action': accessRights,
+      'xpage': 'plain'
+    });
+
+    return actionDoc.getURL('get', queryString);
+  };
+
+  var getCollaboraButton = function(thisButton, fileName, accessRights) {
+    // The data translations attributes are used for updating the title from js, since it depends on the access rights.
+    // This can be changed once licensing starts depending on a XWiki version &gt;= 13.8 to include
+    // XWIKI-18973: Simplify the way JavaScript code loads translation messages.
+    const title = thisButton.data(accessRights == 'edit' ? 'editTitle' : 'viewTitle');
+    thisButton.attr('title', title);
+    thisButton.find('img').attr('alt', title);
+    thisButton.removeAttr('data-edit-title');
+    thisButton.removeAttr('data-view-title');
+
+    thisButton.attr('href', getActionURL(fileName, accessRights));
+    return thisButton;
+  };
+
+  var decorateWithCollaboraButtons = function() {
+    // Attachments are displayed using a livetable since 14.6, and using a livedata from 14.8.
+    const hasPagination = $("#_attachments table").length &gt; 0;
+    const templates = getTemplates(hasPagination);
+
+    $("#_attachments span.name").each(function(i, attach) {
+      const attachActions = hasPagination ? $(attach).closest('tr').find('.attachmentActions') : $(attach).siblings('.xwikibuttonlinks');
+      if ($(attachActions).find('a.collaboraEdit').length) {
+        return;
+      }
+
+      const fileName = $(attach).find('a').text().trim();
+      const accessRights = getAccessRights(fileName);
+      if (!accessRights) {
+        return;
+      }
+
+      $(attachActions).append(getCollaboraButton(templates.attachButton.clone(), fileName, accessRights));
+    });
+
+    if ($("button[data-target='#newCollaboraFileModal']").length == 0) {
+      $('#attachmentscontent').append(templates.createButton);
+    }
+    $('body').append(templates.newFileModal);
+  };
+
+  $(decorateWithCollaboraButtons);
+  $(document).on('xwiki:livedata:afterEntryFetch', function (event) {
+    if ($(event.target).attr('id') === 'docAttachments') {
+      // We need to setTimeout(0) to allow the live data to display the entries before decorating them with the buttons.
+      setTimeout(decorateWithCollaboraButtons, 0);
+    }
+  });
+  $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
+  $(document).on('xwiki:html5upload:fileFinished', decorateWithCollaboraButtons);
+  $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
+
+  $(document).on('click', '#newCollaboraFileModal input[type=submit]', function(e) {
+    e.preventDefault();
+    const form = $(this).parents('.modal-content').find('form');
+    const formData = new FormData(form[0]);
+    const fileName = formData.get('fileName') + formData.get('fileType');
+    // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
+    // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
+    // translation messages.
+    const errorMessage = $(this).data('error');
+
+    // If the file exists, display an eror message, otherwise create it and redirect to Collabora edit.
+    const attachURL =
+      new XWiki.Document(XWiki.Model.resolve(
+        XWiki.Document.currentDocumentReference.toString(), XWiki.EntityType.DOCUMENT
+      )).getRestURL() + "/attachments/" + encodeURIComponent(fileName);
+    $.get(attachURL)
+      .done(function () {
+        new XWiki.widgets.Notification(errorMessage, "error");
+      })
+      .fail(function () {
+        $.ajax({
+          url: attachURL,
+          type: "PUT",
+        }).done(function () {
+          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt));
+        });
+      });
+  });
+
+  // Prefill the file extension depending on the file type selection.
+  $(document).on('change', '#newCollaboraFileModal select[name=fileType]', function() {
+    $('#newCollaboraFileModal input[name=fileExt]').val($(this).val());
+  });
+
+  // Disable the create button if no file name is given.
+  $(document).on('keyup change', '#newCollaboraFileModal input[name=fileName]', function() {
+    $("#newCollaboraFileModal input[type=submit]").prop('disabled', $(this).val() === '');
+  });
+});</code>
+    </property>
+    <property>
+      <name>Collabora buttons</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>ce9ea379-82d0-4c6e-ac6e-123000bff247</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#newCollaboraFileModal {
+  input[name=fileName] {
+    width: 78%;
+  }
+
+  input[name=fileExt] {
+    width: 20%;
+  }
+}</code>
+    </property>
+    <property>
+      <contentType>LESS</contentType>
+    </property>
+    <property>
+      <name>Collabora buttons display</name>
+    </property>
+    <property>
+      <parse>0</parse>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>0</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>5f92c54a-09d2-4530-96c7-57166a83d2d9</guid>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>3</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>4</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>2</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>1</number>
+        <prettyName>Executed Content</prettyName>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>5</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>6</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>parameters</name>
+        <number>7</number>
+        <prettyName>Extension Parameters</prettyName>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>8</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content>{{velocity output="false"}}
+#macro (tableButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
+  #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
+  #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
+  ## After the application starts depending on a version of XWiki &gt;= 14.6, this code should be moved inside an
+  ## org.xwiki.platform.attachment.actions UIX.
+  &lt;a class="action collaboraEdit" href="" data-edit-title="$editTitle" data-view-title="$viewTitle"&gt;
+    &lt;span class="action-icon"&gt;&lt;img src="$logoURL"/&gt;&lt;/span&gt;
+    &lt;span class="action-label"&gt;$label&lt;/span&gt;
+  &lt;/a&gt;
+#end
+#macro (listButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
+  #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
+  #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
+  &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-edit-title="$editTitle"
+    data-view-title="$viewTitle"&gt;&lt;img src="$logoURL" /&gt;&lt;/a&gt;
+#end
+#macro (createButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  &lt;button class="btn btn-default" data-toggle="modal" data-target="#newCollaboraFileModal"
+    title="$escapetool.xml($services.localization.render("collabora.attachment.modal.new.title"))"&gt;
+    &lt;span class="action-icon"&gt;&lt;img src="$logoURL" /&gt;&lt;/span&gt;
+    &lt;span class="action-label"&gt;
+      $escapetool.xml($services.localization.render("collabora.attachment.modal.new"))
+    &lt;/span&gt;
+  &lt;/button&gt;
+#end
+#macro (newFileForm)
+  &lt;form class="xform" method="post"&gt;
+    &lt;dl&gt;
+      &lt;input type="hidden" name="form_token" value="$services.csrf.getToken()" /&gt;
+      &lt;dt&gt;
+        &lt;label for="fileType"&gt;
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType'))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;
+        &lt;select name="fileType"&gt;
+          &lt;option value=".odt"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.text'))
+          &lt;/option&gt;
+          &lt;option value=".odp"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.presentation'))
+          &lt;/option&gt;
+          &lt;option value=".ods"&gt;
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.spreadsheet'))
+          &lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/dd&gt;
+      &lt;dt&gt;
+        &lt;label for="fileName"&gt;
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileName'))
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;
+        &lt;input type="text" name="fileName" value="" /&gt;
+        &lt;input type="text" name="fileExt" value=".odt" readonly /&gt;
+      &lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/form&gt;
+#end
+#macro (newFileModal)
+  &lt;div class="modal fade" id="newCollaboraFileModal" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="$escapetool.xml($services.localization.render('collabora.attachment.modal.title'))"&gt;
+    &lt;div class="modal-dialog modal-sm"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-body"&gt;
+          #newFileForm()
+        &lt;/div&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;input type="submit" class="btn btn-primary" disabled
+            value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
+            data-error="$escapetool.xml($services.localization.render("collabora.attachment.modal.submit.error"))"&gt;
+          &lt;input type="button" class="btn btn-default" data-dismiss="modal"
+            value="$escapetool.xml($services.localization.render('cancel'))"&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+#end
+{{/velocity}}
+
+{{velocity}}
+#if ($xcontext.action == 'view')
+  #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
+  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
+  #if ($configObj.getValue('isEnabled').equals(1))
+    #set ($discard = $xwiki.ssx.use('Collabora.Code.UI'))
+    #set ($discard = $xwiki.jsx.use('Collabora.Code.UI'))
+    ## Starting with XWiki 14.6 the attachments actions are displayed in a livetable, and later, starting with 14.8,
+    ## in a livedata, so a different display is needed for different versions.
+    #set ($config = {})
+    #set ($discard = $config.put('listButtonTemplate', "#listButtonTemplate"))
+    #set ($discard = $config.put('tableButtonTemplate', "#tableButtonTemplate"))
+    #set ($discard = $config.put('createButtonTemplate', "#createButtonTemplate"))
+    #set ($discard = $config.put('newFileModal', "#newFileModal"))
+    {{html clean="false"}}
+    &lt;script id="collabora-config" type="application/json"&gt;$jsontool.serialize($config).replace('&amp;lt;', '\u003C')
+    &lt;/script&gt;
+    {{/html}}
+  #end
+#end
+{{/velocity}}</content>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.platform.template.header.after</extensionPointId>
+    </property>
+    <property>
+      <name>com.xwiki.collabora.attachment</name>
+    </property>
+    <property>
+      <parameters/>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+</xwikidoc>
