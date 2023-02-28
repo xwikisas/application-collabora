@@ -35,6 +35,60 @@
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>true</hidden>
-  <content/>
+  <hidden>false</hidden>
+  <content>= Collabora online server configuration =
+
+Check also the [[Collabora official documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html]]
+
+=== Prerequisites ===
+
+Have [[Docker&gt;&gt;https://docs.docker.com/get-docker/]] installed and running.
+
+=== Install and Run Collabora Online Server with Docker ===
+
+Grab the Docker image
+
+{{code}}
+docker pull collabora/code
+{{/code}}
+
+Start a new container
+
+{{code}}
+docker run -t -d -p 0.0.0.0:9980:9980 -e "aliasgroup1=https://example:9980" -e "username=admin" -e "password=admin" --restart always collabora/code 
+{{/code}}
+
+Replace https://example with your server host name and add suitable username and password.
+
+Connect to docker using the following command:
+
+{{code}}
+docker exec -u root -it &lt;dockercontainerid&gt; bash
+{{/code}}
+
+Add in /etc/hosts: (the IP should be the IP of your host viewed from docker, which usually is 172.17.0.1)
+
+{{code}}
+172.17.0.1      example
+{{/code}}
+
+{{velocity}}
+#set ($queryString = $escapetool.url({
+  'editor': 'globaladmin',
+  'section': 'Collabora'
+}))
+#set ($configURL = $xwiki.getURL('XWiki.XWikiPreferences', 'admin', $queryString))
+You can check now the server by accessing [[https:~~/~~/example:9980/&gt;&gt;http://collabora:9980/]]. Add this URL to the Collabora Connector Application [[server configuration&gt;&gt;path:$configURL]]
+{{/velocity}}
+
+=== SSL ===
+
+SSL is enabled by default for the Collabora Online server, so this should be the case for your application as well. Use the following extra parameters when starting docker in case you want to disable it:
+
+{{code}}
+-e "extra_params=--o:ssl.enable=false"
+{{/code}}
+
+For further information on how to configure the Docker image, please check the [[official documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image]]
+ </content>
 </xwikidoc>
