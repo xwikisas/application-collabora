@@ -37,7 +37,7 @@ public interface CollaboraConfiguration
 {
     /**
      * Get the discovery URL, needed for accessing the urlSrc specific to each file format. This is available at
-     * https://<WOPIClientURL>:<port>/hosting/discovery.
+     * https://WOPIClientURL:port/hosting/discovery.
      *
      * @return the discovery {@link URL}
      * @throws MalformedURLException In case an error occurred while creating the {@link URL}
