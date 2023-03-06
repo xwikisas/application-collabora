@@ -71,10 +71,10 @@
       </server>
     </class>
     <property>
-      <isEnabled>1</isEnabled>
+      <isEnabled/>
     </property>
     <property>
-      <server>http://collabora:9980</server>
+      <server/>
     </property>
   </object>
   <object>
