@@ -99,7 +99,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -118,7 +118,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.ok().entity(attachment.getContentInputStream(xcontext)).type(attachment.getMimeType())
                 .build();
         } catch (Exception e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
     }
 
@@ -148,6 +148,11 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     public Token getToken(String fileId) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
+        // Make sure that the current wiki is used on the XWiki context, since the REST resource is rooted on the
+        // main wiki.
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        xcontext.setWikiReference(attachmentReference.getDocumentReference().getWikiReference());
+
         try {
             String urlSrc = discoveryManager.getURLSrc(fileId);
 
@@ -157,7 +162,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
             return token;
         } catch (IOException e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

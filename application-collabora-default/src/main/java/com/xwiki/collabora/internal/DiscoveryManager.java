@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,7 +54,7 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
 public class DiscoveryManager
 {
     @Inject
-    private CollaboraConfiguration configuration;
+    private Provider<CollaboraConfiguration> configurationProvider;
 
     /**
      * Get the urlSrc specific to this type of file. This is needed in order to know which part of Collabora online to
@@ -65,7 +66,8 @@ public class DiscoveryManager
      */
     public String getURLSrc(String fileId) throws IOException
     {
-        URL discoveryURL = this.configuration.getDiscoveryURL();
+        // Use a provider in order to not cache the configuration of a specific wiki.
+        URL discoveryURL = this.configurationProvider.get().getDiscoveryURL();
         HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
         connection.setRequestMethod("GET");
 
