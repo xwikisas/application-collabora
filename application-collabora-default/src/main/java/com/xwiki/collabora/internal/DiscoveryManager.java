@@ -76,7 +76,7 @@ public class DiscoveryManager
         logger.debug("Opening connection to the Collabora discovery URL: [{}]", discoveryURL);
         HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
         connection.setRequestMethod("GET");
-        logger.debug("Connection opened.");
+        logger.debug("Connection opened with response: [{}].", connection.getResponseCode());
 
         return getURLSrc(getConnectionResponse(connection), fileId);
     }
