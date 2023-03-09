@@ -32,6 +32,8 @@ import javax.inject.Singleton;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -54,6 +56,9 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
 public class DiscoveryManager
 {
     @Inject
+    private Logger logger;
+
+    @Inject
     private Provider<CollaboraConfiguration> configurationProvider;
 
     /**
@@ -68,8 +73,10 @@ public class DiscoveryManager
     {
         // Use a provider in order to not cache the configuration of a specific wiki.
         URL discoveryURL = this.configurationProvider.get().getDiscoveryURL();
+        logger.debug("Opening connection to the Collabora discovery URL: [{}]", discoveryURL);
         HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
         connection.setRequestMethod("GET");
+        logger.debug("Connection opened.");
 
         return getURLSrc(getConnectionResponse(connection), fileId);
     }
@@ -97,12 +104,16 @@ public class DiscoveryManager
             for (int i = 0; i <= nodeList.getLength(); i++) {
                 Element elem = (Element) nodeList.item(i);
                 if (elem.getAttribute("ext").equals(ext)) {
+                    logger.debug("Found the urlsrc for file [{}] in the Collabora discovery response.", fileId);
                     return elem.getAttribute("urlsrc");
                 }
             }
 
+            logger.debug("No urlsrc found for file [{}] in the Collabora discovery response.", fileId);
             return null;
         } catch (ParserConfigurationException | SAXException | IOException e) {
+            logger.warn("Failed to parse the Collabora discovery response for file [{}]. Root cause: [{}]", fileId,
+                ExceptionUtils.getRootCauseMessage(e));
             throw new RuntimeException(e);
         }
     }

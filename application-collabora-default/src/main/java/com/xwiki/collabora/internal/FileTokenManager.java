@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
@@ -41,6 +42,9 @@ import org.xwiki.model.reference.EntityReferenceSerializer;
 @Singleton
 public class FileTokenManager
 {
+    @Inject
+    private Logger logger;
+
     @Inject
     private EntityReferenceSerializer<String> referenceSerializer;
 
@@ -108,9 +112,13 @@ public class FileTokenManager
         if (tokenUsage > 1) {
             tokenUsage--;
             foundToken.setUsage(tokenUsage);
+            logger.debug("Cleared token for file [{}] and user [{}]. Number of remained usages: [{}]", fileId,
+                this.referenceSerializer.serialize(userReference), tokenUsage);
         } else {
             tokens.remove(key);
             tokenUsage = 0;
+            logger.debug("Deleted token for file [{}] and user [{}].", fileId,
+                this.referenceSerializer.serialize(userReference));
         }
 
         return tokenUsage;
@@ -135,6 +143,7 @@ public class FileTokenManager
     {
         FileToken token = new FileToken(user, fileId);
         tokens.put(getKey(user, fileId), token);
+        logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 
         return token;
     }

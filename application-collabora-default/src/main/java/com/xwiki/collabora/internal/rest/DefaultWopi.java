@@ -31,7 +31,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.AttachmentReference;
 import org.xwiki.model.reference.AttachmentReferenceResolver;
@@ -77,6 +79,9 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private AttachmentManager attachmentManager;
 
     @Inject
+    private Logger logger;
+
+    @Inject
     @Named("current")
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
@@ -84,6 +89,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
     {
         if (token == null || fileTokenManager.isInvalid(token)) {
+            logger.warn("Failed to get file [{}] due to invalid token", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
@@ -99,6 +105,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
+            logger.warn("Failed to get file [{}]. Root cause: [{}]", fileId, ExceptionUtils.getRootCauseMessage(e));
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -107,6 +114,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
         if (fileTokenManager.isInvalid(token)) {
+            logger.warn("Failed get content of file [{}] due to invalid token", fileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -118,6 +126,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.ok().entity(attachment.getContentInputStream(xcontext)).type(attachment.getMimeType())
                 .build();
         } catch (Exception e) {
+            logger.warn("Failed to get content of file [{}]. Root cause: [{}]", fileId,
+                ExceptionUtils.getRootCauseMessage(e));
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
     }
@@ -126,6 +136,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
         if (fileTokenManager.isInvalid(token)) {
+            logger.warn("Failed to update file [{}] due to invalid token", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
@@ -140,6 +151,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (XWikiException e) {
+            logger.warn("Failed to update file [{}]. Root cause: [{}]", fileId, ExceptionUtils.getRootCauseMessage(e));
             throw new XWikiRestException(e);
         }
     }
@@ -162,6 +174,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
             return token;
         } catch (IOException e) {
+            logger.warn("Failed to create token for file [{}]. Root cause: [{}]", fileId,
+                ExceptionUtils.getRootCauseMessage(e));
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
