@@ -389,11 +389,11 @@
     <property>
       <code>#newCollaboraFileModal {
   input[name=fileName] {
-    width: 78%;
+    width: 76%;
   }
 
   input[name=fileExt] {
-    width: 20%;
+    width: 22%;
   }
 }</code>
     </property>
