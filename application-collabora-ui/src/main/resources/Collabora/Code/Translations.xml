@@ -54,8 +54,8 @@ collabora.attachment.modal.fileType.spreadsheet=Spreadsheet
 collabora.attachment.modal.fileName=File name
 collabora.attachment.modal.submit=Create and edit file
 collabora.attachment.modal.submit.error=Attachment already exists
-collabora.attachment.modal.new.title=Create new file in Collabora
-collabora.attachment.modal.new=New file
+collabora.attachment.modal.new.title=Create and edit an office file in Collabora
+collabora.attachment.modal.new=New office file
 collabora.attachment.title=Collabora
 collabora.attachment.view.title=View using Collabora
 
