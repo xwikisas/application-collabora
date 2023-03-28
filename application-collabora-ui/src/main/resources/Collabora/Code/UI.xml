@@ -38,6 +38,16 @@
   <hidden>true</hidden>
   <content/>
   <attachment>
+    <filename>close.png</filename>
+    <mimetype>image/png</mimetype>
+    <charset>UTF-8</charset>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAMFBMVEUAAADkLx/iMCDiMCDjMSDkMCDiLx/iMCDiLx/iMCDiMB/////iMB/iLx/iMCDiMR8QM5r+AAAAEHRSTlMAYJ/P/19Q35CP4P/woO/Q9/WoOgAAAKVJREFUeJxjYMALhEycVWHsdBcgKIOwOVzAYAKY0wLheIDYbC5QkADkcLl473FxOb3FpQDIEXHx5j7is3uLixuQc8XFb8Oe07ufuPgCOV9cXF7v3r3PxcUZyAFq9dsNlHBxgXB8du8+AuEAlZ3evQFooD/YAJ/d+15zHwEbADR69xM/qNFAS4FGvd7isgDdOSgOhXmhAeKhLBB7Gcyrsl/8L+IPGABYMkPB47UBjQAAAABJRU5ErkJggg==</content>
+    <filesize>310</filesize>
+  </attachment>
+  <attachment>
     <filename>collabora-symbol.svg</filename>
     <mimetype>image/svg+xml</mimetype>
     <charset>UTF-8</charset>
@@ -46,6 +56,16 @@
     <comment/>
     <content>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTJweCIgaGVpZ2h0PSIxMnB4IiB2aWV3Qm94PSIwIDAgMTIgMTIiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMTAwJSwxMDAlLDEwMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSAwIDAgTCAxMS45ODQzNzUgMCBMIDExLjk4NDM3NSAxMS45ODQzNzUgTCAwIDExLjk4NDM3NSBaIE0gMCAwICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDEwMCUsMTAwJSwxMDAlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMy40NDUzMTIgMy43MzQzNzUgTCAzLjU4OTg0NCAzLjU4OTg0NCBMIDUuOTkyMTg4IDUuOTkyMTg4IEwgMy41ODk4NDQgOC4zOTQ1MzEgTCAzLjQ0NTMxMiA4LjI1IEwgNS43MDMxMjUgNS45OTIxODggWiBNIDMuNDQ1MzEyIDMuNzM0Mzc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDc4LjQzMTM3MyUsNzguNDMxMzczJSw3OC40MzEzNzMlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMy40NDUzMTIgMy43MzQzNzUgTCAzLjQ0NTMxMiA4LjI1IEwgNS43MDMxMjUgNS45OTIxODggWiBNIDMuNDQ1MzEyIDMuNzM0Mzc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDMxLjM3MjU0OSUsMjguNjI3NDUxJSw2MCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA1LjQ5MjE4OCAxLjY4NzUgTCAzLjU4OTg0NCAzLjU4OTg0NCBMIDUuOTkyMTg4IDUuOTkyMTg4IEwgMy41ODk4NDQgOC4zOTQ1MzEgTCA1LjQ5MjE4OCAxMC4yOTY4NzUgTCA5Ljc5Njg3NSA1Ljk5MjE4OCBaIE0gNS40OTIxODggMS42ODc1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDIxLjk2MDc4NCUsMTQuNTA5ODA0JSw0Ny44NDMxMzclKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gNS40MDIzNDQgNi41ODIwMzEgTCAzLjgxMjUgOC4xNjc5NjkgTCA2LjE2MDE1NiA3LjY1MjM0NCBaIE0gNS40MDIzNDQgNi41ODIwMzEgIi8+CjwvZz4KPC9zdmc+Cg==</content>
     <filesize>1225</filesize>
+  </attachment>
+  <attachment>
+    <filename>saveAndExit.png</filename>
+    <mimetype>image/png</mimetype>
+    <charset>UTF-8</charset>
+    <author>xwiki:XWiki.Admin</author>
+    <version>1.1</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAmVBMVEUAAAA6Ojg6Ojg6Ojh5d3T6+vr5+Pj129vvvbvusrCoNi6famZ7dnOPODHYMiTjMSDZQDWPODK3XVjjMiHlMCGlZ2LjMSDlMh/aPzT////jMSCgamanNi7tsbCFODNBOjjmbGfjNCXjMCA7OzlXV1Tz1dTlMCBISEg6Ojnwvr3jMyJFRUXWMiTWMSSYNzH/fwDnMiLkMx/lMiI9Pt+zAAAAM3RSTlMAxf/D/////////////////////3n//lH//97/////////3cv//08V0v94Fv//1QRCe40eLfJ5AAAArElEQVR4nMXS1w6CMBQGYKzUiR6xrrqwgnsAvv/D2Z62WCR64Y1/Agn/F9LpeT+kRiqpIxDfJ9SJ+v4LNJqtdqcbvMCk1weVQWjBZMjAZFSCMQMtDCZTB4IZMM5lr15zBxbYcXwADKiRl6AF+wLkVFdgBMrw8Q+yVj19H0NCtAFRzGorIU40kJ0AYdexl3A4JhroSdiVn3FPLrHdq/CK9e1eOf80yx95ln67Ik+P+BKgdL3gCAAAAABJRU5ErkJggg==</content>
+    <filesize>457</filesize>
   </attachment>
   <object>
     <name>Collabora.Code.UI</name>
