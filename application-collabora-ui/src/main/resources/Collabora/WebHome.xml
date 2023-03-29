@@ -89,6 +89,12 @@ SSL is enabled by default for the Collabora Online server, so this should be the
 -e "extra_params=--o:ssl.enable=false"
 {{/code}}
 
-For further information on how to configure the Docker image, please check the [[official documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image]]
- </content>
+=== Additional info ===
+
+1. If the Collabora Online server is used from a different domain then it's own, this should be added to the docker hosts configuration for the edit to work. Check their [[documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/Configuration.html#multihost-configuration]].
+1. There should be no HTTP protection on ///xwiki/rest/collabora/// on the front end.
+1. The Collabora Online server needs to be able to contact the XWiki server using HTTP/HTTPS.
+
+
+For further information on how to configure the Docker image, please check the [[official documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/CODE_Docker_image.html#how-to-configure-docker-image]] </content>
 </xwikidoc>
