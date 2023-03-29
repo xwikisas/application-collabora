@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.restlet.Request;
 import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.AttachmentReference;
@@ -101,6 +102,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             message.put("Size", String.valueOf(attachment.getLongSize()));
             message.put("UserCanWrite", userCanWrite);
             message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
+            // Needed for using the PostMessage API.
+            message.put("PostMessageOrigin", Request.getCurrent().getHostRef().toString());
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();

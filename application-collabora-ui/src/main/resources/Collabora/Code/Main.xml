@@ -37,28 +37,50 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity output="false"}}
-#macro (renderCollaboraContent $mode)
-  ## Display logo and some information about the currently edited file. Show Cancel action on the right.
-  ## Save action is included in Collabora editor.
-    &lt;div class="actionMenu"&gt;
-        &lt;div&gt;
-          &lt;a href="${xwiki.getURL('Main.WebHome')}"&gt;&lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;&lt;/a&gt;
+#macro (unsavedChangesModal)
+  &lt;div class="modal fade" id="editUnsavedChanges" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="$escapetool.xml($services.localization.render('collabora.editor.unsaved.label'))"&gt;
+    &lt;div class="modal-dialog modal-sm"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-body"&gt;
+          $escapetool.xml($services.localization.render('collabora.editor.unsaved.info'))
         &lt;/div&gt;
-        &lt;div&gt;
-          &lt;strong&gt;$currentAction&lt;/strong&gt;
-          &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
-          $escapetool.xml($services.localization.render('collabora.editor.onPage'))
-          &lt;a href="${fileDoc.URL}#Attachments" title="$escapetool.xml($services.localization.render('cancel'))"&gt;
-            $escapetool.xml($fileDoc.displayTitle)
-          &lt;/a&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;input type="submit" class="btn btn-danger"
+            value="$escapetool.xml($services.localization.render('collabora.editor.unsaved.submit'))"&gt;
+          &lt;input type="button" class="btn btn-default" data-dismiss="modal"
+            value="$escapetool.xml($services.localization.render('collabora.editor.unsaved.close'))"&gt;
         &lt;/div&gt;
-        &lt;div&gt;
-          &lt;a href="${fileDoc.URL}#Attachments" class="btn btn-default"
-            title="$escapetool.xml($services.localization.render('cancel'))"&gt;
-            $escapetool.xml($services.localization.render('cancel'))
-          &lt;/a&gt;
-        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
+  &lt;/div&gt;
+#end
+#macro (renderCollaboraContent $mode)
+  ## Display logo and some information about the currently edited file. Save, Save and exit and Close actions are
+  ## included in Collabora editor.
+  &lt;div class="actionMenu"&gt;
+    &lt;div&gt;
+      &lt;a href="${xwiki.getURL('Main.WebHome')}"&gt;&lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;strong&gt;$currentAction&lt;/strong&gt;
+      &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
+      $escapetool.xml($services.localization.render('collabora.editor.onPage'))
+      &lt;a id='fileHomePage' href="${fileDoc.URL}#Attachments"
+        title="$escapetool.xml($services.localization.render('cancel'))"&gt;
+        $escapetool.xml($fileDoc.displayTitle)
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  #set ($saveAndExitIconURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('saveAndExit.png'))
+  #set ($closeIconURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('close.png'))
+  #set ($saveAndExitMessage = $escapetool.xml($services.localization.render('collabora.editor.saveAndExit')))
+  #set ($closeMessage = $escapetool.xml($services.localization.render('collabora.editor.close')))
+  ## TODO: The translations are added for now as a data attribute. This should be changed once the application starts
+  ## depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads translation
+  ## messages.
+  &lt;span id="collaboraConfig" data-save-exit-icon="$saveAndExitIconURL" data-close-icon="$closeIconURL"
+    data-save-exit-message="$saveAndExitMessage" data-close-message="$closeMessage"&gt;&lt;/span&gt;
   ## Information needed by collabora to be able to edit the current file.
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
   #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
@@ -70,6 +92,7 @@
   &lt;/form&gt;
   ## Where the document will be displayed.
   &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
+  #unsavedChangesModal()
 #end
 {{/velocity}}
 
@@ -197,6 +220,99 @@
     <property>
       <code>require(['jquery'], function($) {
   const collaboraPath ='/rest/collabora/files/';
+  const iframeWindow = document.getElementById('collaboraViewer').contentWindow;
+  var isDocModified = false;
+
+  var getSaveAndExitButtonMessage = function() {
+    return JSON.stringify({
+      'MessageId': 'Insert_Button',
+      'SendTime': Date.now(),
+      'Values': {
+        'id': 'saveAndExitEditor',
+        'imgurl': window.location.origin + $("#collaboraConfig").data('saveExitIcon'),
+        'hint': $("#collaboraConfig").data('saveExitMessage'),
+        'mobile': true,
+        'label': $("#collaboraConfig").data('saveExitMessage')
+      }
+    });
+  };
+
+  var getCloseButtonMessage = function() {
+    return JSON.stringify({
+      'MessageId': 'Insert_Button',
+      'SendTime': Date.now(),
+      'Values': {
+        'id': 'closeEditor',
+        'imgurl': window.location.origin + $("#collaboraConfig").data('closeIcon'),
+        'hint': $("#collaboraConfig").data('closeMessage'),
+        'mobile': true,
+        'label': $("#collaboraConfig").data('closeMessage')
+      }
+    });
+  };
+
+  var getSaveDocumentMessage = function() {
+    return JSON.stringify({
+      "MessageId" : "Action_Save",
+      "SendTime": Date.now(),
+      "Values" : {
+        "DontTerminateEdit" : true,
+        "DontSaveIfUnmodified": true,
+        "Notify" : true
+      }
+    });
+  }
+
+  /**
+   * If there are unsaved changes, ask the user if these should be discarded. Otherwise, go to the file home page.
+   */
+  var onCloseEditor = function() {
+    if (isDocModified) {
+      $('#editUnsavedChanges').modal('show');
+    } else {
+      window.location.href = $('#fileHomePage').attr('href');
+    }
+  };
+
+  var onDocumentLoaded = function() {
+    // Notify the server that postMessage is going to be used.
+    iframeWindow.postMessage(JSON.stringify({ 'MessageId': 'Host_PostmessageReady' }), '*');
+    // Add the saveAndExit and close custom buttons.
+    iframeWindow.postMessage(getSaveAndExitButtonMessage(), '*');
+    iframeWindow.postMessage(getCloseButtonMessage(), '*');
+  };
+
+  var receiveMessage = function(event) {
+    // Skip messages that are not from this iframe.
+    if (event.source !== iframeWindow) {
+      return;
+    }
+    var msg = JSON.parse(event.data);
+    if (!msg) {
+      return;
+    }
+
+    if (msg.MessageId == 'App_LoadingStatus' &amp;&amp; msg.Values &amp;&amp; msg.Values.Status == 'Document_Loaded') {
+      onDocumentLoaded();
+    } else if (msg.MessageId == 'Doc_ModifiedStatus') {
+      isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
+    } else if (msg.MessageId == 'Clicked_Button') {
+      if (msg.Values &amp;&amp; msg.Values.Id == 'saveAndExitEditor') {
+        // Save the file and let the editor close action be handleded after this is finished, on Action_Save_Resp.
+        iframeWindow.postMessage(getSaveDocumentMessage(), '*');
+      } else if (msg.Values &amp;&amp; msg.Values.Id == 'closeEditor') {
+        onCloseEditor();
+      }
+    } else if (msg.MessageId == 'Action_Save_Resp') {
+      // This event is send when Action_Save or Action_Save_As are triggered from our code, and UI_Save when using the
+      // editor's default save button. Right now, we only fire Action_Save on the custom saveAndExit button. So after
+      // this save is succesfull, a redirect to the file home page is required.
+      if (msg.Values &amp;&amp; msg.Values.success) {
+        window.location.href = $('#fileHomePage').attr('href');
+      }
+    }
+  }
+
   $(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
@@ -219,6 +335,13 @@
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(errorMessage + error, 'error');
     });
+
+    // Listen to messages send by Collabora server.
+    window.addEventListener("message", receiveMessage, false);
+  });
+
+  $(document).on('click', '#editUnsavedChanges input.btn-danger', function(e) {
+    window.location.href = $('#fileHomePage').attr('href');
   });
 
   $(window).unload(function() {
