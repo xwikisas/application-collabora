@@ -62,6 +62,13 @@ collabora.attachment.view.title=View using Collabora
 ## Editor
 collabora.editor.onPage=on page
 collabora.editor.error=Error while loading this file. Cause: 
+collabora.editor.close=Close
+collabora.editor.close.hint=Close editor
+collabora.editor.unsaved.close=Keep editing
+collabora.editor.unsaved.info=There are {0}unsaved changes{1}. Are you sure you want to exit without saving?
+collabora.editor.unsaved.autoSave=Note that changes might still be saved by the {0}auto-save{1} feature, if this is enabled.
+collabora.editor.unsaved.label=Unsaved changes
+collabora.editor.unsaved.submit=Close without saving
 collabora.validation.attachmentMissing=Document or attachment not found!
 collabora.validation.documentMissing=Document parameter required!
 collabora.validation.filenameMissing=Filename parameter required!</content>

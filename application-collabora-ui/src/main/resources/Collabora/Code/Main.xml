@@ -37,28 +37,54 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity output="false"}}
-#macro (renderCollaboraContent $mode)
-  ## Display logo and some information about the currently edited file. Show Cancel action on the right.
-  ## Save action is included in Collabora editor.
-    &lt;div class="actionMenu"&gt;
-        &lt;div&gt;
-          &lt;a href="${xwiki.getURL('Main.WebHome')}"&gt;&lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;&lt;/a&gt;
+#macro (unsavedChangesModal)
+  &lt;div class="modal fade" id="editUnsavedChanges" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="$escapetool.xml($services.localization.render('collabora.editor.unsaved.label'))"&gt;
+    &lt;div class="modal-dialog modal-sm"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-body"&gt;
+          &lt;p&gt;$escapetool.xml($services.localization.render('collabora.editor.unsaved.info', [
+            '__START__', '__END__'
+            ])).replace('__START__', '&lt;b&gt;').replace('__END__', '&lt;/b&gt;')&lt;/p&gt;
+          &lt;p&gt;$escapetool.xml($services.localization.render('collabora.editor.unsaved.autoSave', [
+            '__START__', '__END__'
+            ])).replace('__START__', '&lt;b&gt;').replace('__END__', '&lt;/b&gt;')&lt;/p&gt;
         &lt;/div&gt;
-        &lt;div&gt;
-          &lt;strong&gt;$currentAction&lt;/strong&gt;
-          &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
-          $escapetool.xml($services.localization.render('collabora.editor.onPage'))
-          &lt;a href="${fileDoc.URL}#Attachments" title="$escapetool.xml($services.localization.render('cancel'))"&gt;
-            $escapetool.xml($fileDoc.displayTitle)
-          &lt;/a&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;input type="submit" class="btn btn-danger"
+            value="$escapetool.xml($services.localization.render('collabora.editor.unsaved.submit'))"&gt;
+          &lt;input type="button" class="btn btn-default" data-dismiss="modal"
+            value="$escapetool.xml($services.localization.render('collabora.editor.unsaved.close'))"&gt;
         &lt;/div&gt;
-        &lt;div&gt;
-          &lt;a href="${fileDoc.URL}#Attachments" class="btn btn-default"
-            title="$escapetool.xml($services.localization.render('cancel'))"&gt;
-            $escapetool.xml($services.localization.render('cancel'))
-          &lt;/a&gt;
-        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
+  &lt;/div&gt;
+#end
+#macro (renderCollaboraContent $mode)
+  ## Display logo and some information about the currently edited file. Show Close action on the right.
+  ## Save action is included in Collabora editor.
+  &lt;div class="actionMenu"&gt;
+    &lt;div&gt;
+      &lt;a href="${xwiki.getURL('Main.WebHome')}" class='homePage'&gt;
+        &lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;strong&gt;$currentAction&lt;/strong&gt;
+      &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
+      $escapetool.xml($services.localization.render('collabora.editor.onPage'))
+      &lt;a href="${fileDoc.URL}#Attachments" class='fileHomePage'
+        title="$escapetool.xml($services.localization.render('cancel'))"&gt;
+        $escapetool.xml($fileDoc.displayTitle)
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+      &lt;a href="${fileDoc.URL}#Attachments" class="closeEditor btn btn-default"
+        title="$escapetool.xml($services.localization.render('collabora.editor.close.hint'))"&gt;
+        $escapetool.xml($services.localization.render('collabora.editor.close'))
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
   ## Information needed by collabora to be able to edit the current file.
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
   #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
@@ -70,6 +96,7 @@
   &lt;/form&gt;
   ## Where the document will be displayed.
   &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
+  #unsavedChangesModal()
 #end
 {{/velocity}}
 
@@ -197,6 +224,26 @@
     <property>
       <code>require(['jquery'], function($) {
   const collaboraPath ='/rest/collabora/files/';
+  const iframeWindow = document.getElementById('collaboraViewer').contentWindow;
+  var isDocModified = false;
+
+  var receiveMessage = function(event) {
+    // Skip messages that are not from this iframe.
+    if (event.source !== iframeWindow) {
+      return;
+    }
+    var msg = JSON.parse(event.data);
+    if (!msg) {
+      return;
+    }
+
+    if (msg.MessageId == 'App_LoadingStatus' &amp;&amp; msg.Values &amp;&amp; msg.Values.Status == 'Document_Loaded') {
+      // Notify the server that postMessage is going to be used.
+      iframeWindow.postMessage(JSON.stringify({ 'MessageId': 'Host_PostmessageReady' }), '*');
+    } else if (msg.MessageId == 'Doc_ModifiedStatus') {
+      isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
+    }
+  }
   $(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
@@ -219,6 +266,26 @@
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(errorMessage + error, 'error');
     });
+
+    // Listen to messages send by Collabora server.
+    window.addEventListener("message", receiveMessage, false);
+  });
+
+  /**
+   * Notify users of unsaved changes when they leave the editor.
+   */
+  const menuActions = '.actionMenu .homePage, .actionMenu .fileHomePage, .actionMenu .closeEditor';
+  $(document).on('click', menuActions, function(e) {
+    e.preventDefault();
+    if (isDocModified) {
+      $('#editUnsavedChanges').modal('show');
+    } else {
+      window.location.href = $('.actionMenu .fileHomePage').attr('href');
+    }
+  });
+
+  $(document).on('click', '#editUnsavedChanges input.btn-danger', function(e) {
+    window.location.href = $('.actionMenu .fileHomePage').attr('href');
   });
 
   $(window).unload(function() {
