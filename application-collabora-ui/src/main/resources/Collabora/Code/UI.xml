@@ -618,13 +618,29 @@
     &lt;/div&gt;
   &lt;/div&gt;
 #end
+#macro (checkIfEnabled $isEnabled)
+  ## Current Wiki configuration.
+  #set ($configDoc = $xwiki.getDocument(
+    $services.model.createDocumentReference($services.wiki.currentWikiId, ['Collabora', 'Code'], 'Configuration')))
+  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
+  ## Main wiki configuration.
+  #set ($mainConfigDoc = $xwiki.getDocument(
+    $services.model.createDocumentReference($services.wiki.mainWikiId, ['Collabora', 'Code'], 'Configuration')))
+  #set ($mainConfigObj = $mainConfigDoc.getObject('Collabora.Code.ConfigurationClass'))
+  ## If no value is set for this wiki, then the main wiki configuration is used.
+  #set ($isEnabled = false)
+  #if ($configObj.getValue('isEnabled'))
+    #set ($isEnabled = $configObj.getValue('isEnabled').equals(1))
+  #elseif ($mainConfigObj.getValue('isEnabled'))
+    #set ($isEnabled = $mainConfigObj.getValue('isEnabled').equals(1))
+  #end
+#end
 {{/velocity}}
 
 {{velocity}}
 #if ($xcontext.action == 'view')
-  #set ($configDoc = $xwiki.getDocument('Collabora.Code.Configuration'))
-  #set ($configObj = $configDoc.getObject('Collabora.Code.ConfigurationClass'))
-  #if ($configObj.getValue('isEnabled').equals(1))
+  #checkIfEnabled($isEnabled)
+  #if ($isEnabled)
     #set ($discard = $xwiki.ssx.use('Collabora.Code.UI'))
     #set ($discard = $xwiki.jsx.use('Collabora.Code.UI'))
     ## Starting with XWiki 14.6 the attachments actions are displayed in a livetable, and later, starting with 14.8,
