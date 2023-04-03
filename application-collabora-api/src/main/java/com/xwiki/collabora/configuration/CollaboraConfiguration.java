@@ -52,4 +52,13 @@ public interface CollaboraConfiguration
      * @since 1.1
      */
     boolean isEnabled();
+
+    /**
+     * Get the defined Collabora server. Fallback on the main wiki server configuration in case it was not defined at
+     * the wiki level.
+     *
+     * @return the Collabora Online server defined in the configuration
+     * @since 1.1
+     */
+    String getServer();
 }

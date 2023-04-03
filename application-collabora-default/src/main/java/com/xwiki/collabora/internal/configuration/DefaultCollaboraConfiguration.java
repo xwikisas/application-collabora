@@ -68,7 +68,8 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
             : isCurrentWikiEnabled;
     }
 
-    private String getServer()
+    @Override
+    public String getServer()
     {
         String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
         return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;

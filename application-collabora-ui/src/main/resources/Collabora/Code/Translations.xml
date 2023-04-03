@@ -64,6 +64,7 @@ collabora.editor.onPage=on page
 collabora.editor.error=Error while loading this file. Cause: 
 collabora.editor.close=Close
 collabora.editor.close.hint=Close editor
+collabora.editor.file.home.title=File home page
 collabora.editor.unsaved.close=Keep editing
 collabora.editor.unsaved.info=There are {0}unsaved changes{1}. Are you sure you want to exit without saving?
 collabora.editor.unsaved.autoSave=Note that changes might still be saved by the {0}auto-save{1} feature, if this is enabled.

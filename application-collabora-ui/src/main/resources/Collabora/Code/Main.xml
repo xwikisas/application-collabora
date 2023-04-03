@@ -65,7 +65,8 @@
   ## Save action is included in Collabora editor.
   &lt;div class="actionMenu"&gt;
     &lt;div&gt;
-      &lt;a href="${xwiki.getURL('Main.WebHome')}" class='homePage'&gt;
+      &lt;a href="${xwiki.getURL('Main.WebHome')}" class='homePage'
+        title=$escapetool.xml($services.localization.render('core.menu.type.home'))&gt;
         &lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;
       &lt;/a&gt;
     &lt;/div&gt;
@@ -74,7 +75,7 @@
       &lt;em&gt;$escapetool.xml($request.filename)&lt;/em&gt;
       $escapetool.xml($services.localization.render('collabora.editor.onPage'))
       &lt;a href="${fileDoc.URL}#Attachments" class='fileHomePage'
-        title="$escapetool.xml($services.localization.render('cancel'))"&gt;
+        title="$escapetool.xml($services.localization.render('collabora.editor.file.home.title'))"&gt;
         $escapetool.xml($fileDoc.displayTitle)
       &lt;/a&gt;
     &lt;/div&gt;
@@ -88,7 +89,8 @@
   ## Information needed by collabora to be able to edit the current file.
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
   #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
-  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode" data-error="$errorMessage"&gt;&lt;/span&gt;
+  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode" data-error="$errorMessage"
+    data-server="$services.collabora.getConfiguration().getServer()"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
     &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
@@ -238,8 +240,11 @@
     }
 
     if (msg.MessageId == 'App_LoadingStatus' &amp;&amp; msg.Values &amp;&amp; msg.Values.Status == 'Document_Loaded') {
-      // Notify the server that postMessage is going to be used.
-      iframeWindow.postMessage(JSON.stringify({ 'MessageId': 'Host_PostmessageReady' }), '*');
+      // Notify the Collabora editor iframe that postMessage is going to be used.
+      iframeWindow.postMessage(
+        JSON.stringify({ 'MessageId': 'Host_PostmessageReady' }),
+        $("#collaboraServer").data('server')
+      );
     } else if (msg.MessageId == 'Doc_ModifiedStatus') {
       isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
     }
@@ -267,7 +272,7 @@
       new XWiki.widgets.Notification(errorMessage + error, 'error');
     });
 
-    // Listen to messages send by Collabora server.
+    // Listen to messages send by the Collabora editor iframe.
     window.addEventListener("message", receiveMessage, false);
   });
 
@@ -276,11 +281,9 @@
    */
   const menuActions = '.actionMenu .homePage, .actionMenu .fileHomePage, .actionMenu .closeEditor';
   $(document).on('click', menuActions, function(e) {
-    e.preventDefault();
     if (isDocModified) {
+      e.preventDefault();
       $('#editUnsavedChanges').modal('show');
-    } else {
-      window.location.href = $('.actionMenu .fileHomePage').attr('href');
     }
   });
 
