@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.configuration.ConfigurationSource;
 
@@ -41,13 +42,35 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
 @Singleton
 public class DefaultCollaboraConfiguration implements CollaboraConfiguration
 {
+    private static final String IS_ENABLED = "isEnabled";
+
+    private static final String SERVER = "server";
+
     @Inject
-    @Named("collabora")
-    private ConfigurationSource configuration;
+    @Named(MainCollaboraConfigurationSource.HINT)
+    private ConfigurationSource mainConfiguration;
+
+    @Inject
+    @Named(CollaboraConfigurationSource.HINT)
+    private ConfigurationSource currentConfiguration;
 
     @Override
     public URL getDiscoveryURL() throws MalformedURLException
     {
-        return new URL(this.configuration.getProperty("server") + "/hosting/discovery");
+        return new URL(this.getServer() + "/hosting/discovery");
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        Boolean isCurrentWikiEnabled = this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
+        return isCurrentWikiEnabled == null ? this.mainConfiguration.getProperty(IS_ENABLED, false)
+            : isCurrentWikiEnabled;
+    }
+
+    private String getServer()
+    {
+        String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
+        return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;
     }
 }

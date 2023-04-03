@@ -19,33 +19,40 @@
  */
 package com.xwiki.collabora.internal.configuration;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.WikiReference;
+import org.xwiki.wiki.descriptor.WikiDescriptorManager;
 
 import groovy.lang.Singleton;
 
 /**
- * Collabora configuration source corresponding to the current wiki.
+ * Collabora configuration source corresponding to the main wiki.
  *
  * @version $Id$
- * @since 1.0
+ * @since 1.1
  */
 @Component
-@Named(CollaboraConfigurationSource.HINT)
+@Named(MainCollaboraConfigurationSource.HINT)
 @Singleton
-public class CollaboraConfigurationSource extends AbstractCollaboraConfigurationSource
+public class MainCollaboraConfigurationSource extends AbstractCollaboraConfigurationSource
 {
     /**
      * The hint for this component.
      */
-    public static final String HINT = "collabora.configuration.current";
+    public static final String HINT = "collabora.configuration.main";
+
+    @Inject
+    protected WikiDescriptorManager wikiManager;
 
     @Override
     protected DocumentReference getDocumentReference()
     {
-        return new DocumentReference(AbstractCollaboraConfigurationSource.CONFIG_DOC, this.getCurrentWikiReference());
+        return new DocumentReference(AbstractCollaboraConfigurationSource.CONFIG_DOC,
+            new WikiReference(this.wikiManager.getMainWikiId()));
     }
 
     @Override

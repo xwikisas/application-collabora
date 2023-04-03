@@ -17,40 +17,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.xwiki.collabora.internal.configuration;
+package com.xwiki.collabora.script;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
-import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.script.service.ScriptService;
+import org.xwiki.stability.Unstable;
 
-import groovy.lang.Singleton;
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
- * Collabora configuration source corresponding to the current wiki.
+ * Collabora script services.
  *
  * @version $Id$
- * @since 1.0
+ * @since 1.1
  */
 @Component
-@Named(CollaboraConfigurationSource.HINT)
+@Named("collabora")
 @Singleton
-public class CollaboraConfigurationSource extends AbstractCollaboraConfigurationSource
+@Unstable
+public class CollaboraScriptService implements ScriptService
 {
+    @Inject
+    private CollaboraConfiguration configuration;
+
     /**
-     * The hint for this component.
+     * @return the Collabora configuration
+     * @since 1.1
      */
-    public static final String HINT = "collabora.configuration.current";
-
-    @Override
-    protected DocumentReference getDocumentReference()
+    @Unstable
+    public CollaboraConfiguration getConfiguration()
     {
-        return new DocumentReference(AbstractCollaboraConfigurationSource.CONFIG_DOC, this.getCurrentWikiReference());
-    }
-
-    @Override
-    protected String getCacheId()
-    {
-        return HINT;
+        return configuration;
     }
 }

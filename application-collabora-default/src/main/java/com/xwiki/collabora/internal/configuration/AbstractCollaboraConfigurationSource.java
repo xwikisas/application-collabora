@@ -19,38 +19,31 @@
  */
 package com.xwiki.collabora.internal.configuration;
 
-import javax.inject.Named;
+import java.util.Arrays;
+import java.util.List;
 
-import org.xwiki.component.annotation.Component;
-import org.xwiki.model.reference.DocumentReference;
-
-import groovy.lang.Singleton;
+import org.xwiki.configuration.internal.AbstractDocumentConfigurationSource;
+import org.xwiki.model.reference.LocalDocumentReference;
 
 /**
- * Collabora configuration source corresponding to the current wiki.
+ * Common features for all Collabora configuration sources. This class can be removed after upgrading to a XWiki parent
+ * >= 14.9, that introduces XWIKI-20195: Make it easy to implement a document-based configuration source that falls back
+ * on the main wiki.
  *
  * @version $Id$
- * @since 1.0
+ * @since 1.1
  */
-@Component
-@Named(CollaboraConfigurationSource.HINT)
-@Singleton
-public class CollaboraConfigurationSource extends AbstractCollaboraConfigurationSource
+public abstract class AbstractCollaboraConfigurationSource extends AbstractDocumentConfigurationSource
 {
-    /**
-     * The hint for this component.
-     */
-    public static final String HINT = "collabora.configuration.current";
+    private static final List<String> SPACE = Arrays.asList("Collabora", "Code");
+
+    protected static final LocalDocumentReference CONFIG_DOC = new LocalDocumentReference(SPACE, "Configuration");
+
+    private static final LocalDocumentReference CONFIG_CLASS = new LocalDocumentReference(SPACE, "ConfigurationClass");
 
     @Override
-    protected DocumentReference getDocumentReference()
+    protected LocalDocumentReference getClassReference()
     {
-        return new DocumentReference(AbstractCollaboraConfigurationSource.CONFIG_DOC, this.getCurrentWikiReference());
-    }
-
-    @Override
-    protected String getCacheId()
-    {
-        return HINT;
+        return CONFIG_CLASS;
     }
 }
