@@ -48,7 +48,7 @@ public interface CollaboraConfiguration
      * Check if Collabora is enabled. Fallback on the main wiki configuration in case it was not defined at the wiki
      * level.
      *
-     * @return {@code true} if Collabora is enabled, {@code false} if not, and {@code null} when no value is defined
+     * @return {@code true} if Collabora is enabled, {@code false} when is disabled or not specified
      */
-    Boolean isEnabled();
+    boolean isEnabled();
 }

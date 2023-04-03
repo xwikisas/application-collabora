@@ -5,4 +5,4 @@ com.xwiki.collabora.internal.DiscoveryManager
 com.xwiki.collabora.internal.configuration.CollaboraConfigurationSource
 com.xwiki.collabora.internal.configuration.MainCollaboraConfigurationSource
 com.xwiki.collabora.internal.configuration.DefaultCollaboraConfiguration
-com.xwiki.collabora.script.CollaboraConfigurationScriptService
+com.xwiki.collabora.script.CollaboraScriptService

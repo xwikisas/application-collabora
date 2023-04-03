@@ -30,31 +30,27 @@ import org.xwiki.stability.Unstable;
 import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
- * Script services to access the Collabora configurations.
+ * Collabora script services.
  *
  * @version $Id$
  * @since 1.1
  */
 @Component
-@Named("collaboraConfiguration")
+@Named("collabora")
 @Singleton
 @Unstable
-public class CollaboraConfigurationScriptService implements ScriptService
+public class CollaboraScriptService implements ScriptService
 {
     @Inject
     private CollaboraConfiguration configuration;
 
     /**
-     * Check if Collabora is enabled. Fallback on the main wiki configuration in case it was not defined at the wiki
-     * level.
-     *
-     * @return {@code true} if Collabora is enabled, {@code false} otherwise
+     * @return the Collabora configuration
      * @since 1.1
      */
     @Unstable
-    public boolean isEnabled()
+    public CollaboraConfiguration getConfiguration()
     {
-        Boolean isEnabled = this.configuration.isEnabled();
-        return isEnabled != null ? isEnabled : false;
+        return configuration;
     }
 }

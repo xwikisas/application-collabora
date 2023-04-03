@@ -62,10 +62,10 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     }
 
     @Override
-    public Boolean isEnabled()
+    public boolean isEnabled()
     {
         Boolean isCurrentWikiEnabled = this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
-        return isCurrentWikiEnabled == null ? this.mainConfiguration.getProperty(IS_ENABLED, Boolean.class)
+        return isCurrentWikiEnabled == null ? this.mainConfiguration.getProperty(IS_ENABLED, false)
             : isCurrentWikiEnabled;
     }
 

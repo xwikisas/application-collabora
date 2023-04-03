@@ -622,7 +622,7 @@
 
 {{velocity}}
 #if ($xcontext.action == 'view')
-  #if ($services.collaboraConfiguration.isEnabled())
+  #if ($services.collabora.getConfiguration().isEnabled())
     #set ($discard = $xwiki.ssx.use('Collabora.Code.UI'))
     #set ($discard = $xwiki.jsx.use('Collabora.Code.UI'))
     ## Starting with XWiki 14.6 the attachments actions are displayed in a livetable, and later, starting with 14.8,
