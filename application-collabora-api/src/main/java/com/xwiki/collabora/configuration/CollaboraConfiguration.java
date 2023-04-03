@@ -43,4 +43,13 @@ public interface CollaboraConfiguration
      * @throws MalformedURLException In case an error occurred while creating the {@link URL}
      */
     URL getDiscoveryURL() throws MalformedURLException;
+
+    /**
+     * Check if Collabora is enabled. Fallback on the main wiki configuration in case it was not defined at the wiki
+     * level.
+     *
+     * @return {@code true} if Collabora is enabled, {@code false} when is disabled or not specified
+     * @since 1.1
+     */
+    boolean isEnabled();
 }

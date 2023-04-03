@@ -40,9 +40,9 @@
 admin.collabora=Collabora
 admin.collabora.description=Configure Collabora Connector Application
 Collabora.Code.ConfigurationClass_isEnabled=Enable
-Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online.
+Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online. The main wiki configuration will be used if not set at subwiki level.
 Collabora.Code.ConfigurationClass_server=Server
-Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address
+Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address. The main wiki configuration will be used if not set at subwiki level.
 
 ## Attachments tab
 collabora.attachment.edit.title=Edit using Collabora
