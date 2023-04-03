@@ -17,38 +17,44 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.xwiki.collabora.configuration;
+package com.xwiki.collabora.script;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
-import org.xwiki.component.annotation.Role;
+import org.xwiki.component.annotation.Component;
+import org.xwiki.script.service.ScriptService;
 import org.xwiki.stability.Unstable;
 
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
+
 /**
- * Collabora configurations.
+ * Script services to access the Collabora configurations.
  *
  * @version $Id$
- * @since 1.0
+ * @since 1.1
  */
-@Role
+@Component
+@Named("collaboraConfiguration")
+@Singleton
 @Unstable
-public interface CollaboraConfiguration
+public class CollaboraConfigurationScriptService implements ScriptService
 {
-    /**
-     * Get the discovery URL, needed for accessing the urlSrc specific to each file format. This is available at
-     * https://WOPIClientURL:port/hosting/discovery.
-     *
-     * @return the discovery {@link URL}
-     * @throws MalformedURLException In case an error occurred while creating the {@link URL}
-     */
-    URL getDiscoveryURL() throws MalformedURLException;
+    @Inject
+    private CollaboraConfiguration configuration;
 
     /**
      * Check if Collabora is enabled. Fallback on the main wiki configuration in case it was not defined at the wiki
      * level.
      *
-     * @return {@code true} if Collabora is enabled, {@code false} if not, and {@code null} when no value is defined
+     * @return {@code true} if Collabora is enabled, {@code false} otherwise
+     * @since 1.1
      */
-    Boolean isEnabled();
+    @Unstable
+    public boolean isEnabled()
+    {
+        Boolean isEnabled = this.configuration.isEnabled();
+        return isEnabled != null ? isEnabled : false;
+    }
 }

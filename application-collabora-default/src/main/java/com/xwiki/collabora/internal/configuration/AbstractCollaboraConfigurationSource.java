@@ -26,7 +26,9 @@ import org.xwiki.configuration.internal.AbstractDocumentConfigurationSource;
 import org.xwiki.model.reference.LocalDocumentReference;
 
 /**
- * Common features for all Collabora configuration sources.
+ * Common features for all Collabora configuration sources. This class can be removed after upgrading to a XWiki parent
+ * >= 14.9, that introduces XWIKI-20195: Make it easy to implement a document-based configuration source that falls back
+ * on the main wiki.
  *
  * @version $Id$
  * @since 1.1

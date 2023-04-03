@@ -26,12 +26,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.configuration.ConfigurationSource;
 
 import com.xwiki.collabora.configuration.CollaboraConfiguration;
-
-import liquibase.util.StringUtils;
 
 /**
  * Default implementation of {@link CollaboraConfiguration}.
@@ -43,6 +42,8 @@ import liquibase.util.StringUtils;
 @Singleton
 public class DefaultCollaboraConfiguration implements CollaboraConfiguration
 {
+    private static final String IS_ENABLED = "isEnabled";
+
     private static final String SERVER = "server";
 
     @Inject
@@ -57,18 +58,20 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     public URL getDiscoveryURL() throws MalformedURLException
     {
 
-        return new URL(getServerConfiguration() + "/hosting/discovery");
+        return new URL(this.getServer() + "/hosting/discovery");
     }
 
-    /**
-     * Fallback on the main wiki server configuration in case it was not defined at the wiki level.
-     *
-     * @return the Collabora Online server defined in configuration
-     */
-    private String getServerConfiguration()
+    @Override
+    public Boolean isEnabled()
+    {
+        Boolean isCurrentWikiEnabled = this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
+        return isCurrentWikiEnabled == null ? this.mainConfiguration.getProperty(IS_ENABLED, Boolean.class)
+            : isCurrentWikiEnabled;
+    }
+
+    private String getServer()
     {
         String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
-        String mainWikiServer = this.mainConfiguration.getProperty(SERVER);
-        return StringUtils.isEmpty(currentWikiServer) ? mainWikiServer : currentWikiServer;
+        return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;
     }
 }
