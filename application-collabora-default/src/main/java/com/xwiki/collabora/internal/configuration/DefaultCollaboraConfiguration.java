@@ -57,7 +57,6 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public URL getDiscoveryURL() throws MalformedURLException
     {
-
         return new URL(this.getServer() + "/hosting/discovery");
     }
 

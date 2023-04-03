@@ -49,6 +49,7 @@ public interface CollaboraConfiguration
      * level.
      *
      * @return {@code true} if Collabora is enabled, {@code false} when is disabled or not specified
+     * @since 1.1
      */
     boolean isEnabled();
 }
