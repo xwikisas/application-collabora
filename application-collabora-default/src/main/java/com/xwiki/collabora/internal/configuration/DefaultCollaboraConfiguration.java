@@ -57,7 +57,7 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public URL getDiscoveryURL() throws MalformedURLException
     {
-        return new URL(this.getServer() + "/hosting/discovery");
+        return new URL(this.getServerURL() + "/hosting/discovery");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     }
 
     @Override
-    public String getServer()
+    public String getServerURL()
     {
         String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
         return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;

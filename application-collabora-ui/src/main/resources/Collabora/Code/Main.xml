@@ -90,7 +90,7 @@
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
   #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
   &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode" data-error="$errorMessage"
-    data-server="$services.collabora.getConfiguration().getServer()"&gt;&lt;/span&gt;
+    data-server="$services.collabora.getConfiguration().getServerURL()"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
     &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
