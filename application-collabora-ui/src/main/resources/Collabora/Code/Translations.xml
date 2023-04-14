@@ -43,7 +43,8 @@ Collabora.Code.ConfigurationClass_isEnabled=Enable
 Collabora.Code.ConfigurationClass_isEnabled.hint=Enable the possibility to edit page attachments using Collabora Online. The main wiki configuration will be used if not set at subwiki level.
 Collabora.Code.ConfigurationClass_server=Server
 Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address. The main wiki configuration will be used if not set at subwiki level.
-
+Collabora.Code.ConfigurationClass_editUsingMainWiki=Edit using main wiki
+Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Use the main wiki domain when editing files, in order to not add each subwiki domain to the docker hosts configuration of Collabora server. The main wiki configuration will be used if not set at subwiki level.
 ## Attachments tab
 collabora.attachment.edit.title=Edit using Collabora
 collabora.attachment.modal.title=Create new file using Collabora
@@ -72,7 +73,8 @@ collabora.editor.unsaved.label=Unsaved changes
 collabora.editor.unsaved.submit=Close without saving
 collabora.validation.attachmentMissing=Document or attachment not found!
 collabora.validation.documentMissing=Document parameter required!
-collabora.validation.filenameMissing=Filename parameter required!</content>
+collabora.validation.filenameMissing=Filename parameter required!
+collabora.validation.notInstalled=Edit is using the current wiki domain, which might not be added to the docker hosts configuration, since Collabora is not installed on the selected main wiki. Please install it or change the configuration in order to always use the current wiki for edit.</content>
   <object>
     <name>Collabora.Code.Translations</name>
     <number>0</number>

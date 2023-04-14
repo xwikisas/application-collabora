@@ -51,6 +51,15 @@
       <defaultWeb/>
       <nameField/>
       <validationScript/>
+      <editUsingMainWiki>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <name>editUsingMainWiki</name>
+        <number>3</number>
+        <prettyName>editUsingMainWiki</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </editUsingMainWiki>
       <isEnabled>
         <disabled>0</disabled>
         <displayFormType>select</displayFormType>
@@ -70,6 +79,9 @@
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </server>
     </class>
+    <property>
+      <editUsingMainWiki/>
+    </property>
     <property>
       <isEnabled/>
     </property>

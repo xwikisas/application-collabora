@@ -169,8 +169,7 @@
     return accessRights;
   };
 
-  var getActionURL = function(fileName, accessRights) {
-    const actionDoc = new XWiki.Document(XWiki.Model.resolve('Collabora.Code.Main', XWiki.EntityType.DOCUMENT));
+  var getActionURL = function(fileName, accessRights, pageURL) {
     const queryString = $.param({
       'document': XWiki.Document.currentDocumentReference.toString(),
       'filename': fileName,
@@ -178,7 +177,7 @@
       'xpage': 'plain'
     });
 
-    return actionDoc.getURL('get', queryString);
+    return pageURL + '?' + queryString;
   };
 
   var getCollaboraButton = function(thisButton, fileName, accessRights) {
@@ -191,7 +190,7 @@
     thisButton.removeAttr('data-edit-title');
     thisButton.removeAttr('data-view-title');
 
-    thisButton.attr('href', getActionURL(fileName, accessRights));
+    thisButton.attr('href', getActionURL(fileName, accessRights, thisButton.data('pageUrl')));
     return thisButton;
   };
 
@@ -237,6 +236,7 @@
     const form = $(this).parents('.modal-content').find('form');
     const formData = new FormData(form[0]);
     const fileName = formData.get('fileName') + formData.get('fileType');
+    const pageURL = $(e.currentTarget).data('pageUrl');
     // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
     // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
     // translation messages.
@@ -256,7 +256,7 @@
           url: attachURL,
           type: "PUT",
         }).done(function () {
-          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt));
+          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt), pageURL);
         });
       });
   });
@@ -535,14 +535,29 @@
     </property>
     <property>
       <content>{{velocity output="false"}}
+#macro (getPageEditURL $pageEditURL)
+  #set ($editWiki = $services.wiki.currentWikiId)
+  #if ($services.collabora.getConfiguration().editUsingMainWiki())
+    #set ($editWiki = $services.wiki.mainWikiId)
+  #end
+  #set ($pageEditRef = $services.model.createDocumentReference($editWiki, ['Collabora', 'Code'], 'Main'))
+  ## In case the main wiki was selected as edit endpoint, but the application is not installed on it, fallback on the
+  ## current wiki as endpoint.
+  #if (!$xwiki.exists($pageEditRef))
+    #set ($pageEditRef = $services.model.createDocumentReference($currentWikiId, ['Collabora', 'Code'], 'Main'))
+  #end
+  #set ($pageEditURL = $xwiki.getDocument($pageEditRef).getURL('get'))
+#end
 #macro (tableButtonTemplate)
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
   #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
   #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
+  #getPageEditURL($pageEditURL)
   ## After the application starts depending on a version of XWiki &gt;= 14.6, this code should be moved inside an
   ## org.xwiki.platform.attachment.actions UIX.
-  &lt;a class="action collaboraEdit" href="" data-edit-title="$editTitle" data-view-title="$viewTitle"&gt;
+  &lt;a class="action collaboraEdit" href="" data-edit-title="$editTitle" data-view-title="$viewTitle"
+    data-page-url="$pageEditURL"&gt;
     &lt;span class="action-icon"&gt;&lt;img src="$logoURL"/&gt;&lt;/span&gt;
     &lt;span class="action-label"&gt;$label&lt;/span&gt;
   &lt;/a&gt;
@@ -552,8 +567,9 @@
   #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
   #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
+  #getPageEditURL($pageEditURL)
   &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-edit-title="$editTitle"
-    data-view-title="$viewTitle"&gt;&lt;img src="$logoURL" /&gt;&lt;/a&gt;
+    data-view-title="$viewTitle" data-page-url="$pageEditURL"&gt;&lt;img src="$logoURL" /&gt;&lt;/a&gt;
 #end
 #macro (createButtonTemplate)
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
@@ -608,9 +624,11 @@
           #newFileForm()
         &lt;/div&gt;
         &lt;div class="modal-footer"&gt;
+          #getPageEditURL($pageEditURL)
           &lt;input type="submit" class="btn btn-primary" disabled
             value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
-            data-error="$escapetool.xml($services.localization.render("collabora.attachment.modal.submit.error"))"&gt;
+            data-error="$escapetool.xml($services.localization.render("collabora.attachment.modal.submit.error"))"
+            data-page-url="$pageEditURL"&gt;
           &lt;input type="button" class="btn btn-default" data-dismiss="modal"
             value="$escapetool.xml($services.localization.render('cancel'))"&gt;
         &lt;/div&gt;
