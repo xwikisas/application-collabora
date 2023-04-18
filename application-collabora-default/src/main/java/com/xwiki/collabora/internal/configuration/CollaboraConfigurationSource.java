@@ -20,11 +20,10 @@
 package com.xwiki.collabora.internal.configuration;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
-
-import groovy.lang.Singleton;
 
 /**
  * Collabora configuration source corresponding to the current wiki.
