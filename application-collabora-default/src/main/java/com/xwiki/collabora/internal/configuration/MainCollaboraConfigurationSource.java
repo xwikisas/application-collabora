@@ -21,13 +21,12 @@ package com.xwiki.collabora.internal.configuration;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.WikiReference;
 import org.xwiki.wiki.descriptor.WikiDescriptorManager;
-
-import groovy.lang.Singleton;
 
 /**
  * Collabora configuration source corresponding to the main wiki.

@@ -134,7 +134,16 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>require(['jquery'],function($) {
+      <code>define('collabora-attachment', {
+  prefix: 'collabora.attachment.',
+  keys: [
+    'edit.title',
+    'view.title',
+    'modal.submit.error'
+  ]
+});
+
+require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   var getExtAcceptedAction = function() {
     const canDoByExt = {};
     ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg'].forEach(function(x) {
@@ -181,14 +190,9 @@
   };
 
   var getCollaboraButton = function(thisButton, fileName, accessRights) {
-    // The data translations attributes are used for updating the title from js, since it depends on the access rights.
-    // This can be changed once licensing starts depending on a XWiki version &gt;= 13.8 to include
-    // XWIKI-18973: Simplify the way JavaScript code loads translation messages.
-    const title = thisButton.data(accessRights == 'edit' ? 'editTitle' : 'viewTitle');
+    const title = l10n.get(accessRights == 'edit' ? 'edit.title' : 'view.title');
     thisButton.attr('title', title);
     thisButton.find('img').attr('alt', title);
-    thisButton.removeAttr('data-edit-title');
-    thisButton.removeAttr('data-view-title');
 
     thisButton.attr('href', getActionURL(fileName, accessRights, thisButton.data('pageUrl')));
     return thisButton;
@@ -249,7 +253,7 @@
       )).getRestURL() + "/attachments/" + encodeURIComponent(fileName);
     $.get(attachURL)
       .done(function () {
-        new XWiki.widgets.Notification(errorMessage, "error");
+        new XWiki.widgets.Notification(l10n.get('modal.submit.error'), 'error');
       })
       .fail(function () {
         $.ajax({
@@ -550,26 +554,22 @@
 #end
 #macro (tableButtonTemplate)
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
-  #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
-  #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
   #getPageEditURL($pageEditURL)
   ## After the application starts depending on a version of XWiki &gt;= 14.6, this code should be moved inside an
   ## org.xwiki.platform.attachment.actions UIX.
-  &lt;a class="action collaboraEdit" href="" data-edit-title="$editTitle" data-view-title="$viewTitle"
-    data-page-url="$pageEditURL"&gt;
+  &lt;a class="action collaboraEdit" href="" data-page-url="$pageEditURL"&gt;
     &lt;span class="action-icon"&gt;&lt;img src="$logoURL"/&gt;&lt;/span&gt;
     &lt;span class="action-label"&gt;$label&lt;/span&gt;
   &lt;/a&gt;
 #end
 #macro (listButtonTemplate)
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
-  #set ($editTitle = $escapetool.xml($services.localization.render("collabora.attachment.edit.title")))
-  #set ($viewTitle = $escapetool.xml($services.localization.render("collabora.attachment.view.title")))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
   #getPageEditURL($pageEditURL)
-  &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-edit-title="$editTitle"
-    data-view-title="$viewTitle" data-page-url="$pageEditURL"&gt;&lt;img src="$logoURL" /&gt;&lt;/a&gt;
+  &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-page-url="$pageEditURL"&gt;
+    &lt;img src="$logoURL" /&gt;
+  &lt;/a&gt;
 #end
 #macro (createButtonTemplate)
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
@@ -627,7 +627,6 @@
           #getPageEditURL($pageEditURL)
           &lt;input type="submit" class="btn btn-primary" disabled
             value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
-            data-error="$escapetool.xml($services.localization.render("collabora.attachment.modal.submit.error"))"
             data-page-url="$pageEditURL"&gt;
           &lt;input type="button" class="btn btn-default" data-dismiss="modal"
             value="$escapetool.xml($services.localization.render('cancel'))"&gt;
