@@ -88,8 +88,7 @@
   &lt;/div&gt;
   ## Information needed by collabora to be able to edit the current file.
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
-  #set ($errorMessage = $escapetool.xml($services.localization.render('collabora.editor.error')))
-  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode" data-error="$errorMessage"
+  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode"
     data-server="$services.collabora.getConfiguration().getServerURL()"&gt;&lt;/span&gt;
   &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
     id="collaboraForm"&gt;
@@ -224,7 +223,14 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>require(['jquery'], function($) {
+      <code>define('collabora-editor', {
+  prefix: 'collabora.editor.',
+  keys: [
+    'error'
+  ]
+});
+
+require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
   const collaboraPath ='/rest/collabora/files/';
   const iframeWindow = document.getElementById('collaboraViewer').contentWindow;
   var isDocModified = false;
@@ -252,10 +258,6 @@
   $(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
-    // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
-    // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
-    // translation messages. The error cause should also be included in the translation.
-    const errorMessage = $("#collaboraServer").data('error');
     const wopiResourceURL = window.location.origin + '/xwiki' + collaboraPath + encodeURIComponent(fileId);
     const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
     $.getJSON(tokenURL).done(function(resp) {
@@ -269,7 +271,7 @@
       $('#collaboraForm input[name=access_token]').attr('value', accessToken);
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
-      new XWiki.widgets.Notification(errorMessage + error, 'error');
+      new XWiki.widgets.Notification(l10n.get('error', error), 'error');
     });
 
     // Listen to messages send by the Collabora editor iframe.
