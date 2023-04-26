@@ -61,4 +61,14 @@ public interface CollaboraConfiguration
      * @since 1.1
      */
     String getServerURL();
+
+    /**
+     * For editing files with Collabora, the domain from where this is done must be declared in the Collabora Online
+     * server configurations. To avoid adding each subwiki domain in the configuration, the main wiki can be used as an
+     * editing endpoint.
+     *
+     * @return {@code true} if the main wiki will be used for editing files, {@code false} if the current wiki will be
+     *     used
+     */
+    boolean editUsingMainWiki();
 }

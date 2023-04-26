@@ -92,6 +92,7 @@ SSL is enabled by default for the Collabora Online server, so this should be the
 === Additional info ===
 
 1. If the Collabora Online server is used from a different domain then it's own, this should be added to the docker hosts configuration for the edit to work. Check their [[documentation&gt;&gt;https://sdk.collaboraonline.com/docs/installation/Configuration.html#multihost-configuration]].
+1. In order to not add each subwiki to the docker hosts configuration, use the //editUsingMainWiki// from the [[XWiki configuration&gt;&gt;XWiki.XWikiPreferences||queryString="editor=globaladmin&amp;section=Collabora"]]. This will start the edit using the main wiki domain, so only this one needs to be declared on the Collabora Server configuration.
 1. There should be no HTTP protection on ///xwiki/rest/collabora/// on the front end.
 1. The Collabora Online server needs to be able to contact the XWiki server using HTTP/HTTPS.
 

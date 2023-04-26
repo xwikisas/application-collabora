@@ -42,6 +42,8 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
 @Singleton
 public class DefaultCollaboraConfiguration implements CollaboraConfiguration
 {
+    private static final String EDIT_USING_MAIN_WIKI = "editUsingMainWiki";
+
     private static final String IS_ENABLED = "isEnabled";
 
     private static final String SERVER = "server";
@@ -73,5 +75,13 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     {
         String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
         return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;
+    }
+
+    @Override
+    public boolean editUsingMainWiki()
+    {
+        Boolean editUsingMainWiki = this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, Boolean.class);
+        return editUsingMainWiki == null ? this.mainConfiguration.getProperty(EDIT_USING_MAIN_WIKI, false)
+            : editUsingMainWiki;
     }
 }
