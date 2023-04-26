@@ -178,15 +178,16 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
     return accessRights;
   };
 
-  var getActionURL = function(fileName, accessRights, pageURL) {
+  var getActionURL = function(fileName, accessRights, editURL) {
     const queryString = $.param({
       'document': XWiki.Document.currentDocumentReference.toString(),
       'filename': fileName,
       'action': accessRights,
       'xpage': 'plain'
     });
+    editURL += (editURL.indexOf('?') &lt; 0 ? '?' : '&amp;') + queryString;
 
-    return pageURL + '?' + queryString;
+    return editURL;
   };
 
   var getCollaboraButton = function(thisButton, fileName, accessRights) {
@@ -194,7 +195,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
     thisButton.attr('title', title);
     thisButton.find('img').attr('alt', title);
 
-    thisButton.attr('href', getActionURL(fileName, accessRights, thisButton.data('pageUrl')));
+    thisButton.attr('href', getActionURL(fileName, accessRights, thisButton.data('editUrl')));
     return thisButton;
   };
 

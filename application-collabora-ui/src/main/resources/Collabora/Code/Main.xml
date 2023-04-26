@@ -65,8 +65,8 @@
   ## Save action is included in Collabora editor.
   &lt;div class="actionMenu"&gt;
     &lt;div&gt;
-      #set ($homePageRef = $services.model.createDocumentReference($fileDoc.wiki, 'Main', 'WebHome'))
-      &lt;a href="${xwiki.getDocument($homePageRef).getURL()}" class='homePage'
+      #set ($homePageRef = $services.wiki.getById($fileDoc.wiki).getMainPageReference())
+      &lt;a href="${xwiki.getURL($homePageRef)}" class='homePage'
         title=$escapetool.xml($services.localization.render('core.menu.type.home'))&gt;
         &lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;
       &lt;/a&gt;
@@ -87,9 +87,9 @@
       &lt;/a&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-  #set ($mainWikiPage = $xwiki.getDocument(
+  #set ($mainWikiPageRef = $xwiki.getDocument(
     $services.model.createDocumentReference($services.wiki.mainWikiId, ['Collabora', 'Code'], 'Main')))
-  #if ($services.collabora.getConfiguration().editUsingMainWiki() &amp;&amp; !$xwiki.exists($mainWikiPage))
+  #if ($services.collabora.getConfiguration().editUsingMainWiki() &amp;&amp; !$xwiki.exists($mainWikiPageRef))
     #warning($escapetool.xml($services.localization.render('collabora.validation.notInstalled')))
   #end
   ## Information needed by collabora to be able to edit the current file.
