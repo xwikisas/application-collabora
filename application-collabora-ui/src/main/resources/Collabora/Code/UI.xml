@@ -241,7 +241,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
     const form = $(this).parents('.modal-content').find('form');
     const formData = new FormData(form[0]);
     const fileName = formData.get('fileName') + formData.get('fileType');
-    const pageURL = $(e.currentTarget).data('pageUrl');
+    const editURL = $(e.currentTarget).data('editUrl');
     // TODO: The translation is added for now as a data attribute. This should be changed once the application starts
     // depending on a XWiki version &gt;= 13.8 to include XWIKI-18973: Simplify the way JavaScript code loads
     // translation messages.
@@ -261,7 +261,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
           url: attachURL,
           type: "PUT",
         }).done(function () {
-          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt), pageURL);
+          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt), editURL);
         });
       });
   });
@@ -559,7 +559,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   #getPageEditURL($pageEditURL)
   ## After the application starts depending on a version of XWiki &gt;= 14.6, this code should be moved inside an
   ## org.xwiki.platform.attachment.actions UIX.
-  &lt;a class="action collaboraEdit" href="" data-page-url="$pageEditURL"&gt;
+  &lt;a class="action collaboraEdit" href="" data-edit-url="$pageEditURL"&gt;
     &lt;span class="action-icon"&gt;&lt;img src="$logoURL"/&gt;&lt;/span&gt;
     &lt;span class="action-label"&gt;$label&lt;/span&gt;
   &lt;/a&gt;
@@ -568,7 +568,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
   #getPageEditURL($pageEditURL)
-  &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-page-url="$pageEditURL"&gt;
+  &lt;a class="collaboraEdit btn btn-xs btn-default" href="" data-edit-url="$pageEditURL"&gt;
     &lt;img src="$logoURL" /&gt;
   &lt;/a&gt;
 #end
@@ -628,7 +628,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
           #getPageEditURL($pageEditURL)
           &lt;input type="submit" class="btn btn-primary" disabled
             value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
-            data-page-url="$pageEditURL"&gt;
+            data-edit-url="$pageEditURL"&gt;
           &lt;input type="button" class="btn btn-default" data-dismiss="modal"
             value="$escapetool.xml($services.localization.render('cancel'))"&gt;
         &lt;/div&gt;
