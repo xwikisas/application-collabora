@@ -130,7 +130,7 @@ public class FileTokenManager
      * @param token the token
      * @return the user reference, or null in case this token is invalid
      */
-    public DocumentReference getTokenUserReference(String token)
+    public DocumentReference getTokenUserDocReference(String token)
     {
         FileToken fileToken = new FileToken(token);
         if (fileToken.getUser() == null) {
