@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.AttachmentReference;
 import org.xwiki.model.reference.AttachmentReferenceResolver;
+import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
@@ -47,6 +48,7 @@ import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xwiki.collabora.internal.AttachmentManager;
 import com.xwiki.collabora.internal.DiscoveryManager;
 import com.xwiki.collabora.internal.FileTokenManager;
+import com.xwiki.collabora.internal.UserManager;
 import com.xwiki.collabora.rest.Wopi;
 import com.xwiki.collabora.rest.model.jaxb.ObjectFactory;
 import com.xwiki.collabora.rest.model.jaxb.Token;
@@ -86,6 +88,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Named("current")
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
+    @Inject
+    private UserManager userManager;
+
+    @Inject
+    private EntityReferenceSerializer<String> referenceSerializer;
+
     @Override
     public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
     {
@@ -101,6 +109,9 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
             message.put("UserCanWrite", userCanWrite);
+            message.put("UserId", referenceSerializer.serialize(fileTokenManager.getTokenUserDocReference(token)));
+            message.put("UserFriendlyName",
+                userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(token)));
             message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
             // Needed for using the PostMessage API.
             message.put("PostMessageOrigin", Request.getCurrent().getHostRef().toString());
@@ -146,7 +157,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         try {
             XWikiAttachment attachment =
                 attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(fileId), body,
-                    fileTokenManager.getTokenUserReference(token));
+                    fileTokenManager.getTokenUserDocReference(token));
 
             JSONObject response = new JSONObject();
             response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
