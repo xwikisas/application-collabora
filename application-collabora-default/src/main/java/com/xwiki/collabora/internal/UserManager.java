@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.user.UserProperties;
@@ -57,6 +58,9 @@ public class UserManager
         UserProperties userProperties = userPropertiesResolver.resolve(userReferenceResolver.resolve(userDocReference));
         String firstName = Objects.toString(userProperties.getFirstName(), "");
         String lastName = Objects.toString(userProperties.getLastName(), "");
-        return String.format("%s %s", firstName, lastName).trim();
+        String userFriendlyName = String.format("%s %s", firstName, lastName).trim();
+
+        // Display the page name as a fallback for users without first and last name.
+        return StringUtils.isEmpty(userFriendlyName) ? userDocReference.getName() : userFriendlyName;
     }
 }
