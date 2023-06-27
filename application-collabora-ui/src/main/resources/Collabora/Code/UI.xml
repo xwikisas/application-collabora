@@ -219,7 +219,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
       $(attachActions).append(getCollaboraButton(templates.attachButton.clone(), fileName, accessRights));
     });
 
-    if ($("button[data-target='#newCollaboraFileModal']").length == 0) {
+    if ($("button[data-target='#newCollaboraFileModal']").length == 0 &amp;&amp; XWiki.hasEdit) {
       $('#attachmentscontent').append(templates.createButton);
     }
     $('body').append(templates.newFileModal);
