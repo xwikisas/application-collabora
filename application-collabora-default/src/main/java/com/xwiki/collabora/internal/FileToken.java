@@ -21,8 +21,6 @@ package com.xwiki.collabora.internal;
 
 import java.security.SecureRandom;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -54,20 +52,6 @@ public class FileToken
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
-    }
-
-    FileToken(String token)
-    {
-        String pattern = "wopi_(.+)_(.+)_(\\d+)_(\\d+)";
-        Pattern r = Pattern.compile(pattern);
-
-        Matcher m = r.matcher(token);
-        boolean isCorrectToken = m.find();
-        this.user = isCorrectToken ? m.group(1) : null;
-        this.fileId = isCorrectToken ? m.group(2) : null;
-        this.timestamp = isCorrectToken ? Long.parseLong(m.group(3)) : null;
-        this.randomNumber = isCorrectToken ? Integer.parseInt(m.group(4)) : 0;
-        this.usage = isCorrectToken ? 1 : 0;
     }
 
     /**
@@ -156,7 +140,7 @@ public class FileToken
         return builder.build();
     }
 
-    private long getRandomNumber()
+    private int getRandomNumber()
     {
         return this.randomNumber;
     }
