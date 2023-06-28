@@ -43,6 +43,8 @@ import org.xwiki.model.reference.EntityReferenceSerializer;
 @Singleton
 public class FileTokenManager
 {
+    private static final String XWIKI_GUEST = "XWiki.XWikiGuest";
+
     @Inject
     private Logger logger;
 
@@ -65,7 +67,7 @@ public class FileTokenManager
      */
     public FileToken getToken(DocumentReference userReference, String fileId)
     {
-        String user = this.referenceSerializer.serialize(userReference);
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
         if (token != null) {
             if (token.isExpired()) {
@@ -102,7 +104,8 @@ public class FileTokenManager
      */
     public int clearToken(DocumentReference userReference, String fileId)
     {
-        FileToken foundToken = getExistingToken(this.referenceSerializer.serialize(userReference), fileId);
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
+        FileToken foundToken = getExistingToken(user, fileId);
         if (foundToken == null) {
             return 0;
         }
@@ -111,13 +114,12 @@ public class FileTokenManager
         if (tokenUsage > 1) {
             tokenUsage--;
             foundToken.setUsage(tokenUsage);
-            logger.debug("Cleared token for file [{}] and user [{}]. Number of remained usages: [{}]", fileId,
-                this.referenceSerializer.serialize(userReference), tokenUsage);
+            logger.debug("Cleared token for file [{}] and user [{}]. Number of remained usages: [{}]", fileId, user,
+                tokenUsage);
         } else {
             tokens.remove(foundToken.toString());
             tokenUsage = 0;
-            logger.debug("Deleted token for file [{}] and user [{}].", fileId,
-                this.referenceSerializer.serialize(userReference));
+            logger.debug("Deleted token for file [{}] and user [{}].", fileId, user);
         }
 
         return tokenUsage;
