@@ -43,7 +43,7 @@ public class FileToken
 
     private final int randomNumber;
 
-    private final boolean userCanWrite;
+    private boolean userCanWrite;
 
     private int usage;
 
@@ -118,6 +118,14 @@ public class FileToken
     public boolean getUserCanWrite()
     {
         return this.userCanWrite;
+    }
+
+    /**
+     * @param userCanWrite {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public void setUserCanWrite(boolean userCanWrite)
+    {
+        this.userCanWrite = userCanWrite;
     }
 
     @Override

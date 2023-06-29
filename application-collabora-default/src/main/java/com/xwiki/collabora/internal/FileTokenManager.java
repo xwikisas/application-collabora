@@ -75,6 +75,8 @@ public class FileTokenManager
                 tokens.remove(token.toString());
             } else {
                 token.setUsage(token.getUsage() + 1);
+                // Update token rights in case they have been changed in the meantime.
+                token.setUserCanWrite(userCanWrite);
                 return token;
             }
         }
