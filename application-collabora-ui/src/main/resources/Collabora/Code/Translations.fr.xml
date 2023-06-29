@@ -42,9 +42,9 @@ admin.collabora.description=Configurer le connecteur Collabora
 Collabora.Code.ConfigurationClass_isEnabled=Activer
 Collabora.Code.ConfigurationClass_isEnabled.hint=Activer la possibilité de modifier des pièces jointes des pages en format office avec Collabora Online.
 Collabora.Code.ConfigurationClass_server=Serveur
-Collabora.Code.ConfigurationClass_server.hint=L''adresse du serveur Collabora Online
-Collabora.Code.ConfigurationClass_editUsingMainWiki=Modifier à l''aide du wiki principal
-Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Utilisez le domaine wiki principal lors de la modification de fichiers, afin de ne pas ajouter chaque domaine de sous-wiki à la configuration des hôtes docker du serveur Collabora. La configuration principale du wiki sera utilisée si elle n''est pas définie au niveau du sous-wiki.
+Collabora.Code.ConfigurationClass_server.hint=L'adresse du serveur Collabora Online
+Collabora.Code.ConfigurationClass_editUsingMainWiki=Modifier à l'aide du wiki principal
+Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Utilisez le domaine wiki principal lors de la modification de fichiers, afin de ne pas ajouter chaque domaine de sous-wiki à la configuration des hôtes docker du serveur Collabora. La configuration principale du wiki sera utilisée si elle n'est pas définie au niveau du sous-wiki.
 
 
 ## Attachments tab
@@ -72,7 +72,7 @@ collabora.editor.unsaved.info=Il y a des {0}modifications non enregistrées{1}. 
 collabora.editor.unsaved.autoSave=Notez que les modifications peuvent toujours être enregistrées par la fonctionnalité {0}d''enregistrement automatique{1}, si celle-ci est activée.
 collabora.editor.unsaved.label=Modifications non enregistrées
 collabora.editor.unsaved.submit=Fermer sans enregistrer
-collabora.validation.attachmentMissing=La page ou la pièce jointe n''ont pas été trouvées.
+collabora.validation.attachmentMissing=La page ou la pièce jointe n'ont pas été trouvées.
 collabora.validation.documentMissing=Le nom de la page est obligatoire!
 collabora.validation.filenameMissing=Le nom du fichier est obligatoire!
 collabora.validation.notInstalled=L''application Collabora n''est pas installée sur le wiki principal, nous utilisons donc le domaine wiki actuel pour l''édition, ce qui peut ne pas fonctionner si la configuration des hôtes docker n''inclut pas le domaine du sous-wiki. Installez Collabora sur le wiki principal ou modifiez la configuration pour toujours utiliser le wiki actuel pour l''édition.</content>
