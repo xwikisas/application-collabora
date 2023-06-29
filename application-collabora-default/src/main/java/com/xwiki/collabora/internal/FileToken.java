@@ -43,15 +43,18 @@ public class FileToken
 
     private final int randomNumber;
 
+    private final boolean userCanWrite;
+
     private int usage;
 
-    FileToken(String user, String fileId)
+    FileToken(String user, String fileId, boolean userCanWrite)
     {
         this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
+        this.userCanWrite = userCanWrite;
     }
 
     /**
@@ -107,6 +110,14 @@ public class FileToken
     public Long getTimestamp()
     {
         return this.timestamp;
+    }
+
+    /**
+     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public boolean getUserCanWrite()
+    {
+        return this.userCanWrite;
     }
 
     @Override

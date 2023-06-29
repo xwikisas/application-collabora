@@ -95,7 +95,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private EntityReferenceSerializer<String> referenceSerializer;
 
     @Override
-    public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
+    public Response get(String fileId, String token) throws XWikiRestException
     {
         if (token == null || fileTokenManager.isInvalid(token)) {
             logger.warn("Failed to get file [{}] due to invalid token", fileId);
@@ -108,7 +108,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
-            message.put("UserCanWrite", userCanWrite);
+            message.put("UserCanWrite", fileTokenManager.hasWriteAccess(token));
             message.put("UserId", referenceSerializer.serialize(fileTokenManager.getTokenUserDocReference(token)));
             message.put("UserFriendlyName",
                 userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(token)));
@@ -171,7 +171,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token getToken(String fileId) throws XWikiRestException
+    public Token getToken(String fileId, boolean userCanWrite) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         // Make sure that the current wiki is used on the XWiki context, since the REST resource is rooted on the
@@ -184,7 +184,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
-            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString());
+            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId, userCanWrite).toString());
 
             return token;
         } catch (IOException e) {

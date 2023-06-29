@@ -49,13 +49,11 @@ public interface Wopi extends XWikiRestComponent
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token
-     * @param userCanWrite {@code true} if the user has write access, {@code false} otherwise
      * @return information about the requested file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
-    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token,
-        @QueryParam("userCanWrite") String userCanWrite) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
 
     /**
      * Get file content.
@@ -92,12 +90,14 @@ public interface Wopi extends XWikiRestComponent
      * particularities).
      *
      * @param fileId id of the file
+     * @param userCanWrite {@code true} if this user has write access, {@code false} otherwise
      * @return information needed by Collabora to load
      * @throws XWikiRestException if an error occurred while getting information
      */
     @GET
     @Path("/token")
-    Token getToken(@PathParam("id") String fileId) throws XWikiRestException;
+    Token getToken(@PathParam("id") String fileId, @QueryParam("userCanWrite") boolean userCanWrite)
+        throws XWikiRestException;
 
     /**
      * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't

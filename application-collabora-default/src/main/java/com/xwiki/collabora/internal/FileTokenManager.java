@@ -63,9 +63,10 @@ public class FileTokenManager
      *
      * @param userReference current user reference
      * @param fileId id of the edited file
+     * @param userCanWrite {@code true} if this user has edit right on the document, {@code false otherwise}
      * @return existing {@link FileToken}, or a new one
      */
-    public FileToken getToken(DocumentReference userReference, String fileId)
+    public FileToken getToken(DocumentReference userReference, String fileId, boolean userCanWrite)
     {
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
@@ -78,7 +79,7 @@ public class FileTokenManager
             }
         }
 
-        return createNewToken(user, fileId);
+        return createNewToken(user, fileId, userCanWrite);
     }
 
     /**
@@ -140,6 +141,15 @@ public class FileTokenManager
         return this.documentReferenceResolver.resolve(fileToken.getUser());
     }
 
+    /**
+     * @param token string representation of the token
+     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public boolean hasWriteAccess(String token)
+    {
+        return tokens.get(token).getUserCanWrite();
+    }
+
     private FileToken getExistingToken(String user, String fileId)
     {
         Optional<Map.Entry<String, FileToken>> tokenEntry = this.tokens.entrySet().stream()
@@ -147,9 +157,9 @@ public class FileTokenManager
         return tokenEntry.map(Map.Entry::getValue).orElse(null);
     }
 
-    private FileToken createNewToken(String user, String fileId)
+    private FileToken createNewToken(String user, String fileId, boolean userCanWrite)
     {
-        FileToken token = new FileToken(user, fileId);
+        FileToken token = new FileToken(user, fileId, userCanWrite);
         tokens.put(token.toString(), token);
         logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 
