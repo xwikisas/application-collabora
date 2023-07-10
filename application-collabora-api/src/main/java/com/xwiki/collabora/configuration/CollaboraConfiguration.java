@@ -71,4 +71,11 @@ public interface CollaboraConfiguration
      *     used
      */
     boolean editUsingMainWiki();
+
+    /**
+     * To add.
+     *
+     * @return to add.
+     */
+    int getTokenTimeout();
 }

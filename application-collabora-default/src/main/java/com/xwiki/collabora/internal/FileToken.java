@@ -55,15 +55,16 @@ public class FileToken
     }
 
     /**
-     * Check if this token is expired. Tokens have a valability of 1 hour.
+     * Check if this token is expired. Tokens have a default valability of 4 hours, but this value can be configured.
      *
+     * @param timeout timeout for the editing token, in hours
      * @return {@code true} if the token has expired, {@code false} otherwise.
      */
-    public boolean isExpired()
+    public boolean isExpired(long timeout)
     {
         long currentTime = new Date().getTime();
         long differenceInSec = (currentTime - timestamp) / 1000;
-        return differenceInSec > 3600;
+        return differenceInSec > timeout * 1200;
     }
 
     /**

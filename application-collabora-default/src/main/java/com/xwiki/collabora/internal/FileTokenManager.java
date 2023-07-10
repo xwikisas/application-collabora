@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
+
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
  * Manage existing {@link FileToken} instances.
@@ -55,6 +58,9 @@ public class FileTokenManager
     @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
+    @Inject
+    private Provider<CollaboraConfiguration> configurationProvider;
+
     private Map<String, FileToken> tokens = new HashMap<>();
 
     /**
@@ -70,7 +76,7 @@ public class FileTokenManager
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
         if (token != null) {
-            if (token.isExpired()) {
+            if (token.isExpired(configurationProvider.get().getTokenTimeout())) {
                 tokens.remove(token.toString());
             } else {
                 token.setUsage(token.getUsage() + 1);
@@ -90,8 +96,11 @@ public class FileTokenManager
     public boolean isInvalid(String token)
     {
         FileToken foundToken = tokens.get(token);
+        logger.debug("Is token expired [{}]. timeout: [{}]",
+            foundToken.isExpired(configurationProvider.get().getTokenTimeout()),
+            configurationProvider.get().getTokenTimeout());
 
-        return foundToken == null || foundToken.isExpired();
+        return foundToken == null || foundToken.isExpired(configurationProvider.get().getTokenTimeout());
     }
 
     /**
