@@ -265,10 +265,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
     const wopiResourceURL = window.location.origin + '/xwiki' + collaboraPath + encodeURIComponent(fileId);
-    const params = $.param({
-      userCanWrite: userCanWrite
-    });
-    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token?' + params;
+    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
       const accessToken =  resp.value;
