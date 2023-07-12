@@ -97,8 +97,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response get(String fileId, String token) throws XWikiRestException
     {
-        if (token == null || fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed to get file [{}] due to invalid token", fileId);
+        if (token == null || fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
@@ -127,8 +127,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed get content of file [{}] due to invalid token", fileId);
+        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", fileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -149,8 +149,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed to update file [{}] due to invalid token", fileId);
+        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
@@ -171,7 +171,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token getToken(String fileId, boolean userCanWrite) throws XWikiRestException
+    public Token getToken(String fileId) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         // Make sure that the current wiki is used on the XWiki context, since the REST resource is rooted on the
@@ -184,7 +184,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
-            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId, userCanWrite).toString());
+            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString());
 
             return token;
         } catch (IOException e) {

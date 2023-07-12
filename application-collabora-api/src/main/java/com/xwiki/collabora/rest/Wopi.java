@@ -70,7 +70,7 @@ public interface Wopi extends XWikiRestComponent
 
     /**
      * Update content of a file. This is used by the Collabora Save action. A specific REST model should be used as
-     * response, see {@link #get(String, String, String)}. This should be a PUT method, but the Collabora online server
+     * response, see {@link #get(String, String)}. This should be a PUT method, but the Collabora online server
      * uses a POST verb on the save action.
      *
      * @param fileId id of the file
@@ -90,13 +90,12 @@ public interface Wopi extends XWikiRestComponent
      * particularities).
      *
      * @param fileId id of the file
-     * @param userCanWrite {@code true} if this user has write access, {@code false} otherwise
      * @return information needed by Collabora to load
      * @throws XWikiRestException if an error occurred while getting information
      */
     @GET
     @Path("/token")
-    Token getToken(@PathParam("id") String fileId, @QueryParam("userCanWrite") boolean userCanWrite)
+    Token getToken(@PathParam("id") String fileId)
         throws XWikiRestException;
 
     /**

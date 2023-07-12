@@ -43,18 +43,21 @@ public class FileToken
 
     private final int randomNumber;
 
-    private boolean userCanWrite;
+    private boolean hasView;
+
+    private boolean hasEdit;
 
     private int usage;
 
-    FileToken(String user, String fileId, boolean userCanWrite)
+    FileToken(String user, String fileId, boolean hasView, boolean hasEdit)
     {
         this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
-        this.userCanWrite = userCanWrite;
+        this.hasView = hasView;
+        this.hasEdit = hasEdit;
     }
 
     /**
@@ -113,19 +116,35 @@ public class FileToken
     }
 
     /**
-     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     * @return {@code true} if this token has view rights, {@code false} otherwise
      */
-    public boolean getUserCanWrite()
+    public boolean hasView()
     {
-        return this.userCanWrite;
+        return this.hasView;
     }
 
     /**
-     * @param userCanWrite {@code true} if this token has edit rights, {@code false} otherwise
+     * @param hasView {@code true} if this token has view rights, {@code false} otherwise
      */
-    public void setUserCanWrite(boolean userCanWrite)
+    public void setHasView(boolean hasView)
     {
-        this.userCanWrite = userCanWrite;
+        this.hasView = hasView;
+    }
+
+    /**
+     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public boolean hasEdit()
+    {
+        return this.hasEdit;
+    }
+
+    /**
+     * @param hasEdit {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public void setHasEdit(boolean hasEdit)
+    {
+        this.hasEdit = hasEdit;
     }
 
     @Override
