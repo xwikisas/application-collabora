@@ -1,0 +1,79 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.4" reference="Collabora.Code.Translations" locale="fr">
+  <web>Collabora.Code</web>
+  <name>Translations</name>
+  <language>fr</language>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>1</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <parent>Collabora.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title>Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>##Admin section
+admin.collabora=Collabora
+admin.collabora.description=Configurer le connecteur Collabora
+Collabora.Code.ConfigurationClass_isEnabled=Activer
+Collabora.Code.ConfigurationClass_isEnabled.hint=Activer la possibilité de modifier des pièces jointes des pages en format office avec Collabora Online.
+Collabora.Code.ConfigurationClass_server=Serveur
+Collabora.Code.ConfigurationClass_server.hint=L'adresse du serveur Collabora Online
+Collabora.Code.ConfigurationClass_editUsingMainWiki=Modifier à l'aide du wiki principal
+Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Utilisez le domaine wiki principal lors de la modification de fichiers, afin de ne pas ajouter chaque domaine de sous-wiki à la configuration des hôtes docker du serveur Collabora. La configuration principale du wiki sera utilisée si elle n'est pas définie au niveau du sous-wiki.
+
+
+## Attachments tab
+collabora.attachment.edit.title=Modifier avec Collabora
+collabora.attachment.modal.title=Créer un nouveau fichier avec Collabora
+collabora.attachment.modal.fileType=Type de fichier
+collabora.attachment.modal.fileType.text=Document
+collabora.attachment.modal.fileType.presentation=Présentation
+collabora.attachment.modal.fileType.spreadsheet=Feuille de calcul
+collabora.attachment.modal.fileName=Nom du fichier
+collabora.attachment.modal.submit=Créer et modifier le fichier
+collabora.attachment.modal.submit.error=La pièce jointe existe déjà
+collabora.attachment.modal.new.title=Créer un nouveau fichier avec Collabora
+collabora.attachment.modal.new=Nouveau fichier
+collabora.attachment.title=Collabora
+collabora.attachment.view.title=Visualiser avec Collabora
+
+## Editor
+collabora.editor.onPage=de la page
+collabora.editor.error=Une erreur est survenue lors du chargement de ce fichier. Cause: {0}
+collabora.editor.close=Fermer
+collabora.editor.close.hint=Fermer l''éditeur
+collabora.editor.unsaved.close=Continuez à éditer
+collabora.editor.unsaved.info=Il y a des {0}modifications non enregistrées{1}. Voulez-vous vraiment quitter sans enregistrer?
+collabora.editor.unsaved.autoSave=Notez que les modifications peuvent toujours être enregistrées par la fonctionnalité {0}d''enregistrement automatique{1}, si celle-ci est activée.
+collabora.editor.unsaved.label=Modifications non enregistrées
+collabora.editor.unsaved.submit=Fermer sans enregistrer
+collabora.validation.attachmentMissing=La page ou la pièce jointe n'ont pas été trouvées.
+collabora.validation.documentMissing=Le nom de la page est obligatoire!
+collabora.validation.filenameMissing=Le nom du fichier est obligatoire!
+collabora.validation.notInstalled=L''application Collabora n''est pas installée sur le wiki principal, nous utilisons donc le domaine wiki actuel pour l''édition, ce qui peut ne pas fonctionner si la configuration des hôtes docker n''inclut pas le domaine du sous-wiki. Installez Collabora sur le wiki principal ou modifiez la configuration pour toujours utiliser le wiki actuel pour l''édition.</content>
+</xwikidoc>

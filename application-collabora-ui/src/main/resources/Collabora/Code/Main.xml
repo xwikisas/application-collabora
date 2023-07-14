@@ -273,7 +273,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
       const wopiSrc = encodeURIComponent(wopiResourceURL);
       const actionURL = fileUrlSrc + 'lang=' + lang + '&amp;WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', actionURL);
-      $('#collaboraForm input[name=access_token]').attr('value', accessToken);
+      $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(accessToken));
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(l10n.get('error', error), 'error');

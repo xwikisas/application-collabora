@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.security.authorization.AuthorizationManager;
 import org.xwiki.security.authorization.Right;
+
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
  * Manage existing {@link FileToken} instances.
@@ -66,6 +69,8 @@ public class FileTokenManager
     @Named("current")
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
+    private Provider<CollaboraConfiguration> configurationProvider;
+
     private Map<String, FileToken> tokens = new HashMap<>();
 
     /**
@@ -89,7 +94,7 @@ public class FileTokenManager
             }
         }
 
-        return createNewToken(user, fileId);
+        return createNewToken(user, fileId, configurationProvider.get().getTokenTimeout());
     }
 
     /**
@@ -211,10 +216,10 @@ public class FileTokenManager
         return fileToken;
     }
 
-    private FileToken createNewToken(String user, String fileId)
+    private FileToken createNewToken(String user, String fileId, int tokenTimeout)
     {
         AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
-        FileToken token = new FileToken(user, fileId,
+        FileToken token = new FileToken(user, fileId, tokenTimeout,
             this.authorizationManager.hasAccess(Right.VIEW, this.documentReferenceResolver.resolve(user),
                 attachmentReference.getDocumentReference()),
             this.authorizationManager.hasAccess(Right.EDIT, this.documentReferenceResolver.resolve(user),

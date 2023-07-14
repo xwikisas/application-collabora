@@ -73,6 +73,20 @@
       <unmodifiable>0</unmodifiable>
       <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
     </server>
+    <tokenTimeout>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <hint/>
+      <name>tokenTimeout</name>
+      <number>4</number>
+      <numberType>integer</numberType>
+      <prettyName>tokenTimeout</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+    </tokenTimeout>
   </class>
   <object>
     <name>Collabora.Code.ConfigurationClass</name>

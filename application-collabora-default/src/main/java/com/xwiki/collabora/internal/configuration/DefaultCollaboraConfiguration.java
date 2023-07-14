@@ -48,6 +48,8 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
 
     private static final String SERVER = "server";
 
+    private static final String TOKEN_TIMEOUT = "tokenTimeout";
+
     @Inject
     @Named(MainCollaboraConfigurationSource.HINT)
     private ConfigurationSource mainConfiguration;
@@ -83,5 +85,13 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
         Boolean editUsingMainWiki = this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, Boolean.class);
         return editUsingMainWiki == null ? this.mainConfiguration.getProperty(EDIT_USING_MAIN_WIKI, false)
             : editUsingMainWiki;
+    }
+
+    @Override
+    public int getTokenTimeout()
+    {
+        int currentWikiTokenTimeout = this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 0);
+        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 5)
+            : currentWikiTokenTimeout;
     }
 }
