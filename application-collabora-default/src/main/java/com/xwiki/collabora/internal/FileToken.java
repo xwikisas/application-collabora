@@ -48,15 +48,21 @@ public class FileToken
      */
     private final int tokenTimeout;
 
+    private boolean hasView;
+
+    private boolean hasEdit;
+
     private int usage;
 
-    FileToken(String user, String fileId, int tokenTimeout)
+    FileToken(String user, String fileId, int tokenTimeout, boolean hasView, boolean hasEdit)
     {
         this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
+        this.hasView = hasView;
+        this.hasEdit = hasEdit;
         // Transform from hours to seconds.
         this.tokenTimeout = tokenTimeout * 1200;
     }
@@ -114,6 +120,38 @@ public class FileToken
     public Long getTimestamp()
     {
         return this.timestamp;
+    }
+
+    /**
+     * @return {@code true} if this token has view rights, {@code false} otherwise
+     */
+    public boolean hasView()
+    {
+        return this.hasView;
+    }
+
+    /**
+     * @param hasView {@code true} if this token has view rights, {@code false} otherwise
+     */
+    public void setHasView(boolean hasView)
+    {
+        this.hasView = hasView;
+    }
+
+    /**
+     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public boolean hasEdit()
+    {
+        return this.hasEdit;
+    }
+
+    /**
+     * @param hasEdit {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public void setHasEdit(boolean hasEdit)
+    {
+        this.hasEdit = hasEdit;
     }
 
     @Override

@@ -95,10 +95,10 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private EntityReferenceSerializer<String> referenceSerializer;
 
     @Override
-    public Response get(String fileId, String token, String userCanWrite) throws XWikiRestException
+    public Response get(String fileId, String token) throws XWikiRestException
     {
-        if (token == null || fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed to get file [{}] due to invalid token", fileId);
+        if (token == null || fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
@@ -108,7 +108,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
-            message.put("UserCanWrite", userCanWrite);
+            message.put("UserCanWrite", fileTokenManager.hasWriteAccess(token));
             message.put("UserId", referenceSerializer.serialize(fileTokenManager.getTokenUserDocReference(token)));
             message.put("UserFriendlyName",
                 userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(token)));
@@ -127,8 +127,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed get content of file [{}] due to invalid token", fileId);
+        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", fileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -149,8 +149,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token)) {
-            logger.warn("Failed to update file [{}] due to invalid token", fileId);
+        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
+            logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", fileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 

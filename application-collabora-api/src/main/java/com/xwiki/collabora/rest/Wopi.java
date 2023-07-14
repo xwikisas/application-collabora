@@ -49,13 +49,11 @@ public interface Wopi extends XWikiRestComponent
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token
-     * @param userCanWrite {@code true} if the user has write access, {@code false} otherwise
      * @return information about the requested file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
-    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token,
-        @QueryParam("userCanWrite") String userCanWrite) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
 
     /**
      * Get file content.
@@ -72,8 +70,8 @@ public interface Wopi extends XWikiRestComponent
 
     /**
      * Update content of a file. This is used by the Collabora Save action. A specific REST model should be used as
-     * response, see {@link #get(String, String, String)}. This should be a PUT method, but the Collabora online server
-     * uses a POST verb on the save action.
+     * response, see {@link #get(String, String)}. This should be a PUT method, but the Collabora online server uses a
+     * POST verb on the save action.
      *
      * @param fileId id of the file
      * @param token {@code String} representation of the authentication token

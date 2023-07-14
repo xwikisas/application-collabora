@@ -30,9 +30,13 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
+import org.xwiki.model.reference.AttachmentReference;
+import org.xwiki.model.reference.AttachmentReferenceResolver;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
+import org.xwiki.security.authorization.AuthorizationManager;
+import org.xwiki.security.authorization.Right;
 
 import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
@@ -59,6 +63,12 @@ public class FileTokenManager
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Inject
+    private AuthorizationManager authorizationManager;
+
+    @Inject
+    @Named("current")
+    private AttachmentReferenceResolver<String> attachmentReferenceResolver;
+
     private Provider<CollaboraConfiguration> configurationProvider;
 
     private Map<String, FileToken> tokens = new HashMap<>();
@@ -146,16 +156,74 @@ public class FileTokenManager
         return this.documentReferenceResolver.resolve(fileToken.getUser());
     }
 
+    /**
+     * @param token string representation of the token
+     * @return {@code true} if this token has edit rights, {@code false} otherwise
+     */
+    public boolean hasWriteAccess(String token)
+    {
+        return tokens.get(token).hasEdit();
+    }
+
+    /**
+     * @param token string representation of the token
+     * @return {@code true} if this token has view or edit rights for accessing the file, {@code false} otherwise
+     */
+    public boolean hasAccess(String token)
+    {
+        FileToken fileToken = tokens.get(token);
+        return fileToken.hasView() || fileToken.hasEdit();
+    }
+
+    /**
+     * Update token access rights in case they have been changed since the creation, e.g. you had edit right when you
+     * first accessed the document with Collabora, but it has been denied since then, so you should not be able to edit
+     * anymore.
+     *
+     * @param fileToken the token
+     */
+    private void updateAccessRights(FileToken fileToken)
+    {
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileToken.getFileId());
+
+        boolean hasView =
+            this.authorizationManager.hasAccess(Right.VIEW, this.documentReferenceResolver.resolve(fileToken.getUser()),
+                attachmentReference.getDocumentReference());
+        if (hasView != fileToken.hasView()) {
+            fileToken.setHasView(hasView);
+            logger.debug("View right changed for existing token of file [{}]", fileToken.getFileId());
+        }
+
+        boolean hasEdit =
+            this.authorizationManager.hasAccess(Right.EDIT, this.documentReferenceResolver.resolve(fileToken.getUser()),
+                attachmentReference.getDocumentReference());
+        if (hasEdit != fileToken.hasEdit()) {
+            fileToken.setHasEdit(hasEdit);
+            logger.debug("Edit right changed for existing token of file [{}]", fileToken.getFileId());
+        }
+    }
+
     private FileToken getExistingToken(String user, String fileId)
     {
         Optional<Map.Entry<String, FileToken>> tokenEntry = this.tokens.entrySet().stream()
             .filter(x -> x.getValue().getUser().equals(user) && x.getValue().getFileId().equals(fileId)).findFirst();
-        return tokenEntry.map(Map.Entry::getValue).orElse(null);
+        FileToken fileToken = tokenEntry.map(Map.Entry::getValue).orElse(null);
+
+        if (fileToken != null) {
+            updateAccessRights(fileToken);
+        }
+
+        return fileToken;
     }
 
     private FileToken createNewToken(String user, String fileId, int tokenTimeout)
     {
-        FileToken token = new FileToken(user, fileId, tokenTimeout);
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        FileToken token = new FileToken(user, fileId, tokenTimeout,
+            this.authorizationManager.hasAccess(Right.VIEW, this.documentReferenceResolver.resolve(user),
+                attachmentReference.getDocumentReference()),
+            this.authorizationManager.hasAccess(Right.EDIT, this.documentReferenceResolver.resolve(user),
+                attachmentReference.getDocumentReference()));
         tokens.put(token.toString(), token);
         logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 

@@ -269,11 +269,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
       const accessToken =  resp.value;
-      const params = $.param({
-        userCanWrite: userCanWrite
-      });
       const lang = encodeURIComponent($('html').attr('lang'));
-      const wopiSrc = encodeURIComponent(wopiResourceURL + '?' + params);
+      const wopiSrc = encodeURIComponent(wopiResourceURL);
       const actionURL = fileUrlSrc + 'lang=' + lang + '&amp;WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', actionURL);
       $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(accessToken));
