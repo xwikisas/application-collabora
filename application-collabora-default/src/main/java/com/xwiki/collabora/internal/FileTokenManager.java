@@ -76,7 +76,7 @@ public class FileTokenManager
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
         if (token != null) {
-            if (token.isExpired(configurationProvider.get().getTokenTimeout())) {
+            if (token.isExpired()) {
                 tokens.remove(token.toString());
             } else {
                 token.setUsage(token.getUsage() + 1);
@@ -84,7 +84,7 @@ public class FileTokenManager
             }
         }
 
-        return createNewToken(user, fileId);
+        return createNewToken(user, fileId, configurationProvider.get().getTokenTimeout());
     }
 
     /**
@@ -96,11 +96,8 @@ public class FileTokenManager
     public boolean isInvalid(String token)
     {
         FileToken foundToken = tokens.get(token);
-        logger.debug("Is token expired [{}]. timeout: [{}]",
-            foundToken.isExpired(configurationProvider.get().getTokenTimeout()),
-            configurationProvider.get().getTokenTimeout());
 
-        return foundToken == null || foundToken.isExpired(configurationProvider.get().getTokenTimeout());
+        return foundToken == null || foundToken.isExpired();
     }
 
     /**
@@ -156,9 +153,9 @@ public class FileTokenManager
         return tokenEntry.map(Map.Entry::getValue).orElse(null);
     }
 
-    private FileToken createNewToken(String user, String fileId)
+    private FileToken createNewToken(String user, String fileId, int tokenTimeout)
     {
-        FileToken token = new FileToken(user, fileId);
+        FileToken token = new FileToken(user, fileId, tokenTimeout);
         tokens.put(token.toString(), token);
         logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 

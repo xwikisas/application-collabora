@@ -90,8 +90,8 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public int getTokenTimeout()
     {
-        int currentWikiTokenTimeout = this.currentConfiguration.getProperty(TOKEN_TIMEOUT);
-        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 4)
+        int currentWikiTokenTimeout = this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 0);
+        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 5)
             : currentWikiTokenTimeout;
     }
 }
