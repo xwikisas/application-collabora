@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
+
+import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
 /**
  * Manage existing {@link FileToken} instances.
@@ -54,6 +57,9 @@ public class FileTokenManager
     @Inject
     @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
+
+    @Inject
+    private Provider<CollaboraConfiguration> configurationProvider;
 
     private Map<String, FileToken> tokens = new HashMap<>();
 
@@ -78,7 +84,7 @@ public class FileTokenManager
             }
         }
 
-        return createNewToken(user, fileId);
+        return createNewToken(user, fileId, configurationProvider.get().getTokenTimeout());
     }
 
     /**
@@ -147,9 +153,9 @@ public class FileTokenManager
         return tokenEntry.map(Map.Entry::getValue).orElse(null);
     }
 
-    private FileToken createNewToken(String user, String fileId)
+    private FileToken createNewToken(String user, String fileId, int tokenTimeout)
     {
-        FileToken token = new FileToken(user, fileId);
+        FileToken token = new FileToken(user, fileId, tokenTimeout);
         tokens.put(token.toString(), token);
         logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 

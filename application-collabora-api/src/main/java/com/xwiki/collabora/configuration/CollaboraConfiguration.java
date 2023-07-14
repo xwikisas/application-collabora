@@ -71,4 +71,12 @@ public interface CollaboraConfiguration
      *     used
      */
     boolean editUsingMainWiki();
+
+    /**
+     * Get the number of hours (e.g. 1 for one hour, 2 for 2 hours) after which the file token will expire and edit will
+     * stop working. If not defined on the sub wiki or main wiki, a default value of 5 is used.
+     *
+     * @return the number of hours after which the file editing token expires.
+     */
+    int getTokenTimeout();
 }

@@ -181,10 +181,11 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
         try {
             String urlSrc = discoveryManager.getURLSrc(fileId);
+            String fileTokenValue = fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString();
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
-            token.setValue(fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString());
+            token.setValue(fileTokenValue);
 
             return token;
         } catch (IOException e) {

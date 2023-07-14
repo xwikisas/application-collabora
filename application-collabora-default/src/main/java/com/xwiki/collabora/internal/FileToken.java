@@ -43,19 +43,26 @@ public class FileToken
 
     private final int randomNumber;
 
+    /**
+     * Token timeout, in seconds.
+     */
+    private final int tokenTimeout;
+
     private int usage;
 
-    FileToken(String user, String fileId)
+    FileToken(String user, String fileId, int tokenTimeout)
     {
         this.user = user;
         this.fileId = fileId;
         this.timestamp = new Date().getTime();
         this.randomNumber = Math.abs(SECURE_RANDOM.nextInt());
         this.usage = 1;
+        // Transform from hours to seconds.
+        this.tokenTimeout = tokenTimeout * 1200;
     }
 
     /**
-     * Check if this token is expired. Tokens have a valability of 1 hour.
+     * Check if this token is expired. Tokens have a default lifetime of 5 hours, but this value can be configured.
      *
      * @return {@code true} if the token has expired, {@code false} otherwise.
      */
@@ -63,7 +70,7 @@ public class FileToken
     {
         long currentTime = new Date().getTime();
         long differenceInSec = (currentTime - timestamp) / 1000;
-        return differenceInSec > 3600;
+        return differenceInSec > this.tokenTimeout;
     }
 
     /**
