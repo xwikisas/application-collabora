@@ -69,6 +69,7 @@ public class FileTokenManager
     @Named("current")
     private AttachmentReferenceResolver<String> attachmentReferenceResolver;
 
+    @Inject
     private Provider<CollaboraConfiguration> configurationProvider;
 
     private Map<String, FileToken> tokens = new HashMap<>();
