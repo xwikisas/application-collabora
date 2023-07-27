@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.xwiki.collabora</groupId>
     <artifactId>application-collabora</artifactId>
-    <version>1.2.4.1-SNAPSHOT</version>
+    <version>1.3</version>
   </parent>
   <artifactId>application-collabora-api</artifactId>
   <packaging>jar</packaging>
