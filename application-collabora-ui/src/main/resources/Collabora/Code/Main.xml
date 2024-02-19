@@ -108,38 +108,43 @@
 {{/velocity}}
 
 {{velocity}}
-#if ("$!request.document" == '')
-  {{translation key="collabora.validation.documentMissing" /}}
+#if (!$services.licensing.licensor.hasLicensureForEntity(
+    $services.model.createDocumentReference('', 'Collabora', 'Main')))
+  {{missingLicenseMessage extensionName="collabora.extension.name"/}}
 #else
-  #set ($fileDoc = $xwiki.getDocument($request.document))
-  #if ("$!request.filename" == '')
-    {{translation key="collabora.validation.filenameMissing" /}}
+  #if ("$!request.document" == '')
+    {{translation key="collabora.validation.documentMissing" /}}
   #else
-    #set ($filename = $request.filename)
-    #set ($fileType = $filename.substring($filename.lastIndexOf('.')))
-    #set ($attachment = $fileDoc.getAttachment($request.filename))
-  #end
-#end
-#if (!$attachment)
-  {{translation key="collabora.validation.attachmentMissing" /}}
-#else
-  {{html clean=false}}
-    #if ($fileDoc.hasAccessLevel('edit') &amp;&amp; "$!request.action" == 'edit' )
-      #set ($mode = 'edit')
-      #set ($currentAction = $escapetool.xml($services.localization.render('editing')))
-      #set ($canEdit = true)
+    #set ($fileDoc = $xwiki.getDocument($request.document))
+    #if ("$!request.filename" == '')
+      {{translation key="collabora.validation.filenameMissing" /}}
     #else
-      #set ($mode = 'view')
-      #set ($currentAction = '')
-      #set ($canEdit = false)
+      #set ($filename = $request.filename)
+      #set ($fileType = $filename.substring($filename.lastIndexOf('.')))
+      #set ($attachment = $fileDoc.getAttachment($request.filename))
     #end
-    #set ($discard = $xwiki.jsx.use("Collabora.Code.Main"))
-    #set ($discard = $xwiki.ssx.use("Collabora.Code.Main"))
-    #template('htmlheader.vm')
-    &lt;div id="xwikicontent"&gt;
-      #renderCollaboraContent($mode)
-    &lt;/div&gt;
-  {{/html}}
+  #end
+  #if (!$attachment)
+    {{translation key="collabora.validation.attachmentMissing" /}}
+  #else
+    {{html clean=false}}
+      #if ($fileDoc.hasAccessLevel('edit') &amp;&amp; "$!request.action" == 'edit' )
+        #set ($mode = 'edit')
+        #set ($currentAction = $escapetool.xml($services.localization.render('editing')))
+        #set ($canEdit = true)
+      #else
+        #set ($mode = 'view')
+        #set ($currentAction = '')
+        #set ($canEdit = false)
+      #end
+      #set ($discard = $xwiki.jsx.use("Collabora.Code.Main"))
+      #set ($discard = $xwiki.ssx.use("Collabora.Code.Main"))
+      #template('htmlheader.vm')
+      &lt;div id="xwikicontent"&gt;
+        #renderCollaboraContent($mode)
+      &lt;/div&gt;
+    {{/html}}
+  #end
 #end
 {{/velocity}}</content>
   <object>

@@ -36,7 +36,9 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>##Admin section
+  <content>collabora.extension.name=Collabora Connector Application (Pro)
+
+##Admin section
 admin.collabora=Collabora
 admin.collabora.description=Configure Collabora Connector Application
 Collabora.Code.ConfigurationClass_isEnabled=Enable
