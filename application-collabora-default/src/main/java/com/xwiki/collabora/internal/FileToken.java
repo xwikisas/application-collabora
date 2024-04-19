@@ -64,7 +64,7 @@ public class FileToken
         this.hasView = hasView;
         this.hasEdit = hasEdit;
         // Transform from hours to seconds.
-        this.tokenTimeout = tokenTimeout * 1200;
+        this.tokenTimeout = tokenTimeout * 3600;
     }
 
     /**
