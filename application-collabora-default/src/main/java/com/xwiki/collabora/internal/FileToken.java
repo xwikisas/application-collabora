@@ -46,7 +46,7 @@ public class FileToken
     /**
      * Token timeout, in seconds.
      */
-    private final int tokenTimeout;
+    private int tokenTimeout;
 
     private boolean hasView;
 
@@ -183,6 +183,16 @@ public class FileToken
         builder.append(this.getRandomNumber(), other.getRandomNumber());
 
         return builder.build();
+    }
+
+    /**
+     * Extends the token timeout with the given amount converted from hours to seconds.
+     *
+     * @param tokenTimeout how many hours to extend the token by.
+     */
+    public void extendTokenTimeout(int tokenTimeout)
+    {
+        this.tokenTimeout += tokenTimeout * 3600;
     }
 
     private int getRandomNumber()

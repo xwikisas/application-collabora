@@ -87,6 +87,7 @@ public class FileTokenManager
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
         if (token != null) {
+            updateAccessRights(token);
             if (token.isExpired()) {
                 tokens.remove(token.toString());
             } else {
@@ -112,6 +113,44 @@ public class FileTokenManager
     }
 
     /**
+     * Check if the given token has a valid form, exists, and it's not expired.
+     *
+     * @param fileId id of the edited file
+     * @param userReference {@link DocumentReference} user reference associated with the checked token
+     * @return {@code true} if the token is valid, {@code false} otherwise
+     */
+    public boolean isInvalid(String fileId, DocumentReference userReference)
+    {
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
+        FileToken token = getExistingToken(user, fileId);
+
+        return token == null || token.isExpired();
+    }
+
+    /**
+     * Checks if a token is associated with the given file id and user and if the user has rights on the file, extends
+     * time out of the token.
+     *
+     * @param fileId id of the edited file
+     * @param userReference {@link DocumentReference} user reference associated with the checked token
+     * @return {@code true} if the token has been extended, {@code false} otherwise
+     */
+    public boolean canExtendToken(String fileId, DocumentReference userReference)
+    {
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
+        FileToken fileToken = getExistingToken(user, fileId);
+        if (fileToken != null) {
+            updateAccessRights(fileToken);
+            if (fileToken.hasView() || fileToken.hasEdit()) {
+                fileToken.extendTokenTimeout(configurationProvider.get().getTokenTimeout());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Remove the usage of a token. This could mean to update the number of usages (i.e. number of windows where the
      * current file is edited by this user), or to simply remove the token in case it is no longer used.
      *
@@ -126,7 +165,7 @@ public class FileTokenManager
         if (foundToken == null) {
             return 0;
         }
-
+        updateAccessRights(foundToken);
         int tokenUsage = foundToken.getUsage();
         if (tokenUsage > 1) {
             tokenUsage--;
@@ -208,13 +247,8 @@ public class FileTokenManager
     {
         Optional<Map.Entry<String, FileToken>> tokenEntry = this.tokens.entrySet().stream()
             .filter(x -> x.getValue().getUser().equals(user) && x.getValue().getFileId().equals(fileId)).findFirst();
-        FileToken fileToken = tokenEntry.map(Map.Entry::getValue).orElse(null);
 
-        if (fileToken != null) {
-            updateAccessRights(fileToken);
-        }
-
-        return fileToken;
+        return tokenEntry.map(Map.Entry::getValue).orElse(null);
     }
 
     private FileToken createNewToken(String user, String fileId, int tokenTimeout)
