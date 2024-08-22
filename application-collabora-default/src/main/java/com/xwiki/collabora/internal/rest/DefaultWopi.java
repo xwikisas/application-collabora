@@ -22,6 +22,7 @@ package com.xwiki.collabora.internal.rest;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,7 +44,6 @@ import org.xwiki.rest.XWikiRestException;
 import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
 import com.xpn.xwiki.XWikiContext;
-import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiAttachment;
 import com.xwiki.collabora.internal.AttachmentManager;
 import com.xwiki.collabora.internal.DiscoveryManager;
@@ -97,21 +97,25 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response get(String fileId, String token) throws XWikiRestException
     {
-        if (token == null || fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
-            logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", fileId);
+        String decodedToken = new String(Base64.getDecoder().decode(token));
+        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+
+        if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+            logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", decodedFileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(decodedFileId);
         try {
             XWikiAttachment attachment = attachmentManager.getAttachment(attachmentReference);
             JSONObject message = new JSONObject();
             message.put("BaseFileName", attachmentReference.getName());
             message.put("Size", String.valueOf(attachment.getLongSize()));
-            message.put("UserCanWrite", fileTokenManager.hasWriteAccess(token));
-            message.put("UserId", referenceSerializer.serialize(fileTokenManager.getTokenUserDocReference(token)));
+            message.put("UserCanWrite", fileTokenManager.hasWriteAccess(decodedToken));
+            message.put("UserId",
+                referenceSerializer.serialize(fileTokenManager.getTokenUserDocReference(decodedToken)));
             message.put("UserFriendlyName",
-                userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(token)));
+                userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(decodedToken)));
             message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
             // Needed for using the PostMessage API.
             message.put("PostMessageOrigin", Request.getCurrent().getHostRef().toString());
@@ -119,7 +123,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (Exception e) {
-            logger.warn("Failed to get file [{}]. Root cause: [{}]", fileId, ExceptionUtils.getRootCauseMessage(e));
+            logger.warn("Failed to get file [{}]. Root cause: [{}]", decodedFileId,
+                ExceptionUtils.getRootCauseMessage(e));
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -127,20 +132,23 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
-            logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", fileId);
+        String decodedToken = new String(Base64.getDecoder().decode(token));
+        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+            logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", decodedFileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         XWikiContext xcontext = this.contextProvider.get();
-        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(fileId);
+        AttachmentReference attachmentReference = this.attachmentReferenceResolver.resolve(decodedFileId);
         try {
             XWikiAttachment attachment = attachmentManager.getAttachment(attachmentReference);
 
             return Response.ok().entity(attachment.getContentInputStream(xcontext)).type(attachment.getMimeType())
                 .build();
         } catch (Exception e) {
-            logger.warn("Failed to get content of file [{}]. Root cause: [{}]", fileId,
+            logger.warn("Failed to get content of file [{}]. Root cause: [{}]", decodedFileId,
                 ExceptionUtils.getRootCauseMessage(e));
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
@@ -149,23 +157,27 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        if (fileTokenManager.isInvalid(token) || !fileTokenManager.hasAccess(token)) {
-            logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", fileId);
+        String decodedToken = new String(Base64.getDecoder().decode(token));
+        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+            logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
         try {
             XWikiAttachment attachment =
-                attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(fileId), body,
-                    fileTokenManager.getTokenUserDocReference(token));
+                attachmentManager.createOrUpdateAttachment(this.attachmentReferenceResolver.resolve(decodedFileId),
+                    body, fileTokenManager.getTokenUserDocReference(decodedToken));
 
             JSONObject response = new JSONObject();
             response.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
 
             return Response.status(Response.Status.OK).entity(response.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
-        } catch (XWikiException e) {
-            logger.warn("Failed to update file [{}]. Root cause: [{}]", fileId, ExceptionUtils.getRootCauseMessage(e));
+        } catch (Exception e) {
+            logger.warn("Failed to update file [{}]. Root cause: [{}]", decodedFileId,
+                ExceptionUtils.getRootCauseMessage(e));
             throw new XWikiRestException(e);
         }
     }
