@@ -217,7 +217,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         try {
             XWikiContext xcontext = this.contextProvider.get();
             if (fileTokenManager.isInvalid(fileId, xcontext.getUserReference())) {
-                if (fileTokenManager.canExtendToken(fileId, xcontext.getUserReference())) {
+                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference())) {
                     fileTokenManager.extendToken(fileId, xcontext.getUserReference());
                     return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).build();
                 } else {

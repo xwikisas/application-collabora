@@ -128,25 +128,7 @@ public class FileTokenManager
     }
 
     /**
-     * Checks if a token is associated with the given file id and user and if the user has rights on the file.
-     *
-     * @param fileId id of the edited file
-     * @param userReference {@link DocumentReference} user reference associated with the checked token
-     * @return {@code true} if the token can be extended, {@code false} otherwise
-     */
-    public boolean canExtendToken(String fileId, DocumentReference userReference)
-    {
-        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
-        FileToken fileToken = getExistingToken(user, fileId);
-        if (fileToken != null) {
-            updateAccessRights(fileToken);
-            return hasAccess(fileToken.toString());
-        }
-        return false;
-    }
-
-    /**
-     *  Extends token time out.
+     * Extends token time out with the Collabora configuration value.
      *
      * @param fileId id of the edited file
      * @param userReference {@link DocumentReference} user reference associated with the checked token
@@ -222,7 +204,24 @@ public class FileTokenManager
     public boolean hasAccess(String token)
     {
         FileToken fileToken = tokens.get(token);
+        updateAccessRights(fileToken);
         return fileToken.hasView() || fileToken.hasEdit();
+    }
+
+    /**
+     * @param fileId id of the edited file
+     * @param userReference {@link DocumentReference} user reference associated with the checked token
+     * @return {@code true} if this token has view or edit rights for accessing the file, {@code false} otherwise
+     */
+    public boolean hasAccess(String fileId, DocumentReference userReference)
+    {
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
+        FileToken fileToken = getExistingToken(user, fileId);
+        if (fileToken != null) {
+            updateAccessRights(fileToken);
+            return fileToken.hasView() || fileToken.hasEdit();
+        }
+        return false;
     }
 
     /**
