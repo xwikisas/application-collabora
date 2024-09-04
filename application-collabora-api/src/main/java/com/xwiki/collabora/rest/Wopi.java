@@ -112,8 +112,8 @@ public interface Wopi extends XWikiRestComponent
     Token clearToken(@PathParam("id") String fileId) throws XWikiRestException;
 
     /**
-     * Find a token associated with the given file if and the context user, and if it expired extends the timeout with
-     * the Collabora configuration set value.
+     * If the token for the given file is associated to the current user and has expired, extends the expiration time
+     * of the token. The token's timeout is extended based on the Collabora configuration settings.
      *
      * @param fileId id of the file
      * @return status code of the operation

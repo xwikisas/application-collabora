@@ -128,12 +128,11 @@ public class FileTokenManager
     }
 
     /**
-     * Checks if a token is associated with the given file id and user and if the user has rights on the file, extends
-     * time out of the token.
+     * Checks if a token is associated with the given file id and user and if the user has rights on the file.
      *
      * @param fileId id of the edited file
      * @param userReference {@link DocumentReference} user reference associated with the checked token
-     * @return {@code true} if the token has been extended, {@code false} otherwise
+     * @return {@code true} if the token can be extended, {@code false} otherwise
      */
     public boolean canExtendToken(String fileId, DocumentReference userReference)
     {
@@ -141,13 +140,24 @@ public class FileTokenManager
         FileToken fileToken = getExistingToken(user, fileId);
         if (fileToken != null) {
             updateAccessRights(fileToken);
-            if (fileToken.hasView() || fileToken.hasEdit()) {
-                fileToken.extendTokenTimeout(configurationProvider.get().getTokenTimeout());
-                return true;
-            }
+            return hasAccess(fileToken.toString());
         }
-
         return false;
+    }
+
+    /**
+     *  Extends token time out.
+     *
+     * @param fileId id of the edited file
+     * @param userReference {@link DocumentReference} user reference associated with the checked token
+     */
+    public void extendToken(String fileId, DocumentReference userReference)
+    {
+        String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
+        FileToken fileToken = getExistingToken(user, fileId);
+        if (fileToken != null) {
+            fileToken.extendTokenTimeout(configurationProvider.get().getTokenTimeout());
+        }
     }
 
     /**

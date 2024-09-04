@@ -60,9 +60,9 @@
     &lt;/div&gt;
   &lt;/div&gt;
 #end
-#macro (unauthorizedUserModal)
-  &lt;div class="modal fade" id="unauthorizedUserPopup" tabindex="-1" role="dialog" aria-hidden="true"
-    aria-label="unauthorizedUserPopupLabel"&gt;
+#macro (getUnauthorizedUserModal)
+  &lt;div class="modal fade" id="unauthorizedUserModal" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="unauthorizedUserModalLabel"&gt;
     &lt;div class="modal-dialog modal-sm"&gt;
       &lt;div class="modal-content"&gt;
         &lt;div class="modal-body"&gt;
@@ -120,7 +120,7 @@
   ## Where the document will be displayed.
   &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
   #unsavedChangesModal()
-  #unauthorizedUserModal()
+  #getUnauthorizedUserModal()
 #end
 {{/velocity}}
 
@@ -283,14 +283,18 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
     } else if (msg.MessageId == 'Doc_ModifiedStatus') {
       isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
       if (isDocModified == false) {
-        const fileId = $("#collaboraServer").data('fileId');
+        const fileId = $('#collaboraServer').data('fileId');
         const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token/extend';
+        // We cannot renew or check the token before the Collabora save action, so we trigger a new request that in
+        // case it's needed, it renews the token before the Collabora token expiration date.
         $.ajax({
           url: tokenUpdateURL,
           type: 'PUT',
           dataType: 'text',
           success: function(resp, textStatus, jqXHR) {
             if (jqXHR.status == 200) {
+              // In case of a successful renewal of a token, a new save request is triggered to ensure that the
+              // content is properly saved.
               iframeWindow.postMessage(
                 JSON.stringify({ 'MessageId': 'Action_Save' }),
                 $("#collaboraServer").data('server')
@@ -299,7 +303,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
           },
           error: function(jqxhr, textStatus, error) {
             if (jqxhr.status == 401){
-              $('#unauthorizedUserPopup').modal('show');
+              $('#unauthorizedUserModal').modal('show');
             } else {
               new XWiki.widgets.Notification(l10n.get('internal', error), 'error');
             }
@@ -310,7 +314,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
   }
 
   $(function() {
-    const fileId = $("#collaboraServer").data('fileId');
+    const fileId = $('#collaboraServer').data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
     const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
     const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
