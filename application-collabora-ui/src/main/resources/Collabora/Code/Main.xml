@@ -266,10 +266,23 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
       isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
     }
   }
+  // To avoid Collabora server error when processing special punctuation characters, we need to encode them in Base64.
+  var bytesToBase64 = function(bytes) {
+    const binString = Array.from(bytes, (byte) =&gt;
+      String.fromCodePoint(byte)
+    ).join('');
+    return btoa(binString);
+  }
+
   $(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
-    const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
+    // Because btoa does not support Unicode text, we first need to convert the string to its constituent bytes in
+    // UTF-8, by using TextEncoder.
+    // (https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem - The "Unicode Problem")
+    const textEncoder = new TextEncoder();
+    const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath +
+      bytesToBase64(textEncoder.encode(fileId));
     const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
@@ -278,7 +291,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
       const wopiSrc = encodeURIComponent(wopiResourceURL);
       const actionURL = fileUrlSrc + 'lang=' + lang + '&amp;WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', actionURL);
-      $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(accessToken));
+      $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(bytesToBase64(textEncoder.encode(
+        accessToken))));
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(l10n.get('error', error), 'error');
