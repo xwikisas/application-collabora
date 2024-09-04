@@ -67,7 +67,9 @@ collabora.attachment.view.title=View using Collabora
 
 ## Editor
 collabora.editor.onPage=on page
-collabora.editor.error=Error while loading this file. Cause: {0}
+collabora.editor.error.load=Error while loading this file. Cause: {0}
+collabora.editor.error.unauthorized=User is unauthorized to perform this action or token is no longer available.
+collabora.editor.error.internal=Internal error occurred. Cause: {0}
 collabora.editor.close=Close
 collabora.editor.close.hint=Close editor
 collabora.editor.file.home.title=File home page

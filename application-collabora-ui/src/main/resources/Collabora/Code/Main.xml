@@ -60,6 +60,22 @@
     &lt;/div&gt;
   &lt;/div&gt;
 #end
+#macro (getUnauthorizedUserModal)
+  &lt;div class="modal fade" id="unauthorizedUserModal" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="unauthorizedUserModalLabel"&gt;
+    &lt;div class="modal-dialog modal-sm"&gt;
+      &lt;div class="modal-content"&gt;
+        &lt;div class="modal-body"&gt;
+          $escapetool.xml($services.localization.render('collabora.editor.error.unauthorized'))
+        &lt;/div&gt;
+        &lt;div class="modal-footer"&gt;
+          &lt;button type="button" class="btn btn-default" data-dismiss="modal"&gt;
+            $escapetool.xml($services.localization.render('cancel'))&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+#end
 #macro (renderCollaboraContent $mode)
   ## Display logo and some information about the currently edited file. Show Close action on the right.
   ## Save action is included in Collabora editor.
@@ -104,6 +120,7 @@
   ## Where the document will be displayed.
   &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
   #unsavedChangesModal()
+  #getUnauthorizedUserModal()
 #end
 {{/velocity}}
 
@@ -234,14 +251,15 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>define('collabora-editor', {
-  prefix: 'collabora.editor.',
+      <code>define('collabora-editor-errors', {
+  prefix: 'collabora.editor.error.',
   keys: [
-    'error'
+    'load',
+    'internal'
   ]
 });
 
-require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
+require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
   const collaboraPath ='/rest/collabora/files/';
   const iframeWindow = document.getElementById('collaboraViewer').contentWindow;
   var isDocModified = false;
@@ -264,6 +282,34 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
       );
     } else if (msg.MessageId == 'Doc_ModifiedStatus') {
       isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
+      if (isDocModified == false) {
+        const fileId = $('#collaboraServer').data('fileId');
+        const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token/extend';
+        // We cannot renew or check the token before the Collabora save action, so we trigger a new request that in
+        // case it's needed, it renews the token before the Collabora token expiration date.
+        $.ajax({
+          url: tokenUpdateURL,
+          type: 'PUT',
+          dataType: 'text',
+          success: function(resp, textStatus, jqXHR) {
+            if (jqXHR.status == 200) {
+              // In case of a successful renewal of a token, a new save request is triggered to ensure that the
+              // content is properly saved.
+              iframeWindow.postMessage(
+                JSON.stringify({ 'MessageId': 'Action_Save' }),
+                $("#collaboraServer").data('server')
+              );
+            }
+          },
+          error: function(jqxhr, textStatus, error) {
+            if (jqxhr.status == 401){
+              $('#unauthorizedUserModal').modal('show');
+            } else {
+              new XWiki.widgets.Notification(l10n.get('internal', error), 'error');
+            }
+          }
+        });
+      }
     }
   }
   // To avoid Collabora server error when processing special punctuation characters, we need to encode them in Base64.
@@ -275,7 +321,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
   }
 
   $(function() {
-    const fileId = $("#collaboraServer").data('fileId');
+    const fileId = $('#collaboraServer').data('fileId');
     const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
     // Because btoa does not support Unicode text, we first need to convert the string to its constituent bytes in
     // UTF-8, by using TextEncoder.
@@ -295,7 +341,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
         accessToken))));
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
-      new XWiki.widgets.Notification(l10n.get('error', error), 'error');
+      new XWiki.widgets.Notification(l10n.get('load', error), 'error');
     });
 
     // Listen to messages send by the Collabora editor iframe.

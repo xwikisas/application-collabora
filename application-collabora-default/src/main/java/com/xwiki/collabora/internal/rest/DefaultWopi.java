@@ -162,7 +162,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
         if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            // As the cause of a failure in updating the content may be an expired token, we return 200 status code for
+            // now since the UNAUTHORIZED message should be returned after trying first to extend the token.
+            // For this, subsequently to this request, an attempt to extend the token validity is done and only if
+            // this is not possible (e.g. due to insufficient rights) the correct UNAUTHORIZED message is returned.
+            // This is needed since we couldn't find a way to renew the token before the save request done by Collabora.
+            return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON).build();
         }
 
         try {
@@ -216,5 +221,26 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
         token.setUsage(tokenUsage);
 
         return token;
+    }
+
+    @Override
+    public Response updateTokenExpiration(String fileId) throws XWikiRestException
+    {
+        try {
+            XWikiContext xcontext = this.contextProvider.get();
+            if (fileTokenManager.isInvalid(fileId, xcontext.getUserReference())) {
+                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference())) {
+                    fileTokenManager.extendToken(fileId, xcontext.getUserReference());
+                    return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).build();
+                } else {
+                    return Response.status(Response.Status.UNAUTHORIZED).build();
+                }
+            }
+            return Response.notModified().type(MediaType.TEXT_PLAIN_TYPE).build();
+        } catch (Exception e) {
+            logger.warn("Failed to update token expiration for file [{}]. Root cause: [{}]", fileId,
+                ExceptionUtils.getRootCauseMessage(e));
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 }
