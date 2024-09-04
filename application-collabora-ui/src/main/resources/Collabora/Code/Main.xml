@@ -269,8 +269,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor'], function($, l10n) {
   // To avoid Collabora server error when processing special punctuation characters, we need to encode them in Base64.
   var bytesToBase64 = function(bytes) {
     const binString = Array.from(bytes, (byte) =&gt;
-      String.fromCodePoint(byte),
-    ).join("");
+      String.fromCodePoint(byte)
+    ).join('');
     return btoa(binString);
   }
 
