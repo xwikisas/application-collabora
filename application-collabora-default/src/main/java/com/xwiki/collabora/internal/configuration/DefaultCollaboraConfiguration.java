@@ -91,7 +91,7 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     public int getTokenTimeout()
     {
         int currentWikiTokenTimeout = this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 0);
-        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 5)
+        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 48)
             : currentWikiTokenTimeout;
     }
 }
