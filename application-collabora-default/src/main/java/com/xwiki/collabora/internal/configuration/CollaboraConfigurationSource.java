@@ -19,14 +19,18 @@
  */
 package com.xwiki.collabora.internal.configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
-import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.configuration.internal.AbstractWikisConfigurationSource;
+import org.xwiki.model.reference.LocalDocumentReference;
 
 /**
- * Collabora configuration source corresponding to the current wiki.
+ * Collabora configuration source.
  *
  * @version $Id$
  * @since 1.0
@@ -34,17 +38,29 @@ import org.xwiki.model.reference.DocumentReference;
 @Component
 @Named(CollaboraConfigurationSource.HINT)
 @Singleton
-public class CollaboraConfigurationSource extends AbstractCollaboraConfigurationSource
+public class CollaboraConfigurationSource extends AbstractWikisConfigurationSource
 {
     /**
      * The hint for this component.
      */
     public static final String HINT = "collabora.configuration.current";
 
+    private static final List<String> SPACE = Arrays.asList("Collabora", "Code");
+
+    protected static final LocalDocumentReference CONFIG_DOC = new LocalDocumentReference(SPACE, "Configuration");
+
+    private static final LocalDocumentReference CONFIG_CLASS = new LocalDocumentReference(SPACE, "ConfigurationClass");
+
     @Override
-    protected DocumentReference getDocumentReference()
+    protected LocalDocumentReference getLocalDocumentReference()
     {
-        return new DocumentReference(AbstractCollaboraConfigurationSource.CONFIG_DOC, this.getCurrentWikiReference());
+        return CONFIG_DOC;
+    }
+
+    @Override
+    protected LocalDocumentReference getClassReference()
+    {
+        return CONFIG_CLASS;
     }
 
     @Override

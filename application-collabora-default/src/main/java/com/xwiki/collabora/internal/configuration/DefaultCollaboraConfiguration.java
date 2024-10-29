@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.configuration.ConfigurationSource;
 
@@ -51,10 +50,6 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     private static final String TOKEN_TIMEOUT = "tokenTimeout";
 
     @Inject
-    @Named(MainCollaboraConfigurationSource.HINT)
-    private ConfigurationSource mainConfiguration;
-
-    @Inject
     @Named(CollaboraConfigurationSource.HINT)
     private ConfigurationSource currentConfiguration;
 
@@ -67,31 +62,24 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public boolean isEnabled()
     {
-        Boolean isCurrentWikiEnabled = this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
-        return isCurrentWikiEnabled == null ? this.mainConfiguration.getProperty(IS_ENABLED, false)
-            : isCurrentWikiEnabled;
+        return this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
     }
 
     @Override
     public String getServerURL()
     {
-        String currentWikiServer = this.currentConfiguration.getProperty(SERVER);
-        return StringUtils.isEmpty(currentWikiServer) ? this.mainConfiguration.getProperty(SERVER) : currentWikiServer;
+        return this.currentConfiguration.getProperty(SERVER);
     }
 
     @Override
     public boolean editUsingMainWiki()
     {
-        Boolean editUsingMainWiki = this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, Boolean.class);
-        return editUsingMainWiki == null ? this.mainConfiguration.getProperty(EDIT_USING_MAIN_WIKI, false)
-            : editUsingMainWiki;
+        return this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, Boolean.class);
     }
 
     @Override
     public int getTokenTimeout()
     {
-        int currentWikiTokenTimeout = this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 0);
-        return currentWikiTokenTimeout == 0 ? this.mainConfiguration.getProperty(TOKEN_TIMEOUT, 48)
-            : currentWikiTokenTimeout;
+        return this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 0);
     }
 }

@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="Collabora.Code.Main" locale="">
+<xwikidoc version="1.5" reference="Collabora.Code.Main" locale="">
   <web>Collabora.Code</web>
   <name>Main</name>
   <language/>
@@ -204,6 +204,7 @@
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
@@ -420,6 +421,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
         <name>code</name>
         <number>2</number>
         <prettyName>Code</prettyName>
+        <restricted>0</restricted>
         <rows>20</rows>
         <size>50</size>
         <unmodifiable>0</unmodifiable>
