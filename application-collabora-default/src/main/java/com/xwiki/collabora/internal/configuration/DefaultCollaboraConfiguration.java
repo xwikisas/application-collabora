@@ -62,19 +62,19 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public boolean isEnabled()
     {
-        return this.currentConfiguration.getProperty(IS_ENABLED, Boolean.class);
+        return this.currentConfiguration.getProperty(IS_ENABLED, false);
     }
 
     @Override
     public String getServerURL()
     {
-        return this.currentConfiguration.getProperty(SERVER);
+        return this.currentConfiguration.getProperty(SERVER, "");
     }
 
     @Override
     public boolean editUsingMainWiki()
     {
-        return this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, Boolean.class);
+        return this.currentConfiguration.getProperty(EDIT_USING_MAIN_WIKI, true);
     }
 
     @Override
