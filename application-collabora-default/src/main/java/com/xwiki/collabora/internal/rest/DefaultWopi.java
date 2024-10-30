@@ -34,7 +34,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONObject;
-import org.restlet.Request;
 import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.model.reference.AttachmentReference;
@@ -45,6 +44,7 @@ import org.xwiki.rest.internal.resources.pages.ModifiablePageResource;
 
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.doc.XWikiAttachment;
+import com.xpn.xwiki.web.XWikiRequest;
 import com.xwiki.collabora.internal.AttachmentManager;
 import com.xwiki.collabora.internal.DiscoveryManager;
 import com.xwiki.collabora.internal.FileTokenManager;
@@ -118,7 +118,10 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
                 userManager.getUserFriendlyName(fileTokenManager.getTokenUserDocReference(decodedToken)));
             message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
             // Needed for using the PostMessage API.
-            message.put("PostMessageOrigin", Request.getCurrent().getHostRef().toString());
+            XWikiRequest wikiRequest = contextProvider.get().getRequest();
+            String postMessageOrigin = String.format("%s://%s:%s", wikiRequest.getScheme(), wikiRequest.getServerName(),
+                wikiRequest.getServerPort());
+            message.put("PostMessageOrigin", postMessageOrigin);
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
                 .build();
