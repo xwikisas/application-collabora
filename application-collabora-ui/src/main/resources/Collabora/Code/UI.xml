@@ -157,7 +157,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   };
   const canDoByExt = getExtAcceptedAction();
 
-  var getTemplates = function(hasPagination) {
+  var getTemplates = function() {
     const config = JSON.parse($('#collabora-config').text());
     const template = {};
     template.createButton = $(config.createButtonTemplate);
@@ -199,11 +199,9 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   };
 
   var decorateWithCollaboraButtons = function() {
-    // Attachments are displayed using a livetable since 14.6, and using a livedata from 14.8.
-    const hasPagination = $("#_attachments table").length &gt; 0;
     $("#_attachments span.name").each(function(i, attach) {
-      const attachActions = hasPagination ? $(attach).closest('tr').find('.attachmentActions') : $(attach).siblings('.xwikibuttonlinks');
-      const collaboraButton = $(attachActions).find('a.collaboraButton');
+      const attachActions = $(attach).closest('tr').find('.attachmentActions');
+      const collaboraButton = $(attachActions).find('a.collaboraEdit');
       if (collaboraButton.length &lt; 1) {
         return;
       }
@@ -215,7 +213,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
       }
       populateCollaboraButton(collaboraButton, fileName, accessRights);
     });
-    const templates = getTemplates(hasPagination);
+    const templates = getTemplates();
 
     if ($("button[data-target='#newCollaboraFileModal']").length == 0 &amp;&amp; XWiki.hasEdit) {
       $('#attachmentscontent').append(templates.createButton);

@@ -118,7 +118,7 @@
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
   #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
   #getPageEditURL($pageEditURL)
-  &lt;a class="action collaboraButton" href="" data-edit-url="$pageEditURL"&gt;
+  &lt;a class="action collaboraEdit" href="" data-edit-url="$pageEditURL"&gt;
     &lt;span class="action-icon"&gt;&lt;img src="$logoURL"/&gt;&lt;/span&gt;
     &lt;span class="action-label"&gt;$label&lt;/span&gt;
   &lt;/a&gt;
