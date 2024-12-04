@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -31,6 +32,7 @@ import org.xwiki.localization.ContextualLocalizationManager;
 import org.xwiki.model.reference.AttachmentReference;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.rest.XWikiRestException;
+import org.xwiki.user.UserReferenceResolver;
 
 import com.xpn.xwiki.XWiki;
 import com.xpn.xwiki.XWikiContext;
@@ -53,6 +55,10 @@ public class AttachmentManager
 
     @Inject
     private Provider<XWikiContext> contextProvider;
+
+    @Inject
+    @Named("document")
+    private UserReferenceResolver<DocumentReference> userReferenceResolver;
 
     /**
      * Create or update attachment with given content.
@@ -77,9 +83,10 @@ public class AttachmentManager
                 document.setAttachment(attachmentReference.getName(), new ByteArrayInputStream(content), xcontext);
             attachment.setAuthorReference(userReference);
 
-            document.setAuthorReference(xcontext.getUserReference());
+            document.getAuthors().setOriginalMetadataAuthor(userReferenceResolver.resolve(userReference));
             xwiki.saveDocument(document,
-                this.contextualLocalizationManager.getTranslationPlain("collabora.save.comment"), xcontext);
+                this.contextualLocalizationManager.getTranslationPlain("collabora.save.comment",
+                    attachment.getFilename(), userReference.getName()), xcontext);
 
             return attachment;
         } catch (XWikiException | IOException e) {

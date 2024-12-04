@@ -81,7 +81,8 @@ collabora.editor.unsaved.submit=Close without saving
 collabora.validation.attachmentMissing=Document or attachment not found!
 collabora.validation.documentMissing=Document parameter required!
 collabora.validation.filenameMissing=Filename parameter required!
-collabora.validation.notInstalled=Collabora Application is not installed on the main wiki so we fall back using the current wiki domain for editing, which might not work if the docker hosts configuration doesn't include the subwiki domain. Either install Collabora on the main wiki or change the configuration to always use the current wiki for edit.</content>
+collabora.validation.notInstalled=Collabora Application is not installed on the main wiki so we fall back using the current wiki domain for editing, which might not work if the docker hosts configuration doesn't include the subwiki domain. Either install Collabora on the main wiki or change the configuration to always use the current wiki for edit.
+collabora.save.comment=Document [{0}] has been modified by [{1}].</content>
   <object>
     <name>Collabora.Code.Translations</name>
     <number>0</number>
