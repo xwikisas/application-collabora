@@ -534,7 +534,11 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
       <async_enabled>0</async_enabled>
     </property>
     <property>
-      <content>{{include reference='Collabora.Code.UIMacros' /}}
+      <content>{{velocity}}
+#if ($xcontext.action == 'view')
+  {{include reference='Collabora.Code.UIMacros' /}}
+#end
+{{/velocity}}
 
 {{velocity}}
 #if ($xcontext.action == 'view')
