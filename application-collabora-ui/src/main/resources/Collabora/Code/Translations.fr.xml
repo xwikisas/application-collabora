@@ -75,5 +75,6 @@ collabora.editor.unsaved.submit=Fermer sans enregistrer
 collabora.validation.attachmentMissing=La page ou la pièce jointe n'ont pas été trouvées.
 collabora.validation.documentMissing=Le nom de la page est obligatoire!
 collabora.validation.filenameMissing=Le nom du fichier est obligatoire!
-collabora.validation.notInstalled=L''application Collabora n''est pas installée sur le wiki principal, nous utilisons donc le domaine wiki actuel pour l''édition, ce qui peut ne pas fonctionner si la configuration des hôtes docker n''inclut pas le domaine du sous-wiki. Installez Collabora sur le wiki principal ou modifiez la configuration pour toujours utiliser le wiki actuel pour l''édition.</content>
+collabora.validation.notInstalled=L''application Collabora n''est pas installée sur le wiki principal, nous utilisons donc le domaine wiki actuel pour l''édition, ce qui peut ne pas fonctionner si la configuration des hôtes docker n''inclut pas le domaine du sous-wiki. Installez Collabora sur le wiki principal ou modifiez la configuration pour toujours utiliser le wiki actuel pour l''édition.
+collabora.save.comment=Document [{0}] a été actualisé par [{1}].</content>
 </xwikidoc>
