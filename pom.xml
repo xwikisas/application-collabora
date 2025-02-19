@@ -50,5 +50,6 @@
     <module>application-collabora-api</module>
     <module>application-collabora-default</module>
     <module>application-collabora-ui</module>
+    <module>application-collabora-xip</module>
   </modules>
 </project>
