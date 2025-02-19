@@ -48,7 +48,7 @@ Collabora.Code.ConfigurationClass_server.hint=Collabora Online server address. T
 Collabora.Code.ConfigurationClass_editUsingMainWiki=Edit using main wiki
 Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Use the main wiki domain when editing files, in order to not add each subwiki domain to the docker hosts configuration of Collabora server. The main wiki configuration will be used if not set at subwiki level.
 Collabora.Code.ConfigurationClass_tokenTimeout=Editing token timeout
-Collabora.Code.ConfigurationClass_tokenTimeout.hint=The number of hours after which an editing token expires. Note that after expiration, edition will stop working and a refresh is needed. The number of hours should be added (e.g. 1 for 1 hour, 2 for 2 hours). If not set at the subwiki or main wiki level, a default value of 5 is used.
+Collabora.Code.ConfigurationClass_tokenTimeout.hint=The number of hours after which an editing token expires. Note that after expiration, edition will stop working and a refresh is needed. The number of hours should be added (e.g. 1 for 1 hour, 2 for 2 hours). If not set at the subwiki or main wiki level, a default value of 48 is used.
 
 ## Attachments tab
 collabora.attachment.edit.title=Edit using Collabora
