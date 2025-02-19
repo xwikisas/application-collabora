@@ -80,6 +80,6 @@ public class DefaultCollaboraConfiguration implements CollaboraConfiguration
     @Override
     public int getTokenTimeout()
     {
-        return this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 5);
+        return this.currentConfiguration.getProperty(TOKEN_TIMEOUT, 48);
     }
 }
