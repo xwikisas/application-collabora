@@ -199,7 +199,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   };
 
   var decorateWithCollaboraButtons = function() {
-    $("#_attachments span.name").each(function(i, attach) {
+    $(".attachments span.name").each(function(i, attach) {
       const attachActions = $(attach).closest('tr').find('.attachmentActions');
       const collaboraButton = $(attachActions).find('a.collaboraEdit');
       if (collaboraButton.length &lt; 1) {
@@ -231,6 +231,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
   $(document).on('xwiki:html5upload:fileFinished', decorateWithCollaboraButtons);
   $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
+  $(document).on('dataavailable', decorateWithCollaboraButtons);
 
   $(document).on('click', '#newCollaboraFileModal input[type=submit]', function(e) {
     e.preventDefault();
