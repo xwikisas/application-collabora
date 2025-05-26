@@ -233,6 +233,12 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
   $(document).on('dataavailable', decorateWithCollaboraButtons);
 
+  /**
+  * Collabora event that other developers can trigger to initialize the process of decorating the buttons of their
+  * livedata
+  */
+  $(document).on('xwiki:collabora:decorateButtons', decorateWithCollaboraButtons);
+
   $(document).on('click', '#newCollaboraFileModal input[type=submit]', function(e) {
     e.preventDefault();
     const form = $(this).parents('.modal-content').find('form');
