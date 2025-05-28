@@ -233,8 +233,8 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
   $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
 
   /**
-  * Collabora event that other developers can trigger to initialize the process of decorating the buttons of their
-  * livedata
+  * Custom event fired for initializing the process of adding Collabora buttons. This can be helpful for UI
+  * elements that were loaded later and require these buttons.
   */
   $(document).on('xwiki:collabora:addButtons', decorateWithCollaboraButtons);
 
