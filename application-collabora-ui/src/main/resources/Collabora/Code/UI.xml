@@ -154,7 +154,6 @@ require(['jquery', 'xwiki-l10n!collabora-attachment', 'collabora-utils'],functio
   };
 
   var decorateWithCollaboraButtons = function() {
-    debugger
     $("#_attachments span.name").each(function(i, attach) {
       const attachActions = $(attach).closest('tr').find('.attachmentActions');
       const collaboraButton = $(attachActions).find('a.collaboraEdit');
