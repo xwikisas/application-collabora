@@ -145,7 +145,7 @@
   };
 
   var decorateWithCollaboraButtons = function() {
-    $("#_attachments span.name").each(function(i, attach) {
+    $(".attachments span.name").each(function(i, attach) {
       const attachActions = $(attach).closest('tr').find('.attachmentActions');
       const collaboraButton = $(attachActions).find('a.collaboraEdit');
       if (collaboraButton.length &lt; 1) {
@@ -177,6 +177,12 @@
   $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
   $(document).on('xwiki:html5upload:fileFinished', decorateWithCollaboraButtons);
   $(document).on('xwiki:docextra:loaded', decorateWithCollaboraButtons);
+
+  /**
+  * Custom event fired for initializing the process of adding Collabora buttons. This can be helpful for UI
+  * elements that were loaded later and require these buttons.
+  */
+  $(document).on('xwiki:collabora:addButtons', decorateWithCollaboraButtons);
 
   $(document).on('click', '#newCollaboraFileModal input[type=submit]', function(e) {
     e.preventDefault();
