@@ -135,67 +135,13 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>define('collabora-attachment', {
-  prefix: 'collabora.attachment.',
-  keys: [
-    'edit.title',
-    'view.title',
-    'modal.submit.error'
-  ]
-});
-
-require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
-  var getExtAcceptedAction = function() {
-    const canDoByExt = {};
-    ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg'].forEach(function(x) {
-      canDoByExt[x] = 'edit';
-    });
-    ['pdf', 'fb2'].forEach(function(x) {
-      canDoByExt[x] = 'view';
-    });
-    return canDoByExt;
-  };
-  const canDoByExt = getExtAcceptedAction();
-
+      <code>require(['jquery', 'xwiki-l10n!collabora-attachment', 'collabora-utils'],function($, l10n, utils) {
   var getTemplates = function() {
     const config = JSON.parse($('#collabora-config').text());
     const template = {};
     template.createButton = $(config.createButtonTemplate);
     template.newFileModal = $(config.newFileModal);
     return template;
-  };
-
-  var getAccessRights = function(fileName) {
-    const fileType = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase();
-    let accessRights = canDoByExt[fileType];
-    if (!accessRights) {
-      return false;
-    }
-    if (!XWiki.hasEdit) {
-      accessRights = 'view';
-    }
-
-    return accessRights;
-  };
-
-  var getActionURL = function(fileName, accessRights, editURL) {
-    const queryString = $.param({
-      'document': XWiki.Document.currentDocumentReference.toString(),
-      'filename': fileName,
-      'action': accessRights,
-      'xpage': 'plain'
-    });
-    editURL += (editURL.indexOf('?') &lt; 0 ? '?' : '&amp;') + queryString;
-
-    return editURL;
-  };
-
-  var populateCollaboraButton = function(thisButton, fileName, accessRights) {
-    const title = l10n.get(accessRights == 'edit' ? 'edit.title' : 'view.title');
-    thisButton.attr('title', title);
-    thisButton.find('img').attr('alt', title);
-
-    thisButton.attr('href', getActionURL(fileName, accessRights, thisButton.data('editUrl')));
   };
 
   var decorateWithCollaboraButtons = function() {
@@ -207,11 +153,11 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
       }
 
       const fileName = $(attach).find('a').text().trim();
-      const accessRights = getAccessRights(fileName);
+      const accessRights = utils.getAccessRights(fileName);
       if (!accessRights) {
         return;
       }
-      populateCollaboraButton(collaboraButton, fileName, accessRights);
+        utils.populateCollaboraButton(collaboraButton, fileName, accessRights);
     });
     const templates = getTemplates();
 
@@ -259,7 +205,7 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
           url: attachURL,
           type: "PUT",
         }).done(function () {
-          window.location = getActionURL(fileName, getAccessRights(fileName, canDoByExt), editURL);
+          window.location = utils.getActionURL(fileName, utils.getAccessRights(fileName), editURL);
         });
       });
   });
@@ -719,6 +665,148 @@ require(['jquery', 'xwiki-l10n!collabora-attachment'],function($, l10n) {
     </property>
     <property>
       <parameters/>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+  <object>
+    <name>Collabora.Code.UI</name>
+    <number>2</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>4aef1f1e-6012-472e-bea1-bc44dfcd60ca</guid>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>3</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>4</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.cookies|request.headers|request.parameters=Request parameters|request.remoteAddr|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>2</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>1</number>
+        <prettyName>Executed Content</prettyName>
+        <restricted>0</restricted>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>5</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>6</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>parameters</name>
+        <number>7</number>
+        <prettyName>Extension Parameters</prettyName>
+        <restricted>0</restricted>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>8</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content/>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.platform.requirejs.module</extensionPointId>
+    </property>
+    <property>
+      <name> com.xwiki.collabora.utils</name>
+    </property>
+    <property>
+      <parameters>id=collabora-utils
+path=$services.webjars.url('com.xwiki.collabora:application-collabora-webjar', 'collabora-utils.js', {'evaluate': true})</parameters>
     </property>
     <property>
       <scope>wiki</scope>

@@ -1,3 +1,4 @@
+com.xwiki.collabora.internal.rest.DefaultCollaboraResource
 com.xwiki.collabora.internal.rest.DefaultWopi
 com.xwiki.collabora.internal.FileTokenManager
 com.xwiki.collabora.internal.AttachmentManager

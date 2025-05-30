@@ -51,5 +51,6 @@
     <module>application-collabora-default</module>
     <module>application-collabora-ui</module>
     <module>application-collabora-xip</module>
+    <module>application-collabora-webjar</module>
   </modules>
 </project>
