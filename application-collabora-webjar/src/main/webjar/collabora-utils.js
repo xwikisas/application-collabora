@@ -53,6 +53,39 @@ define(['jquery', 'xwiki-l10n!collabora-attachment'], function($, l10n) {
       return accessRights;
     },
 
+    getAccessRightsForDocument: async function(fileName, documentRef) {
+      const fileType = fileName.slice(fileName.lastIndexOf('.') + 1).toLowerCase();
+      const canDoByExt = collaboraUtils.getExtAcceptedAction();
+      var accessRights = canDoByExt[fileType];
+      if (!accessRights) {
+        return false;
+      }
+      if (typeof documentRef == 'undefined') {
+        if (!XWiki.hasEdit) {
+          accessRights = 'view';
+        }
+      } else {
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const contextPath = window.XWiki.contextPath || '/xwiki';
+        const encodedDocRef = encodeURIComponent(documentRef);
+        const restURL = `${protocol}//${host}${contextPath}/rest/collabora/rights?document_ref=${encodedDocRef}`;
+        const response = await fetch(restURL, {
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        if (!response.ok) {
+          return false;
+        }
+        const result = await response.json();
+        if (!result.canEdit) {
+           accessRights = 'view';
+        }
+      }
+      return accessRights;
+    },
+
     getActionURL: function(fileName, accessRights, editURL, document) {
       const queryString = $.param({
         'document': document ?? XWiki.Document.currentDocumentReference.toString(),
