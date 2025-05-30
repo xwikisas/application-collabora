@@ -65,11 +65,9 @@ define(['jquery', 'xwiki-l10n!collabora-attachment'], function($, l10n) {
           accessRights = 'view';
         }
       } else {
-        const protocol = window.location.protocol;
-        const host = window.location.host;
         const contextPath = window.XWiki.contextPath || '/xwiki';
         const encodedDocRef = encodeURIComponent(documentRef);
-        const restURL = `${protocol}//${host}${contextPath}/rest/collabora/rights?document_ref=${encodedDocRef}`;
+        const restURL = `${contextPath}/rest/collabora/rights?document_ref=${encodedDocRef}`;
         const response = await fetch(restURL, {
           headers: {
             'Accept': 'application/json'

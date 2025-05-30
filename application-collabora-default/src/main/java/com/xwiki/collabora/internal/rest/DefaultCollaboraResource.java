@@ -71,11 +71,8 @@ public class DefaultCollaboraResource implements CollaboraResource
     {
         try {
             DocumentReference docRef = referenceResolver.resolve(documentRef);
-            boolean canView = this.contextualAuthorizationManager.hasAccess(Right.VIEW, docRef);
+            this.contextualAuthorizationManager.checkAccess(Right.VIEW, docRef);
             boolean canEdit = this.contextualAuthorizationManager.hasAccess(Right.EDIT, docRef);
-            if (!canView) {
-                throw new AccessDeniedException(Right.VIEW, xcontextProvider.get().getUserReference(), docRef);
-            }
             return Response.ok(Map.of("canEdit", canEdit)).type(MediaType.APPLICATION_JSON).build();
         } catch (AccessDeniedException deniedException) {
             logger.warn("User has no view rights on the document: [{}].", documentRef);
