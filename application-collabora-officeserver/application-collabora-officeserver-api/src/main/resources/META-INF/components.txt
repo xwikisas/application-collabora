@@ -1,0 +1,1 @@
+500:com.xwiki.collabora.internal.CollaboraOfficeServer
