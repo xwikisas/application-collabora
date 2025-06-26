@@ -27,7 +27,7 @@
     <version>1.5.4-SNAPSHOT</version>
   </parent>
   <artifactId>application-collabora-officeserver-api</artifactId>
-  <name>Collabora Connector Application (Pro) - Office Server</name>
+  <name>Collabora Connector Application (Pro) - Office Server - API</name>
   <description>Office Server implementation relying on a remote Collabora server</description>
   <properties>
     <!-- The extension needs to be installed at farm level to override the default office server -->

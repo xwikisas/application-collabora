@@ -25,11 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +47,9 @@ import org.xwiki.officeimporter.converter.OfficeDocumentFormat;
 
 import com.xwiki.collabora.configuration.CollaboraConfiguration;
 
+import static com.xwiki.collabora.internal.CollaboraOfficeConverterFormatHelper.DEFAULT_OUTPUT_FORMAT;
+import static com.xwiki.collabora.internal.CollaboraOfficeConverterFormatHelper.SUPPORTED_INPUT_FORMATS_IMPRESS;
+
 /**
  * An implementation of the {@link OfficeConverter} which relies on a Collabora Server to do the conversion.
  *
@@ -60,75 +59,6 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
 public class CollaboraOfficeConverter implements OfficeConverter
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(CollaboraOfficeConverter.class);
-
-    private static final String FORMAT_ODT = "odt";
-
-    // Supported format extracted from this list : https://www.collaboraonline.com/document-conversion/
-    private static final List<String> INPUT_FORMATS_WRITER_DOCS = List.of("sxw", FORMAT_ODT, "fodt");
-
-    private static final List<String> INPUT_FORMATS_CALC_DOCS = List.of("sxc", "ods", "fods");
-
-    private static final List<String> INPUT_FORMATS_IMPRESS_DOCS = List.of("sxi", "odp", "fodp");
-
-    private static final List<String> INPUT_FORMATS_DRAW_DOCS = List.of("sxd", "odg", "fodg");
-
-    private static final List<String> INPUT_FORMATS_CHART_DOCS = List.of("odc");
-
-    private static final List<String> INPUT_FORMATS_TEXT_MASTER_DOCS = List.of("sxg", "odm");
-
-    private static final List<String> INPUT_FORMATS_TEXT_TEMPLATE_DOCS = List.of("stw", "ott");
-
-    private static final List<String> INPUT_FORMATS_WRITER_MASTER_DOC_TEMPLATES = List.of("otm");
-
-    private static final List<String> INPUT_FORMATS_SPREADSHEET_TEMPLATE_DOCS = List.of("stc", "ots");
-
-    private static final List<String> INPUT_FORMATS_PRESENTATION_TEMPLATE_DOCS = List.of("sti", "otp");
-
-    private static final List<String> INPUT_FORMATS_DRAWING_TEMPLATE_DOCS = List.of("std", "otg");
-
-    private static final List<String> INPUT_FORMATS_BASE_DOCS = List.of("odb");
-
-    private static final List<String> INPUT_FORMATS_EXTENSIONS = List.of("oxt");
-
-    private static final List<String> INPUT_FORMATS_MS_WORD = List.of("doc", "dot");
-
-    private static final List<String> INPUT_FORMATS_MS_EXCEL = List.of("xls");
-
-    private static final List<String> INPUT_FORMATS_MS_POWERPOINT = List.of("ppt");
-
-    private static final List<String> INPUT_FORMATS_OOXML_WORDPROCESSING = List.of("docx", "docm", "dotx", "dotm");
-
-    private static final List<String> INPUT_FORMATS_OOXML_SPREADSHEET = List.of("xltx", "xltm", "xlsx", "xlsb", "xlsm");
-
-    private static final List<String> INPUT_FORMATS_OOXML_PRESENTATION = List.of("pptx", "pptm", "potx", "potm");
-
-    private static final List<String> INPUT_FORMATS_OTHER1 = List.of("wpd", "pdb", "hwp", "wps", "wri", "wk1", "cgm",
-        "dxf", "emf", "wmf", "cdr", "vsd", "pub", "vss", "lrf", "gnumeric", "mw", "numbers", "p65", "pdf", "jpg",
-        "jpeg", "gif", "png", "etc");
-
-    private static final List<String> INPUT_FORMATS_OTHER2 = List.of("dif", "slk", "csv", "dbf", "oth", "rtf", "txt");
-
-    private static final List<String> SUPPORTED_INPUT_FORMATS_WRITER = Stream.of(
-        INPUT_FORMATS_WRITER_DOCS, INPUT_FORMATS_TEXT_MASTER_DOCS, INPUT_FORMATS_TEXT_TEMPLATE_DOCS,
-        INPUT_FORMATS_WRITER_MASTER_DOC_TEMPLATES, INPUT_FORMATS_MS_WORD, INPUT_FORMATS_OOXML_WORDPROCESSING)
-        .flatMap(Collection::stream).collect(Collectors.toList());
-
-    private static final List<String> SUPPORTED_INPUT_FORMATS_CALC = Stream.of(
-        INPUT_FORMATS_CALC_DOCS, INPUT_FORMATS_SPREADSHEET_TEMPLATE_DOCS, INPUT_FORMATS_MS_EXCEL,
-        INPUT_FORMATS_OOXML_SPREADSHEET).flatMap(Collection::stream).collect(Collectors.toList());
-
-    private static final List<String> SUPPORTED_INPUT_FORMATS_IMPRESS = Stream.of(
-        INPUT_FORMATS_IMPRESS_DOCS, INPUT_FORMATS_PRESENTATION_TEMPLATE_DOCS, INPUT_FORMATS_MS_POWERPOINT,
-        INPUT_FORMATS_OOXML_PRESENTATION).flatMap(Collection::stream).collect(Collectors.toList());
-
-    private static final List<String> SUPPORTED_INPUT_FORMATS_OTHER = Stream.of(
-        INPUT_FORMATS_DRAW_DOCS, INPUT_FORMATS_CHART_DOCS, INPUT_FORMATS_DRAWING_TEMPLATE_DOCS, INPUT_FORMATS_BASE_DOCS,
-        INPUT_FORMATS_EXTENSIONS, INPUT_FORMATS_OTHER1, INPUT_FORMATS_OTHER2).flatMap(Collection::stream)
-        .collect(Collectors.toList());
-
-    private static final List<String> SUPPORTED_INPUT_FORMATS_ALL = Stream.of(
-        SUPPORTED_INPUT_FORMATS_WRITER, SUPPORTED_INPUT_FORMATS_CALC, SUPPORTED_INPUT_FORMATS_IMPRESS,
-        SUPPORTED_INPUT_FORMATS_OTHER).flatMap(Collection::stream).collect(Collectors.toList());
 
     private final CollaboraConfiguration configuration;
 
@@ -158,13 +88,24 @@ public class CollaboraOfficeConverter implements OfficeConverter
 
         InputStream fileBody = inputStreams.entrySet().iterator().next().getValue();
 
-        // TODO: check if the input file format is acceptable before sending it to LO
         String inputFormat = FilenameUtils.getExtension(inputFileName);
         String outputFormat = FilenameUtils.getExtension(outputFileName);
-        outputFormat = (StringUtils.isNotBlank(outputFormat)) ? outputFormat : FORMAT_ODT;
+        outputFormat = (StringUtils.isNotBlank(outputFormat)) ? outputFormat : DEFAULT_OUTPUT_FORMAT;
 
         LOGGER.debug("Found file extensions [{}] (input) and [{}] (output)", inputFormat, outputFormat);
 
+        // Ensure that the input and output formats are compatible
+        if (!CollaboraOfficeConverterFormatHelper.isConversionSupportedForFormat(inputFormat, outputFormat)) {
+            throw new OfficeConverterException(String.format("Conversion from format [%s] to [%s] is not supported by"
+                    + " the Collabora server.", inputFormat, outputFormat));
+        }
+
+        return convertInternal(fileBody, inputFileName, outputFileName, outputFormat);
+    }
+
+    private CollaboraOfficeConverterResult convertInternal(InputStream fileBody, String inputFileName,
+        String outputFileName, String outputFormat) throws OfficeConverterException
+    {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             String conversionURL = String.format("%s/cool/convert-to/%s",
                 this.configuration.getServerURL(), outputFormat);
@@ -236,8 +177,7 @@ public class CollaboraOfficeConverter implements OfficeConverter
     @Override
     public boolean isConversionSupported(String inputMediaType, String outputMediaType)
     {
-        // TODO: Find a better way
-        return true;
+        return CollaboraOfficeConverterFormatHelper.isConversionSupportedForMediaType(inputMediaType, outputMediaType);
     }
 }
 
