@@ -30,7 +30,7 @@ import org.apache.tika.Tika;
  * Helper to define if input / output formats are supported for conversion by the Collabora Office.
  *
  * @version $Id$
- * @since 1.6
+ * @since 1.6.0
  */
 public final class CollaboraOfficeConverterFormatHelper
 {

@@ -54,7 +54,7 @@ import static com.xwiki.collabora.internal.CollaboraOfficeConverterFormatHelper.
  * An implementation of the {@link OfficeConverter} which relies on a Collabora Server to do the conversion.
  *
  * @version $Id$
- * @since 1.6
+ * @since 1.6.0
  */
 public class CollaboraOfficeConverter implements OfficeConverter
 {

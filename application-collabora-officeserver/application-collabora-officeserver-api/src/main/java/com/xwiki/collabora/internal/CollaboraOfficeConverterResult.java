@@ -29,7 +29,7 @@ import org.xwiki.officeimporter.converter.OfficeConverterResult;
  * Simple implementation of an office converter result, for conversions made against a Collabora server.
  *
  * @version $Id$
- * @since 1.6
+ * @since 1.6.0
  */
 public class CollaboraOfficeConverterResult implements OfficeConverterResult
 {

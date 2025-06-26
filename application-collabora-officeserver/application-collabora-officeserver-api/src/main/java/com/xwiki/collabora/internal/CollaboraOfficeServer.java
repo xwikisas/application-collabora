@@ -33,7 +33,7 @@ import com.xwiki.collabora.configuration.CollaboraConfiguration;
  * Office server implementation based on a connection to Collabora Server.
  *
  * @version $Id$
- * @since 1.6
+ * @since 1.6.0
  */
 @Component
 @Singleton

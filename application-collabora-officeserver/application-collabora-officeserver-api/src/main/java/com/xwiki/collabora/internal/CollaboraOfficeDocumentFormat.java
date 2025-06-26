@@ -29,7 +29,7 @@ import org.xwiki.officeimporter.converter.OfficeDocumentFormat;
  * Simple implementation of {@link OfficeDocumentFormat} for the Collabora Office integration.
  *
  * @version $Id$
- * @since 1.6
+ * @since 1.6.0
  */
 public class CollaboraOfficeDocumentFormat implements OfficeDocumentFormat
 {
