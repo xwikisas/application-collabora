@@ -36,6 +36,12 @@
       <version>${project.version}</version>
       <type>xar</type>
     </dependency>
+    <dependency>
+      <groupId>com.xwiki.collabora</groupId>
+      <artifactId>application-collabora-officeserver-ui</artifactId>
+      <version>${project.version}</version>
+      <type>xar</type>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,35 +22,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.xwiki.parent</groupId>
-    <artifactId>xwikisas-parent-platform</artifactId>
-    <version>14.10-1</version>
+    <groupId>com.xwiki.collabora</groupId>
+    <artifactId>application-collabora-officeserver</artifactId>
+    <version>1.5.4-SNAPSHOT</version>
   </parent>
-  <groupId>com.xwiki.collabora</groupId>
-  <artifactId>application-collabora</artifactId>
-  <version>1.5.4-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Collabora Connector Application (Pro) Parent POM</name>
-  <description>Collabora Integration using WOPI</description>
+  <artifactId>application-collabora-officeserver-api</artifactId>
+  <name>Collabora Connector Application (Pro) - Office Server - API</name>
+  <description>Office Server implementation relying on a remote Collabora server</description>
   <properties>
-    <licensing.version>1.29</licensing.version>
+    <!-- The extension needs to be installed at farm level to override the default office server -->
+    <xwiki.extension.namespaces>{root}</xwiki.extension.namespaces>
   </properties>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/xwikisas/application-collabora/issues</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:git:git://github.com/xwikisas/application-collabora.git</connection>
-    <developerConnection>scm:git:git@github.com:xwikisas/application-collabora.git</developerConnection>
-    <url>https://github.com/xwikisas/application-collabora/tree/master</url>
-    <tag>HEAD</tag>
-  </scm>
-  <modules>
-    <module>application-collabora-api</module>
-    <module>application-collabora-default</module>
-    <module>application-collabora-officeserver</module>
-    <module>application-collabora-ui</module>
-    <module>application-collabora-xip</module>
-    <module>application-collabora-webjar</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>application-collabora-default</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-office-importer</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+  </dependencies>
 </project>
