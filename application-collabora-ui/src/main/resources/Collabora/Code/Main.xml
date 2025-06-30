@@ -118,7 +118,8 @@
     &lt;input type="submit" value="" /&gt;
   &lt;/form&gt;
   ## Where the document will be displayed.
-  &lt;iframe id="collaboraViewer" name="collaboraViewer"&gt;&lt;/iframe&gt;
+  &lt;iframe id="collaboraViewer" src="$services.collabora.getConfiguration().getServerURL()" name="collaboraViewer"
+    allow="fullscreen"&gt;&lt;/iframe&gt;
   #unsavedChangesModal()
   #getUnauthorizedUserModal()
 #end
