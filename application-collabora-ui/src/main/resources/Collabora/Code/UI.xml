@@ -155,6 +155,7 @@
       const fileName = $(attach).find('a').text().trim();
       const accessRights = utils.getAccessRights(fileName);
       if (!accessRights) {
+        collaboraButton.hide();
         return;
       }
         utils.populateCollaboraButton(collaboraButton, fileName, accessRights);
@@ -191,7 +192,7 @@
     const fileName = formData.get('fileName') + formData.get('fileType');
     const editURL = $(e.currentTarget).data('editUrl');
 
-    // If the file exists, display an eror message, otherwise create it and redirect to Collabora edit.
+    // If the file exists, display an error message, otherwise create it and redirect to Collabora edit.
     const attachURL =
       new XWiki.Document(XWiki.Model.resolve(
         XWiki.Document.currentDocumentReference.toString(), XWiki.EntityType.DOCUMENT
