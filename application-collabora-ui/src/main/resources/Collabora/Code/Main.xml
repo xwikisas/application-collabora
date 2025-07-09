@@ -287,7 +287,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
       if (isDocModified == false) {
         const fileId = $('#collaboraServer').data('fileId');
         const mode = $("#collaboraServer").data('mode');
-        const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/${mode}/token/extend`;
+        const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) +
+          `/token/extend?mode=${mode}`;
         // We cannot renew or check the token before the Collabora save action, so we trigger a new request that in
         // case it's needed, it renews the token before the Collabora token expiration date.
         $.ajax({
@@ -331,8 +332,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
     // (https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem - The "Unicode Problem")
     const textEncoder = new TextEncoder();
     const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath +
-      bytesToBase64(textEncoder.encode(fileId)) + '/' + mode;
-    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/${mode}/token`;
+      bytesToBase64(textEncoder.encode(fileId));
+    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/token?mode=${mode}`;
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
       const accessToken =  resp.value;
@@ -369,8 +370,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
   $(window).unload(function() {
     const fileId = $("#collaboraServer").data('fileId');
     const mode = $("#collaboraServer").data('mode');
-    const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/' + mode;
-    navigator.sendBeacon(wopiResourceURL + '/token');
+    const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
+    navigator.sendBeacon(wopiResourceURL + '/token?mode=' + mode);
   });
 });</code>
     </property>

@@ -95,13 +95,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private EntityReferenceSerializer<String> referenceSerializer;
 
     @Override
-    public Response get(String fileId, String mode, String token) throws XWikiRestException
+    public Response get(String fileId, String token) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken,
-            mode)) {
+        if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", decodedFileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
@@ -134,12 +133,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response getContents(String fileId, String mode, String token) throws XWikiRestException
+    public Response getContents(String fileId, String token) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken, mode)) {
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", decodedFileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -159,12 +158,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response postContents(String fileId, String mode, String token, byte[] body) throws XWikiRestException
+    public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken, mode)) {
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
             // As the cause of a failure in updating the content may be an expired token, we return 200 status code for
             // now since the UNAUTHORIZED message should be returned after trying first to extend the token.

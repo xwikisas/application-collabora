@@ -54,6 +54,8 @@ public class FileToken
 
     private int usage;
 
+    private String lastActionMode;
+
     FileToken(String user, String fileId, int tokenTimeout, boolean hasView, boolean hasEdit)
     {
         this.user = user;
@@ -152,6 +154,30 @@ public class FileToken
     public void setHasEdit(boolean hasEdit)
     {
         this.hasEdit = hasEdit;
+    }
+
+    /**
+     * @return the last requested action mode. This may be either "edit" or "view".
+     */
+    public String getLastActionMode()
+    {
+        return lastActionMode;
+    }
+
+    /**
+     * @param lastActionMode the last requested action mode. This may be either "edit" or "view".
+     */
+    public void setLastActionMode(String lastActionMode)
+    {
+        this.lastActionMode = lastActionMode;
+    }
+
+    /**
+     * @return {@code true} if the last requested action was edit, or {@code false} otherwise.
+     */
+    public boolean requestedEdit()
+    {
+        return lastActionMode.equals("edit");
     }
 
     @Override

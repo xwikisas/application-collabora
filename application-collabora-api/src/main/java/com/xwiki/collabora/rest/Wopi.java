@@ -19,6 +19,7 @@
  */
 package com.xwiki.collabora.rest;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -39,7 +40,7 @@ import com.xwiki.collabora.rest.model.jaxb.Token;
  * @version $Id$
  * @since 1.0
  */
-@Path("/collabora/files/{id}/{mode}")
+@Path("/collabora/files/{id}")
 @Unstable
 public interface Wopi extends XWikiRestComponent
 {
@@ -49,28 +50,24 @@ public interface Wopi extends XWikiRestComponent
      * which cannot be achieved when using a jaxb model to generate the POJO.
      *
      * @param fileId id of the file
-     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @return information about the requested file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
-    Response get(@PathParam("id") String fileId, @PathParam("mode") String mode,
-        @QueryParam("access_token") String token) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
 
     /**
      * Get file content.
      *
      * @param fileId id of the file
-     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @return the content of this file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
     @Path("/contents")
-    Response getContents(@PathParam("id") String fileId, @PathParam("mode") String mode,
-        @QueryParam("access_token") String token)
+    Response getContents(@PathParam("id") String fileId, @QueryParam("access_token") String token)
         throws XWikiRestException;
 
     /**
@@ -79,7 +76,6 @@ public interface Wopi extends XWikiRestComponent
      * POST verb on the save action.
      *
      * @param fileId id of the file
-     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @param body file content
      * @return information about the updated file
@@ -87,8 +83,7 @@ public interface Wopi extends XWikiRestComponent
      */
     @POST
     @Path("/contents")
-    Response postContents(@PathParam("id") String fileId, @PathParam("mode") String mode,
-        @QueryParam("access_token") String token, byte[] body)
+    Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
 
     /**
@@ -103,7 +98,8 @@ public interface Wopi extends XWikiRestComponent
      */
     @GET
     @Path("/token")
-    Token getToken(@PathParam("id") String fileId, @PathParam("mode") String mode) throws XWikiRestException;
+    Token getToken(@PathParam("id") String fileId, @QueryParam("mode") @DefaultValue("edit") String mode)
+        throws XWikiRestException;
 
     /**
      * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
@@ -117,7 +113,8 @@ public interface Wopi extends XWikiRestComponent
      */
     @POST
     @Path("/token")
-    Token clearToken(@PathParam("id") String fileId, @PathParam("mode") String mode) throws XWikiRestException;
+    Token clearToken(@PathParam("id") String fileId, @QueryParam("mode") @DefaultValue("edit") String mode)
+        throws XWikiRestException;
 
     /**
      * If the token for the given file is associated to the current user and has expired, extends the expiration time of
@@ -130,6 +127,6 @@ public interface Wopi extends XWikiRestComponent
      */
     @PUT
     @Path("/token/extend")
-    Response updateTokenExpiration(@PathParam("id") String fileId, @PathParam("mode") String mode)
-        throws XWikiRestException;
+    Response updateTokenExpiration(@PathParam("id") String fileId,
+        @QueryParam("mode") @DefaultValue("edit") String mode) throws XWikiRestException;
 }
