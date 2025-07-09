@@ -39,7 +39,7 @@ import com.xwiki.collabora.rest.model.jaxb.Token;
  * @version $Id$
  * @since 1.0
  */
-@Path("/collabora/files/{id}")
+@Path("/collabora/files/{id}/{mode}")
 @Unstable
 public interface Wopi extends XWikiRestComponent
 {
@@ -49,24 +49,28 @@ public interface Wopi extends XWikiRestComponent
      * which cannot be achieved when using a jaxb model to generate the POJO.
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @return information about the requested file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
-    Response get(@PathParam("id") String fileId, @QueryParam("access_token") String token) throws XWikiRestException;
+    Response get(@PathParam("id") String fileId, @PathParam("mode") String mode,
+        @QueryParam("access_token") String token) throws XWikiRestException;
 
     /**
      * Get file content.
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @return the content of this file
      * @throws XWikiRestException if an error occurred while accessing the file
      */
     @GET
     @Path("/contents")
-    Response getContents(@PathParam("id") String fileId, @QueryParam("access_token") String token)
+    Response getContents(@PathParam("id") String fileId, @PathParam("mode") String mode,
+        @QueryParam("access_token") String token)
         throws XWikiRestException;
 
     /**
@@ -75,6 +79,7 @@ public interface Wopi extends XWikiRestComponent
      * POST verb on the save action.
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @param token {@code String} representation of the authentication token
      * @param body file content
      * @return information about the updated file
@@ -82,7 +87,8 @@ public interface Wopi extends XWikiRestComponent
      */
     @POST
     @Path("/contents")
-    Response postContents(@PathParam("id") String fileId, @QueryParam("access_token") String token, byte[] body)
+    Response postContents(@PathParam("id") String fileId, @PathParam("mode") String mode,
+        @QueryParam("access_token") String token, byte[] body)
         throws XWikiRestException;
 
     /**
@@ -91,12 +97,13 @@ public interface Wopi extends XWikiRestComponent
      * particularities).
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return information needed by Collabora to load
      * @throws XWikiRestException if an error occurred while getting information
      */
     @GET
     @Path("/token")
-    Token getToken(@PathParam("id") String fileId) throws XWikiRestException;
+    Token getToken(@PathParam("id") String fileId, @PathParam("mode") String mode) throws XWikiRestException;
 
     /**
      * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
@@ -104,22 +111,25 @@ public interface Wopi extends XWikiRestComponent
      * right now it only supports POST, see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return information about the usage of this file token
      * @throws XWikiRestException if an error occurred while removing the token
      */
     @POST
     @Path("/token")
-    Token clearToken(@PathParam("id") String fileId) throws XWikiRestException;
+    Token clearToken(@PathParam("id") String fileId, @PathParam("mode") String mode) throws XWikiRestException;
 
     /**
-     * If the token for the given file is associated to the current user and has expired, extends the expiration time
-     * of the token. The token's timeout is extended based on the Collabora configuration settings.
+     * If the token for the given file is associated to the current user and has expired, extends the expiration time of
+     * the token. The token's timeout is extended based on the Collabora configuration settings.
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return status code of the operation
      * @throws XWikiRestException if an error occurred while extending the token
      */
     @PUT
     @Path("/token/extend")
-    Response updateTokenExpiration(@PathParam("id") String fileId) throws XWikiRestException;
+    Response updateTokenExpiration(@PathParam("id") String fileId, @PathParam("mode") String mode)
+        throws XWikiRestException;
 }

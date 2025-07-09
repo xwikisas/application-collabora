@@ -286,7 +286,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
       isDocModified = msg.Values &amp;&amp; msg.Values.Modified;
       if (isDocModified == false) {
         const fileId = $('#collaboraServer').data('fileId');
-        const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token/extend';
+        const mode = $("#collaboraServer").data('mode');
+        const tokenUpdateURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/${mode}/token/extend`;
         // We cannot renew or check the token before the Collabora save action, so we trigger a new request that in
         // case it's needed, it renews the token before the Collabora token expiration date.
         $.ajax({
@@ -324,14 +325,14 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
 
   $(function() {
     const fileId = $('#collaboraServer').data('fileId');
-    const userCanWrite = $("#collaboraServer").data('mode') === 'edit';
+    const mode = $("#collaboraServer").data('mode');
     // Because btoa does not support Unicode text, we first need to convert the string to its constituent bytes in
     // UTF-8, by using TextEncoder.
     // (https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem - The "Unicode Problem")
     const textEncoder = new TextEncoder();
     const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath +
-      bytesToBase64(textEncoder.encode(fileId));
-    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/token';
+      bytesToBase64(textEncoder.encode(fileId)) + '/' + mode;
+    const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/${mode}/token`;
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
       const accessToken =  resp.value;
@@ -367,7 +368,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
 
   $(window).unload(function() {
     const fileId = $("#collaboraServer").data('fileId');
-    const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
+    const mode = $("#collaboraServer").data('mode');
+    const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + '/' + mode;
     navigator.sendBeacon(wopiResourceURL + '/token');
   });
 });</code>

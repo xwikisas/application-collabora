@@ -95,12 +95,13 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     private EntityReferenceSerializer<String> referenceSerializer;
 
     @Override
-    public Response get(String fileId, String token) throws XWikiRestException
+    public Response get(String fileId, String mode, String token) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+        if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken,
+            mode)) {
             logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", decodedFileId);
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
@@ -133,12 +134,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response getContents(String fileId, String token) throws XWikiRestException
+    public Response getContents(String fileId, String mode, String token) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken, mode)) {
             logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", decodedFileId);
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -158,12 +159,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
+    public Response postContents(String fileId, String mode, String token, byte[] body) throws XWikiRestException
     {
         String decodedToken = new String(Base64.getDecoder().decode(token));
         String decodedFileId = new String(Base64.getDecoder().decode(fileId));
 
-        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
+        if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken, mode)) {
             logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
             // As the cause of a failure in updating the content may be an expired token, we return 200 status code for
             // now since the UNAUTHORIZED message should be returned after trying first to extend the token.
@@ -191,7 +192,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token getToken(String fileId) throws XWikiRestException
+    public Token getToken(String fileId, String mode) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         // Make sure that the current wiki is used on the XWiki context, since the REST resource is rooted on the
@@ -201,7 +202,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
         try {
             String urlSrc = discoveryManager.getURLSrc(fileId);
-            String fileTokenValue = fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString();
+            String fileTokenValue = fileTokenManager.getToken(xcontext.getUserReference(), fileId, mode).toString();
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
@@ -216,9 +217,9 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token clearToken(String fileId) throws XWikiRestException
+    public Token clearToken(String fileId, String mode) throws XWikiRestException
     {
-        int tokenUsage = this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference(), fileId);
+        int tokenUsage = this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference(), fileId, mode);
 
         Token token = (new ObjectFactory()).createToken();
         token.setUsage(tokenUsage);
@@ -227,12 +228,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response updateTokenExpiration(String fileId) throws XWikiRestException
+    public Response updateTokenExpiration(String fileId, String mode) throws XWikiRestException
     {
         try {
             XWikiContext xcontext = this.contextProvider.get();
             if (fileTokenManager.isInvalid(fileId, xcontext.getUserReference())) {
-                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference())) {
+                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference(), mode)) {
                     fileTokenManager.extendToken(fileId, xcontext.getUserReference());
                     return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).build();
                 } else {
