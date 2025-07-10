@@ -21,6 +21,7 @@ package com.xwiki.collabora.internal;
 
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -54,7 +55,7 @@ public class FileToken
 
     private int usage;
 
-    private String lastActionMode;
+    private ActionMode actionMode;
 
     FileToken(String user, String fileId, int tokenTimeout, boolean hasView, boolean hasEdit)
     {
@@ -157,27 +158,19 @@ public class FileToken
     }
 
     /**
-     * @return the last requested action mode. This may be either "edit" or "view".
+     * @param actionMode the last requested action mode. This may be either "edit" or "view".
      */
-    public String getLastActionMode()
+    public void setActionMode(ActionMode actionMode)
     {
-        return lastActionMode;
-    }
-
-    /**
-     * @param lastActionMode the last requested action mode. This may be either "edit" or "view".
-     */
-    public void setLastActionMode(String lastActionMode)
-    {
-        this.lastActionMode = lastActionMode;
+        this.actionMode = actionMode;
     }
 
     /**
      * @return {@code true} if the last requested action was edit, or {@code false} otherwise.
      */
-    public boolean requestedEdit()
+    public boolean isEditRequested()
     {
-        return lastActionMode.equals("edit");
+        return Objects.equals(ActionMode.EDIT, actionMode);
     }
 
     @Override

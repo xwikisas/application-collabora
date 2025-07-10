@@ -90,7 +90,7 @@ public class FileTokenManager
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken token = getExistingToken(user, fileId);
         if (token != null) {
-            token.setLastActionMode(requestedMode);
+            token.setActionMode(ActionMode.fromString(requestedMode));
             updateAccessRights(token);
             if (token.isExpired()) {
                 tokens.remove(token.toString());
@@ -162,7 +162,7 @@ public class FileTokenManager
         if (foundToken == null) {
             return 0;
         }
-        foundToken.setLastActionMode(requestedMode);
+        foundToken.setActionMode(ActionMode.fromString(requestedMode));
         updateAccessRights(foundToken);
         int tokenUsage = foundToken.getUsage();
         if (tokenUsage > 1) {
@@ -225,7 +225,7 @@ public class FileTokenManager
         String user = userReference != null ? this.referenceSerializer.serialize(userReference) : XWIKI_GUEST;
         FileToken fileToken = getExistingToken(user, fileId);
         if (fileToken != null) {
-            fileToken.setLastActionMode(requestedMode);
+            fileToken.setActionMode(ActionMode.fromString(requestedMode));
             updateAccessRights(fileToken);
             return fileToken.hasView() || fileToken.hasEdit();
         }
@@ -251,7 +251,7 @@ public class FileTokenManager
             logger.debug("View right changed for existing token of file [{}]", fileToken.getFileId());
         }
         boolean isEdit = false;
-        if (fileToken.requestedEdit()) {
+        if (fileToken.isEditRequested()) {
             isEdit = this.authorizationManager.hasAccess(Right.EDIT,
                 this.documentReferenceResolver.resolve(fileToken.getUser()),
                 attachmentReference.getDocumentReference());
@@ -281,7 +281,7 @@ public class FileTokenManager
         FileToken token = new FileToken(user, fileId, tokenTimeout,
             this.authorizationManager.hasAccess(Right.VIEW, this.documentReferenceResolver.resolve(user),
                 attachmentReference.getDocumentReference()), isEdit);
-        token.setLastActionMode(requestedMode);
+        token.setActionMode(ActionMode.fromString(requestedMode));
         tokens.put(token.toString(), token);
         logger.debug("New token created for file [{}] and user [{}],", fileId, user);
 
