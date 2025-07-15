@@ -191,7 +191,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token getToken(String fileId) throws XWikiRestException
+    public Token getToken(String fileId, String mode) throws XWikiRestException
     {
         XWikiContext xcontext = this.contextProvider.get();
         // Make sure that the current wiki is used on the XWiki context, since the REST resource is rooted on the
@@ -201,7 +201,7 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
 
         try {
             String urlSrc = discoveryManager.getURLSrc(fileId);
-            String fileTokenValue = fileTokenManager.getToken(xcontext.getUserReference(), fileId).toString();
+            String fileTokenValue = fileTokenManager.getToken(xcontext.getUserReference(), fileId, mode).toString();
 
             Token token = (new ObjectFactory()).createToken();
             token.setUrlSrc(urlSrc);
@@ -216,9 +216,9 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Token clearToken(String fileId) throws XWikiRestException
+    public Token clearToken(String fileId, String mode) throws XWikiRestException
     {
-        int tokenUsage = this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference(), fileId);
+        int tokenUsage = this.fileTokenManager.clearToken(this.contextProvider.get().getUserReference(), fileId, mode);
 
         Token token = (new ObjectFactory()).createToken();
         token.setUsage(tokenUsage);
@@ -227,12 +227,12 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     }
 
     @Override
-    public Response updateTokenExpiration(String fileId) throws XWikiRestException
+    public Response updateTokenExpiration(String fileId, String mode) throws XWikiRestException
     {
         try {
             XWikiContext xcontext = this.contextProvider.get();
             if (fileTokenManager.isInvalid(fileId, xcontext.getUserReference())) {
-                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference())) {
+                if (fileTokenManager.hasAccess(fileId, xcontext.getUserReference(), mode)) {
                     fileTokenManager.extendToken(fileId, xcontext.getUserReference());
                     return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).build();
                 } else {

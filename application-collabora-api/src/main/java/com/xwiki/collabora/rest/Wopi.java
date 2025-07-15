@@ -19,6 +19,7 @@
  */
 package com.xwiki.collabora.rest;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -91,12 +92,14 @@ public interface Wopi extends XWikiRestComponent
      * particularities).
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return information needed by Collabora to load
      * @throws XWikiRestException if an error occurred while getting information
      */
     @GET
     @Path("/token")
-    Token getToken(@PathParam("id") String fileId) throws XWikiRestException;
+    Token getToken(@PathParam("id") String fileId, @QueryParam("mode") @DefaultValue("edit") String mode)
+        throws XWikiRestException;
 
     /**
      * Clear saved token for this file. Consider that this user might be editing the file in another window, so don't
@@ -104,22 +107,26 @@ public interface Wopi extends XWikiRestComponent
      * right now it only supports POST, see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return information about the usage of this file token
      * @throws XWikiRestException if an error occurred while removing the token
      */
     @POST
     @Path("/token")
-    Token clearToken(@PathParam("id") String fileId) throws XWikiRestException;
+    Token clearToken(@PathParam("id") String fileId, @QueryParam("mode") @DefaultValue("edit") String mode)
+        throws XWikiRestException;
 
     /**
-     * If the token for the given file is associated to the current user and has expired, extends the expiration time
-     * of the token. The token's timeout is extended based on the Collabora configuration settings.
+     * If the token for the given file is associated to the current user and has expired, extends the expiration time of
+     * the token. The token's timeout is extended based on the Collabora configuration settings.
      *
      * @param fileId id of the file
+     * @param mode the requested action for the file
      * @return status code of the operation
      * @throws XWikiRestException if an error occurred while extending the token
      */
     @PUT
     @Path("/token/extend")
-    Response updateTokenExpiration(@PathParam("id") String fileId) throws XWikiRestException;
+    Response updateTokenExpiration(@PathParam("id") String fileId,
+        @QueryParam("mode") @DefaultValue("edit") String mode) throws XWikiRestException;
 }
