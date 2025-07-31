@@ -158,7 +158,7 @@
         collaboraButton.hide();
         return;
       }
-        utils.populateCollaboraButton(collaboraButton, fileName, accessRights);
+      utils.populateCollaboraButton(collaboraButton, fileName, accessRights);
     });
     const templates = getTemplates();
 
@@ -168,11 +168,51 @@
     $('body').append(templates.newFileModal);
   };
 
+  // Currently, the livedata events are triggered before the entries are loaded. This function is used to check if
+  // all attachments livedata entries have been loaded. This can be removed after the following issue is solved:
+  // XWIKI-23415: Live Data event xwiki:livedata:entriesUpdated is triggered too early
+  var waitForAttachmentsAndDecorate = function (selector, numberOfEntries, checkInterval = 10, stableCount = 3,
+      timeout = 5000) {
+    if ($(selector).length &gt; 0) {
+      decorateWithCollaboraButtons();
+      return;
+    }
+    let lastCount = 0;
+    let sameCountTicks = 0;
+    const startTime = performance.now();
+    const interval = setInterval(() =&gt; {
+      if (performance.now() - startTime &gt; timeout) {
+        clearInterval(interval);
+        console.warn('Interval timed out while waiting for attachments live data entries to load.');
+      }
+      const currentCount = $(selector).length;
+      if (numberOfEntries !== undefined &amp;&amp; currentCount === numberOfEntries) {
+        clearInterval(interval);
+        decorateWithCollaboraButtons();
+      }
+      // As the attachments info are loaded sequentially, we check if the last counted value is the same as
+      // the current number of entries found. If the values are the same, we increment sameCountTicks.
+      // Otherwise, we reset it to 0. This is a backup solution in case the number of entries are not included
+      // in the event livedata data.
+      if (currentCount === lastCount) {
+        sameCountTicks++;
+      } else {
+        sameCountTicks = 0;
+      }
+      lastCount = currentCount;
+      // We consider that all the entries have been loaded if the last counted value is the same as
+      // the current number of entries found at least the number of times represented by stableCount.
+      if (sameCountTicks &gt;= stableCount) {
+        clearInterval(interval);
+        decorateWithCollaboraButtons();
+      }
+    }, checkInterval);
+  };
+
   $(decorateWithCollaboraButtons);
-  $(document).on('xwiki:livedata:afterEntryFetch', function (event) {
+  $(document).on('xwiki:livedata:entriesUpdated', function (event) {
     if ($(event.target).attr('id') === 'docAttachments') {
-      // We need to setTimeout(0) to allow the live data to display the entries before decorating them with the buttons.
-      setTimeout(decorateWithCollaboraButtons, 0);
+      waitForAttachmentsAndDecorate(".attachments span.name", event.detail.livedata.data?.data?.entries.length);
     }
   });
   $(document).on('xwiki:livetable:docAttachments:loadingComplete', decorateWithCollaboraButtons);
