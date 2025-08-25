@@ -1,0 +1,105 @@
+## ---------------------------------------------------------------------------
+## See the NOTICE file distributed with this work for additional
+## information regarding copyright ownership.
+##
+## This is free software; you can redistribute it and/or modify it
+## under the terms of the GNU Lesser General Public License as
+## published by the Free Software Foundation; either version 2.1 of
+## the License, or (at your option) any later version.
+##
+## This software is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public
+## License along with this software; if not, write to the Free
+## Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+## 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+## ---------------------------------------------------------------------------
+#macro (getPageEditURL $pageEditURL)
+  #set ($editWiki = $services.wiki.currentWikiId)
+  #if ($services.collabora.getConfiguration().editUsingMainWiki())
+    #set ($editWiki = $services.wiki.mainWikiId)
+  #end
+  #set ($pageEditRef = $services.model.createDocumentReference($editWiki, ['Collabora', 'Code'], 'Main'))
+  ## In case the main wiki was selected as edit endpoint, but the application is not installed on it, fallback on the
+  ## current wiki as endpoint.
+  #if (!$xwiki.exists($pageEditRef))
+    #set ($pageEditRef = $services.model.createDocumentReference($currentWikiId, ['Collabora', 'Code'], 'Main'))
+  #end
+  #set ($pageEditURL = $xwiki.getDocument($pageEditRef).getURL('get'))
+#end
+#macro (createButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  <button class="btn btn-default" data-toggle="modal" data-target="#newCollaboraFileModal"
+    title="$escapetool.xml($services.localization.render("collabora.attachment.modal.new.title"))">
+    <span class="action-icon"><img src="$logoURL" /></span>
+    <span class="action-label">
+      $escapetool.xml($services.localization.render("collabora.attachment.modal.new"))
+    </span>
+  </button>
+#end
+#macro (newFileForm)
+  <form class="xform" method="post">
+    <dl>
+      <input type="hidden" name="form_token" value="$services.csrf.getToken()" />
+      <dt>
+        <label for="fileType">
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType'))
+        </label>
+      </dt>
+      <dd>
+        <select name="fileType">
+          <option value=".odt">
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.text'))
+          </option>
+          <option value=".odp">
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.presentation'))
+          </option>
+          <option value=".ods">
+            $escapetool.xml($services.localization.render('collabora.attachment.modal.fileType.spreadsheet'))
+          </option>
+        </select>
+      </dd>
+      <dt>
+        <label for="fileName">
+          $escapetool.xml($services.localization.render('collabora.attachment.modal.fileName'))
+        </label>
+      </dt>
+      <dd>
+        <input type="text" name="fileName" value="" />
+        <input type="text" name="fileExt" value=".odt" readonly />
+      </dd>
+    </dl>
+  </form>
+#end
+#macro (newFileModal)
+  <div class="modal fade" id="newCollaboraFileModal" tabindex="-1" role="dialog" aria-hidden="true"
+    aria-label="$escapetool.xml($services.localization.render('collabora.attachment.modal.title'))">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-body">
+          #newFileForm()
+        </div>
+        <div class="modal-footer">
+          #getPageEditURL($pageEditURL)
+          <input type="submit" class="btn btn-primary" disabled
+            value="$escapetool.xml($services.localization.render('collabora.attachment.modal.submit'))"
+            data-edit-url="$pageEditURL">
+          <input type="button" class="btn btn-default" data-dismiss="modal"
+            value="$escapetool.xml($services.localization.render('cancel'))">
+        </div>
+      </div>
+    </div>
+  </div>
+#end
+#macro (tableButtonTemplate)
+  #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
+  #set ($label = $escapetool.xml($services.localization.render("collabora.attachment.title")))
+  #getPageEditURL($pageEditURL)
+  <a class="action collaboraEdit" href="" data-edit-url="$pageEditURL">
+    <span class="action-icon"><img src="$logoURL"/></span>
+    <span class="action-label">$label</span>
+  </a>
+#end
