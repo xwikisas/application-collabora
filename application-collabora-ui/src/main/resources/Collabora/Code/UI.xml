@@ -529,7 +529,7 @@
     <property>
       <content>{{velocity}}
 #if ($xcontext.action == 'view')
-  {{include reference='Collabora.Code.UIMacros' /}}
+  #template('collaborauimacros.vm')
 #end
 {{/velocity}}
 
@@ -688,9 +688,9 @@
       <async_enabled>0</async_enabled>
     </property>
     <property>
-      <content>{{include reference='Collabora.Code.UIMacros' /}}
+      <content>{{velocity}}
+#template('collaborauimacros.vm')
 
-{{velocity}}
 #if ($services.collabora.getConfiguration().isEnabled())
   {{html clean="false"}}
     #tableButtonTemplate()
