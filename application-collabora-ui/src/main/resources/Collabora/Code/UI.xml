@@ -847,7 +847,8 @@
     </property>
     <property>
       <parameters>id=collabora-utils
-path=$services.webjars.url('com.xwiki.collabora:application-collabora-webjar', 'collabora-utils.js', {'evaluate': true})</parameters>
+path=$services.webjars.url('com.xwiki.collabora:application-collabora-webjar', 'collabora-utils.js', {'evaluate': true})
+bundles=collabora-attachment</parameters>
     </property>
     <property>
       <scope>wiki</scope>
