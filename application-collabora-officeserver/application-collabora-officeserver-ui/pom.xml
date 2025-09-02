@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.xwiki.collabora</groupId>
     <artifactId>application-collabora-officeserver</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.7.0</version>
   </parent>
   <artifactId>application-collabora-officeserver-ui</artifactId>
   <packaging>xar</packaging>

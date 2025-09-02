@@ -23,7 +23,7 @@
   <parent>
     <groupId>com.xwiki.collabora</groupId>
     <artifactId>application-collabora</artifactId>
-    <version>1.6.3-SNAPSHOT</version>
+    <version>1.7.0</version>
   </parent>
   <artifactId>application-collabora-xip</artifactId>
   <name>Collabora Connector Application (Pro) - XIP</name>
