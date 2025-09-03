@@ -136,7 +136,7 @@
     </property>
     <property>
       <code>define('collabora-modal-localization', {
- prefix: 'collabora.attachment.modal.submit',
+ prefix: 'collabora.attachment.modal.submit.',
  keys: [
    'error'
  ]
