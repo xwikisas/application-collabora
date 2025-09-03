@@ -135,7 +135,14 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>require(['jquery', 'xwiki-l10n!collabora-attachment', 'collabora-utils'],function($, l10n, utils) {
+      <code>define('collabora-modal-localization', {
+ prefix: 'collabora.attachment.modal.submit',
+ keys: [
+   'error'
+ ]
+});
+
+require(['jquery', 'xwiki-l10n!collabora-modal-localization', 'collabora-utils'],function($, l10n, utils) {
   var getTemplates = function() {
     const config = JSON.parse($('#collabora-config').text());
     const template = {};
@@ -239,7 +246,7 @@
       )).getRestURL() + "/attachments/" + encodeURIComponent(fileName);
     $.get(attachURL)
       .done(function () {
-        new XWiki.widgets.Notification(l10n.get('modal.submit.error'), 'error');
+        new XWiki.widgets.Notification(l10n.get('error'), 'error');
       })
       .fail(function () {
         $.ajax({
@@ -847,8 +854,7 @@
     </property>
     <property>
       <parameters>id=collabora-utils
-path=$services.webjars.url('com.xwiki.collabora:application-collabora-webjar', 'collabora-utils.js', {'evaluate': true})
-bundles=collabora-attachment</parameters>
+path=$services.webjars.url('com.xwiki.collabora:application-collabora-webjar', 'collabora-utils.js', {'evaluate': true})</parameters>
     </property>
     <property>
       <scope>wiki</scope>

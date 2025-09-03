@@ -21,13 +21,12 @@ define('collabora-attachment', {
  prefix: 'collabora.attachment.',
  keys: [
    'edit.title',
-   'view.title',
-   'modal.submit.error'
+   'view.title'
  ]
 });
 
-define(['jquery', 'xwiki-l10n!collabora-attachment'], function($, l10n) {
-  const collaboraUtils =  {
+define('collabora-utils', ['jquery', 'xwiki-l10n!collabora-attachment'], function($, l10n) {
+  const collaboraUtils = {
     getExtAcceptedAction: function() {
       const canDoByExt = {};
       ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg']
