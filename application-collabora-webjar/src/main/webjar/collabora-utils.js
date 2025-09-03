@@ -17,15 +17,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-define('collabora-attachment', {
- prefix: 'collabora.attachment.',
- keys: [
-   'edit.title',
-   'view.title',
-   'modal.submit.error'
- ]
-});
-
 define(['jquery', 'xwiki-l10n!collabora-attachment'], function($, l10n) {
   const collaboraUtils =  {
     getExtAcceptedAction: function() {
