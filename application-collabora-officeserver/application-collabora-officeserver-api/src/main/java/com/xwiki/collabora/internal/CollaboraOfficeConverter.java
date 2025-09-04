@@ -157,10 +157,17 @@ public class CollaboraOfficeConverter implements OfficeConverter
     @Override
     public OfficeDocumentFormat getDocumentFormat(String officeFileName)
     {
+        // This method can be called in the case where documents are exported using XWiki's client-side PDF export
+        // (XWiki 14.2+).
+        // In this case, the target page for the export is called with the export action, and the query parameter
+        // "format=html-print". As of XWiki 17.4.4, this format will be checked against
+        // OfficeConverter#getDocumentFormat(), which is expected to return null.
+        if ("html-print".equals(officeFileName)) {
+            return null;
         // Some parts of XWiki Platform will provide this API directly with a file extension instead of a full file
         // name.
         // See ExportAction.java#L163 / OfficeExporter.java#L71
-        if (officeFileName.indexOf('.') == -1) {
+        } else if (officeFileName.indexOf('.') == -1) {
             return new CollaboraOfficeDocumentFormat(String.format("my_file.%s", officeFileName));
         } else {
             return new CollaboraOfficeDocumentFormat(officeFileName);
