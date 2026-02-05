@@ -316,12 +316,13 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
       }
     }
   }
-  // To avoid Collabora server error when processing special punctuation characters, we need to encode them in Base64.
-  var bytesToBase64 = function(bytes) {
+  // To avoid Collabora server error when processing special punctuation characters, we need to encode them in
+  // Base64URL.
+  var bytesToBase64URL = function(bytes) {
     const binString = Array.from(bytes, (byte) =&gt;
       String.fromCodePoint(byte)
     ).join('');
-    return btoa(binString);
+    return btoa(binString).replace(/\+/g, '-').replace(/\//g, '_');
   }
 
   $(function() {
@@ -332,7 +333,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
     // (https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem - The "Unicode Problem")
     const textEncoder = new TextEncoder();
     const wopiResourceURL = window.location.origin + XWiki.contextPath + collaboraPath +
-      bytesToBase64(textEncoder.encode(fileId));
+      bytesToBase64URL(textEncoder.encode(fileId));
     const tokenURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId) + `/token?mode=${mode}`;
     $.getJSON(tokenURL).done(function(resp) {
       const fileUrlSrc = resp.urlSrc;
@@ -341,8 +342,8 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
       const wopiSrc = encodeURIComponent(wopiResourceURL);
       const actionURL = fileUrlSrc + 'lang=' + lang + '&amp;WOPISrc=' + wopiSrc;
       $('#collaboraForm').attr('action', actionURL);
-      $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(bytesToBase64(textEncoder.encode(
-        accessToken))));
+      $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(bytesToBase64URL(
+        textEncoder.encode(accessToken))));
       $('#collaboraForm').submit();
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(l10n.get('load', error), 'error');
