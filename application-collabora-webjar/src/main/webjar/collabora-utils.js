@@ -29,7 +29,7 @@ define('collabora-utils', ['jquery', 'xwiki-l10n!collabora-attachment'], functio
   const collaboraUtils = {
     getExtAcceptedAction: function() {
       const canDoByExt = {};
-      ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg']
+      ['doc', 'docx', 'xls', 'xlsx', 'xlsm', 'ppt', 'pptx', 'csv', 'rtf', 'txt', 'odt', 'ods', 'odp', 'odg']
         .forEach(function(x) {
           canDoByExt[x] = 'edit';
       });
