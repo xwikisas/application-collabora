@@ -20,7 +20,6 @@
 package com.xwiki.collabora.internal.rest;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
@@ -98,8 +97,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response get(String fileId, String token) throws XWikiRestException
     {
-        String decodedToken = base64URLDecoder(token);
-        String decodedFileId = base64URLDecoder(fileId);
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", decodedFileId);
@@ -136,8 +135,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
-        String decodedToken = base64URLDecoder(token);
-        String decodedFileId = base64URLDecoder(fileId);
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", decodedFileId);
@@ -161,8 +160,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        String decodedToken = base64URLDecoder(token);
-        String decodedFileId = base64URLDecoder(fileId);
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
@@ -246,16 +245,5 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
                 ExceptionUtils.getRootCauseMessage(e));
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private String base64URLDecoder(String encoded)
-    {
-        StringBuilder base64 = new StringBuilder(encoded.replace('-', '+').replace('_', '/'));
-
-        while (base64.length() % 4 != 0) {
-            base64.append("=");
-        }
-
-        return new String(Base64.getDecoder().decode(base64.toString().getBytes(StandardCharsets.UTF_8)));
     }
 }
