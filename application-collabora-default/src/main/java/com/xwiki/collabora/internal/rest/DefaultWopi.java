@@ -97,8 +97,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response get(String fileId, String token) throws XWikiRestException
     {
-        String decodedToken = new String(Base64.getDecoder().decode(token));
-        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (token == null || fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get file [{}] due to invalid token or restricted rights.", decodedFileId);
@@ -135,8 +135,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response getContents(String fileId, String token) throws XWikiRestException
     {
-        String decodedToken = new String(Base64.getDecoder().decode(token));
-        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to get content of file [{}] due to invalid token or restricted rights.", decodedFileId);
@@ -160,8 +160,8 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
     @Override
     public Response postContents(String fileId, String token, byte[] body) throws XWikiRestException
     {
-        String decodedToken = new String(Base64.getDecoder().decode(token));
-        String decodedFileId = new String(Base64.getDecoder().decode(fileId));
+        String decodedToken = new String(Base64.getUrlDecoder().decode(token));
+        String decodedFileId = new String(Base64.getUrlDecoder().decode(fileId));
 
         if (fileTokenManager.isInvalid(decodedToken) || !fileTokenManager.hasAccess(decodedToken)) {
             logger.warn("Failed to update file [{}] due to invalid token or restricted rights.", decodedFileId);
