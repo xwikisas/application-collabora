@@ -117,7 +117,7 @@
       id="collaboraForm"&gt;
       &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
       &lt;input type="submit" value="" /&gt;
-    &lt;/form&gt;collabora.iframe.title
+    &lt;/form&gt;
     ## Where the document will be displayed.
     &lt;iframe id="collaboraViewer" src="$services.collabora.getConfiguration().getServerURL()" name="collaboraViewer"
       allow="fullscreen" title="$escapetool.xml($services.localization.render('collabora.iframe.title'))"&gt;
