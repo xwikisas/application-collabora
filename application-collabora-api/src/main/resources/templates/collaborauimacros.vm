@@ -34,7 +34,7 @@
   #set ($logoURL = $xwiki.getDocument('Collabora.Code.UI').getAttachmentURL('collabora-symbol.svg'))
   <button class="btn btn-default" data-toggle="modal" data-target="#newCollaboraFileModal"
     title="$escapetool.xml($services.localization.render("collabora.attachment.modal.new.title"))">
-    <span class="action-icon"><img src="$logoURL" /></span>
+    <span class="action-icon"><img src="$logoURL" alt="" /></span>
     <span class="action-label">
       $escapetool.xml($services.localization.render("collabora.attachment.modal.new"))
     </span>

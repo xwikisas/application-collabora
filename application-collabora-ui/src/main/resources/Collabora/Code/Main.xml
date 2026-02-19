@@ -79,12 +79,12 @@
 #macro (renderCollaboraContent $mode)
   ## Display logo and some information about the currently edited file. Show Close action on the right.
   ## Save action is included in Collabora editor.
-  &lt;div class="actionMenu"&gt;
+  &lt;header class="actionMenu"&gt;
     &lt;div&gt;
       #set ($homePageRef = $services.wiki.getById($fileDoc.wiki).getMainPageReference())
       &lt;a href="${xwiki.getURL($homePageRef)}" class='homePage'
         title=$escapetool.xml($services.localization.render('core.menu.type.home'))&gt;
-        &lt;img src="$xwiki.getSkinFile('logo.svg')"&gt;
+        &lt;img src="$xwiki.getSkinFile('logo.svg')" alt=""&gt;
       &lt;/a&gt;
     &lt;/div&gt;
     &lt;div&gt;
@@ -102,7 +102,7 @@
         $escapetool.xml($services.localization.render('collabora.editor.close'))
       &lt;/a&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
+  &lt;/header&gt;
   #set ($mainWikiPageRef = $xwiki.getDocument(
     $services.model.createDocumentReference($services.wiki.mainWikiId, ['Collabora', 'Code'], 'Main')))
   #if ($services.collabora.getConfiguration().editUsingMainWiki() &amp;&amp; !$xwiki.exists($mainWikiPageRef))
@@ -110,18 +110,21 @@
   #end
   ## Information needed by collabora to be able to edit the current file.
   #set ($fileId = $escapetool.xml($services.model.serialize($attachment.getReference(), 'default')))
-  &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode"
-    data-server="$services.collabora.getConfiguration().getServerURL()"&gt;&lt;/span&gt;
-  &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
-    id="collaboraForm"&gt;
-    &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
-    &lt;input type="submit" value="" /&gt;
-  &lt;/form&gt;
-  ## Where the document will be displayed.
-  &lt;iframe id="collaboraViewer" src="$services.collabora.getConfiguration().getServerURL()" name="collaboraViewer"
-    allow="fullscreen"&gt;&lt;/iframe&gt;
-  #unsavedChangesModal()
-  #getUnauthorizedUserModal()
+  &lt;main&gt;
+    &lt;span id="collaboraServer" data-file-id="$fileId" data-mode="$mode"
+      data-server="$services.collabora.getConfiguration().getServerURL()"&gt;&lt;/span&gt;
+    &lt;form class="hidden" action="" enctype="multipart/form-data" method="post" target="collaboraViewer"
+      id="collaboraForm"&gt;
+      &lt;input name="access_token" value="" type="hidden" id="accessToken" /&gt;
+      &lt;input type="submit" value="" /&gt;
+    &lt;/form&gt;
+    ## Where the document will be displayed.
+    &lt;iframe id="collaboraViewer" src="$services.collabora.getConfiguration().getServerURL()" name="collaboraViewer"
+      allow="fullscreen" title="$escapetool.xml($services.localization.render('collabora.iframe.title'))"&gt;
+    &lt;/iframe&gt;
+    #unsavedChangesModal()
+    #getUnauthorizedUserModal()
+  &lt;/main&gt;
 #end
 {{/velocity}}
 
