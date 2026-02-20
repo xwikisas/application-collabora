@@ -36,15 +36,18 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>##Admin section
+  <content>collabora.extension.name=Collabora Connector Application (Pro)
+##Admin section
 admin.collabora=Collabora
 admin.collabora.description=Configurer le connecteur Collabora
 Collabora.Code.ConfigurationClass_isEnabled=Activer
 Collabora.Code.ConfigurationClass_isEnabled.hint=Activer la possibilité de modifier des pièces jointes des pages en format office avec Collabora Online.
 Collabora.Code.ConfigurationClass_server=Serveur
-Collabora.Code.ConfigurationClass_server.hint=L'adresse du serveur Collabora Online
+Collabora.Code.ConfigurationClass_server.hint=L'adresse du serveur Collabora Online. La configuration du wiki principal sera utilisée si non paramétrée au niveau du sous-wiki.
 Collabora.Code.ConfigurationClass_editUsingMainWiki=Modifier à l'aide du wiki principal
 Collabora.Code.ConfigurationClass_editUsingMainWiki.hint=Utilisez le domaine wiki principal lors de la modification de fichiers, afin de ne pas ajouter chaque domaine de sous-wiki à la configuration des hôtes docker du serveur Collabora. La configuration principale du wiki sera utilisée si elle n'est pas définie au niveau du sous-wiki.
+Collabora.Code.ConfigurationClass_tokenTimeout=Édition du timeout du jeton
+Collabora.Code.ConfigurationClass_tokenTimeout.hint=Le nombre d'heures au delà duquel le jeton d'édition expire. Après expiration, le jeton sera renouvelé si l'utilisateur a encore des droits sur le document. Le nombre d'heures doit être ajouté (par exemple 1 pour 1 heure, 2 pour 2 heures). Si no paramétré au niveau du sous-wiki ou du wiki, a valeur par défaut de 48 est utilisée.
 
 
 ## Attachments tab
@@ -57,24 +60,29 @@ collabora.attachment.modal.fileType.spreadsheet=Feuille de calcul
 collabora.attachment.modal.fileName=Nom du fichier
 collabora.attachment.modal.submit=Créer et modifier le fichier
 collabora.attachment.modal.submit.error=La pièce jointe existe déjà
-collabora.attachment.modal.new.title=Créer un nouveau fichier avec Collabora
+collabora.attachment.modal.new.title=Créer et éditer un fichier avec Collabora
 collabora.attachment.modal.new=Nouveau fichier
 collabora.attachment.title=Collabora
 collabora.attachment.view.title=Visualiser avec Collabora
 
 ## Editor
 collabora.editor.onPage=de la page
-collabora.editor.error=Une erreur est survenue lors du chargement de ce fichier. Cause: {0}
+collabora.editor.error.load=Erreur pendant le chargement de ce fichier. Cause : {0}
+collabora.editor.error.unauthorized=L'utilisateur n'est pas autorisé à réaliser cette action ou le jeton d'édition n'est plus valable.
+collabora.editor.error.internal=Une erreur interne s''est produite. Cause : {0}
 collabora.editor.close=Fermer
 collabora.editor.close.hint=Fermer l''éditeur
+collabora.editor.file.home.title=Page d'accueil du fichier
 collabora.editor.unsaved.close=Continuez à éditer
-collabora.editor.unsaved.info=Il y a des {0}modifications non enregistrées{1}. Voulez-vous vraiment quitter sans enregistrer?
+collabora.editor.unsaved.info=Il y a {0}modifications non enregistrées{1}. Voulez-vous vraiment quitter sans enregistrer ?
 collabora.editor.unsaved.autoSave=Notez que les modifications peuvent toujours être enregistrées par la fonctionnalité {0}d''enregistrement automatique{1}, si celle-ci est activée.
 collabora.editor.unsaved.label=Modifications non enregistrées
 collabora.editor.unsaved.submit=Fermer sans enregistrer
-collabora.validation.attachmentMissing=La page ou la pièce jointe n'ont pas été trouvées.
-collabora.validation.documentMissing=Le nom de la page est obligatoire!
-collabora.validation.filenameMissing=Le nom du fichier est obligatoire!
+collabora.validation.attachmentMissing=La page ou la pièce jointe n'ont pas été trouvées !
+collabora.validation.documentMissing=Paramètre du document requis !
+collabora.validation.filenameMissing=Nom du fichier requis !
 collabora.validation.notInstalled=L''application Collabora n''est pas installée sur le wiki principal, nous utilisons donc le domaine wiki actuel pour l''édition, ce qui peut ne pas fonctionner si la configuration des hôtes docker n''inclut pas le domaine du sous-wiki. Installez Collabora sur le wiki principal ou modifiez la configuration pour toujours utiliser le wiki actuel pour l''édition.
-collabora.save.comment=Document [{0}] a été actualisé par [{1}].</content>
+collabora.save.comment=Document [{0}] a été actualisé par [{1}].
+collabora.iframe.title=Vue édition de Collabora
+</content>
 </xwikidoc>
