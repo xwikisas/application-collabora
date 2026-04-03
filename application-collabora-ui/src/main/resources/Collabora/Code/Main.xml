@@ -120,7 +120,8 @@
     &lt;/form&gt;
     ## Where the document will be displayed.
     &lt;iframe id="collaboraViewer" src="$services.collabora.getConfiguration().getServerURL()" name="collaboraViewer"
-      allow="fullscreen" title="$escapetool.xml($services.localization.render('collabora.iframe.title'))"&gt;
+      allow="fullscreen; clipboard-read *; clipboard-write *"
+      title="$escapetool.xml($services.localization.render('collabora.iframe.title'))"&gt;
     &lt;/iframe&gt;
     #unsavedChangesModal()
     #getUnauthorizedUserModal()
