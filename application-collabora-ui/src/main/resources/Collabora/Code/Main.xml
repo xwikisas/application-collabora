@@ -348,7 +348,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
       $('#collaboraForm').attr('action', actionURL);
       $('#collaboraForm input[name=access_token]').attr('value', encodeURIComponent(bytesToBase64URL(
         textEncoder.encode(accessToken))));
-      $('#collaboraForm').submit();
+      $('#collaboraForm').trigger('submit');
     }).fail(function(jqxhr, textStatus, error) {
       new XWiki.widgets.Notification(l10n.get('load', error), 'error');
     });
@@ -372,7 +372,7 @@ require(['jquery', 'xwiki-l10n!collabora-editor-errors'], function($, l10n) {
     window.location.href = $('.actionMenu .fileHomePage').attr('href');
   });
 
-  $(window).unload(function() {
+  $(window).on('unload', function() {
     const fileId = $("#collaboraServer").data('fileId');
     const mode = $("#collaboraServer").data('mode');
     const wopiResourceURL = XWiki.contextPath + collaboraPath + encodeURIComponent(fileId);
