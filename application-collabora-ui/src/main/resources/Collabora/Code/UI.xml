@@ -218,7 +218,7 @@ require(['jquery', 'xwiki-l10n!collabora-modal-localization', 'collabora-utils']
 
   $(decorateWithCollaboraButtons);
   $(document).on('xwiki:livedata:entriesUpdated', function (event) {
-    if ($(event.target).attr('id') === 'docAttachments') {
+    if ($(event.target).attr('id') === 'docAttachments' || $(event.target).parent().attr('id') === 'docAttachments') {
       waitForAttachmentsAndDecorate(".attachments span.name", event.detail.livedata.data?.data?.entries.length);
     }
   });
