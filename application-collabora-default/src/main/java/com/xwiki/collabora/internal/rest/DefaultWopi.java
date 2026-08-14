@@ -119,8 +119,11 @@ public class DefaultWopi extends ModifiablePageResource implements Wopi
             message.put(LAST_MODIFIED_TIME, dateFormat.format(attachment.getDate()));
             // Needed for using the PostMessage API.
             XWikiRequest wikiRequest = contextProvider.get().getRequest();
-            String postMessageOrigin = String.format("%s://%s:%s", wikiRequest.getScheme(), wikiRequest.getServerName(),
-                wikiRequest.getServerPort());
+            String postMessageOrigin = String.format("%s://%s", wikiRequest.getScheme(), wikiRequest.getServerName());
+            int serverPort = wikiRequest.getServerPort();
+            if (serverPort != -1) {
+                postMessageOrigin += ":" + serverPort;
+            }
             message.put("PostMessageOrigin", postMessageOrigin);
 
             return Response.status(Response.Status.OK).entity(message.toString()).type(MediaType.APPLICATION_JSON)
